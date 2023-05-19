@@ -505,7 +505,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	//	書き込むためのアドレスを取得
 	wvpResource->Map(0, nullptr, reinterpret_cast<void**>(&wvpData));
 	//	単位行列を書き込んでおく
-	*wvpData = wvpData->MakeIdentity4x4();
+	*wvpData = MakeIdentity4x4();
 
 	//	頂点バッファビューを作成する
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
