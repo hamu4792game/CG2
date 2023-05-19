@@ -16,6 +16,7 @@
 #pragma comment(lib,"dxcompiler.lib")
 
 #include "Vector4.h"
+#include "Matrix4x4.h"
 
 //	Log関数
 void Log(const std::string& message) {
@@ -408,10 +409,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 	
 	//	RootParameter作成。複数設定できるので配列。今回は結果1つだけなので長さ1の配列
-	D3D12_ROOT_PARAMETER rootParameters[1] = {};
+	D3D12_ROOT_PARAMETER rootParameters[2] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//	CBVを使う b0のbと一致する
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;	//	PixelShaderで使う 
 	rootParameters[0].Descriptor.ShaderRegister = 0;	//	レジスタ番号とバインド b0の0と一致する。もしb11と紐づけたいなら11となる
+	
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//	CBVを使う b0のbと一致する
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;	//	PixelShaderで使う 
+	rootParameters[1].Descriptor.ShaderRegister = 0;	//	レジスタ番号とバインド b0の0と一致する。もしb11と紐づけたいなら11となる
 	descriptionRootSignature.pParameters = rootParameters;	//	ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);	//	配列の長さ
 
@@ -493,6 +498,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	//	今回は赤を書き込んでみる
 	*materialData = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
 
+	//	WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
+	ID3D12Resource* wvpResource = CreateBufferResource(device, sizeof(Matrix4x4));
+	//	データを書き込む
+	Matrix4x4* wvpData = nullptr;
+	//	書き込むためのアドレスを取得
+	wvpResource->Map(0, nullptr, reinterpret_cast<void**>(&wvpData));
+	//	単位行列を書き込んでおく
+	*wvpData = wvpData->MakeIdentity4x4();
+
 	//	頂点バッファビューを作成する
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
 	//	リソースの先頭のアドレスから使う
@@ -531,8 +545,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	scissorRect.top = 0;
 	scissorRect.bottom = kClientHeight;
 
-
-
+	
 
 	//	ウィンドウの×ボタンが押されるまでループ
 	while (msg.message != WM_QUIT)
@@ -587,6 +600,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 			commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			//	マテリアルCBufferの場所を設定
 			commandList->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
+			//	wvp用のCBufferの場所を設定
+			commandList->SetGraphicsRootConstantBufferView(1, wvpResource->GetGPUVirtualAddress());
 			//	描画。（DrawCall/ドローコール）。3頂点で1つのインスタンス。インスタンスについては今後
 			commandList->DrawInstanced(3, 1, 0, 0);
 
@@ -650,6 +665,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 #endif
 	CloseWindow(hwnd);
 
+	wvpResource->Release();
 	vertexResource->Release();
 	materialResource->Release();
 	graphicsPipelineState->Release();
