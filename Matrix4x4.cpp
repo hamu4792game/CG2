@@ -55,17 +55,10 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4& mat)
 	return result;
 }
 
-Matrix4x4 Matrix4x4::operator=(const Matrix4x4& mat)
+Matrix4x4& Matrix4x4::operator=(const Matrix4x4& mat)
 {
-	Matrix4x4 result;
-	for (int y = 0; y < result.m.size(); y++)
-	{
-		for (int x = 0; x < result.m.size(); x++)
-		{
-			result.m[y][x] = mat.m[y][x];
-		}
-	}
-	return result;
+	m = mat.m;
+	return *this;
 }
 //	逆行列
 Matrix4x4 Inverse(const Matrix4x4& m) {
@@ -217,7 +210,7 @@ Matrix4x4 Transpose(const Matrix4x4& m) {
 //	単位行列の作成
 Matrix4x4 MakeIdentity4x4() {
 	Matrix4x4 result;
-	for (int y = 0; y < 4; y++) {
+	for (int y = 0; y < result.m.size(); y++) {
 		result.m[y][y] = 1.0f;
 	}
 
