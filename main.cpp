@@ -270,7 +270,7 @@ ID3D12Resource* CreateDepthStencilTexture(ID3D12Device* device, int32_t width, i
 	resourceDesc.Height = height;	//	textureの高さ
 	resourceDesc.MipLevels = 1;	//	bitmapの数
 	resourceDesc.DepthOrArraySize = 1;	//	奥行き or 配列Textureの配列数
-	resourceDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;	//	DepthStencilとして利用可能なフォーマット
+	resourceDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;;	//	DepthStencilとして利用可能なフォーマット
 	resourceDesc.SampleDesc.Count = 1;	//	サンプリングカウント。1固定
 	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;	//	二次元
 	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;	//	DepthStencilとして使う通知
@@ -282,7 +282,7 @@ ID3D12Resource* CreateDepthStencilTexture(ID3D12Device* device, int32_t width, i
 	//	深度値のクリア設定
 	D3D12_CLEAR_VALUE depthClearValue{};
 	depthClearValue.DepthStencil.Depth = 1.0f;	//	1.0f(最大値)でクリア
-	depthClearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;	//	フォーマット。Resourceと合わせる
+	depthClearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;;	//	フォーマット。Resourceと合わせる
 
 	//	Resourceの生成
 	ID3D12Resource* resource = nullptr;
@@ -624,6 +624,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	IDxcBlob* pixelShaderBlob = CompileShader(L"Object3D.PS.hlsl", L"ps_6_0", dxcUtils, dxcCompiler, includeHandler);
 	assert(pixelShaderBlob != nullptr);
 
+	//	DepthStencilStateの設定
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
+	//	Depthの機能を有効化する
+	depthStencilDesc.DepthEnable = true;
+	//	書き込みします
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	//	比較関数はLessEqual。つまり、近ければ描画される
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+
 	//	PSOを生成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
 	graphicsPipelineStateDesc.pRootSignature = rootSignature;	//	RootSignature
@@ -642,10 +651,29 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	//	どのように画面に色を打ち込むかの設定（気にしなくて良い）
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
+	//	DepthStencilの設定
+	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
+	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
 	//	実際に生成
 	ID3D12PipelineState* graphicsPipelineState = nullptr;
 	hr = device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc,IID_PPV_ARGS(&graphicsPipelineState));
 	assert(SUCCEEDED(hr));
+
+	//	depthStencilResourceの生成
+	ID3D12Resource* depthStencilResource = CreateDepthStencilTexture(device, kClientWidth, kClientHeight);
+	//	2_5_p16
+	//	DSV用のヒープでディスクリプタの数は1。DSVはShader内で触るものではないので、ShaderVisibleはfalse
+	ID3D12DescriptorHeap* dsvDescriptorHeap = CreateDescriptorHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
+	//	DSVの設定
+	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
+	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;;	//	Format。基本的にはResourceに合わせる
+	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;	//	2DTexture
+	dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
+
+	//	DSVHeapの先頭にDSVを作る
+	device->CreateDepthStencilView(depthStencilResource, &dsvDesc, dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
 	//	vertexResourceの作成
 	ID3D12Resource* vertexResource = CreateBufferResource(device, sizeof(VertexData) * 6);
@@ -702,6 +730,47 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	//	右下2
 	vertexData[5].position = { 0.5f,-0.5f,-0.5f,1.0f };
 	vertexData[5].texcoord = { 1.0f,1.0f };
+
+	//	Sptite用の頂点リソースを作る
+	ID3D12Resource* vertexResourceSprite = CreateBufferResource(device, sizeof(VertexData) * 6);
+
+	//	頂点バッファビューを作成
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewSprite{};
+	//	リソースの先頭のアドレスから使う
+	vertexBufferViewSprite.BufferLocation = vertexResourceSprite->GetGPUVirtualAddress();
+	//	使用するリソースのサイズは頂点6つ分のサイズ
+	vertexBufferViewSprite.SizeInBytes = sizeof(VertexData) * 6;
+	//	1頂点あたりのサイズ
+	vertexBufferViewSprite.StrideInBytes = sizeof(VertexData);
+
+	//	頂点データの設定
+	VertexData* vertexDataSprite = nullptr;
+	vertexResourceSprite->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSprite));
+	//	1枚目の三角形
+	vertexDataSprite[0].position = { 0.0f,360.0f,0.0f,1.0f };	//	左下
+	vertexDataSprite[0].texcoord = { 0.0f,1.0f };
+	vertexDataSprite[1].position = { 0.0f,0.0f,0.0f,1.0f };	//	左上
+	vertexDataSprite[1].texcoord = { 0.0f,0.0f };
+	vertexDataSprite[2].position = { 640.0f,360.0f,0.0f,1.0f };	//	右下
+	vertexDataSprite[2].texcoord = { 1.0f,1.0f };
+	//	2枚目の三角形
+	vertexDataSprite[3].position = { 0.0f,0.0f,0.0f,1.0f };	//	左上
+	vertexDataSprite[3].texcoord = { 0.0f,0.0f };
+	vertexDataSprite[4].position = { 640.0f,0.0f,0.0f,1.0f };	//	右上
+	vertexDataSprite[4].texcoord = { 1.0f,0.0f };
+	vertexDataSprite[5].position = { 640.0f,360.0f,0.0f,1.0f };	//	右下
+	vertexDataSprite[5].texcoord = { 1.0f,1.0f };
+
+	//	Transform周りを作る
+	//	Sprite用のTransformationMatrix用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
+	ID3D12Resource* transformationMatrixResourceSprite = CreateBufferResource(device, sizeof(Matrix4x4));
+	//	データを書き込む
+	Matrix4x4* transformationMatrixDataSprite = nullptr;
+
+	//	書き込むためのアドレスを取得
+	transformationMatrixResourceSprite->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixDataSprite));
+	//	単位行列を書き込んでおく
+	*transformationMatrixDataSprite = MakeIdentity4x4();
 
 	//	ビューポート
 	D3D12_VIEWPORT viewport{};
@@ -772,9 +841,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,-5.0f},
 	};
+	Transform transformSprite{
+		{1.0f,1.0f,1.0f},
+		{0.0f,0.0f,0.0f},
+		{0.0f,0.0f,0.0f},
+	};
 	
-	//	2_5_p16
-	ID3D12Resource* depthStencilResource = CreateDepthStencilTexture(device, kClientWidth, kClientHeight);
+
+
+	
 
 	//	ウィンドウの×ボタンが押されるまでループ
 	while (msg.message != WM_QUIT)
@@ -802,8 +877,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 			Matrix4x4 viewMatrix = Inverse(cameraMatrix);
 			Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kClientWidth) / float(kClientHeight), 0.1f, 100.0f);
 			Matrix4x4 worldViewProjectionMatrix = (worldMatrix * (viewMatrix * projectionMatrix));
-
 			*wvpData = worldViewProjectionMatrix;
+
+			//	Sprite用のWorldProjectionMatrixを作る
+			Matrix4x4 worldMatrixSprite = MakeAffineMatrix(transformSprite.scale, transformSprite.rotate, transformSprite.translate);
+			Matrix4x4 viewMatrixSprite = MakeIdentity4x4();
+			Matrix4x4 projectionMatrixSprite = MakeOrthographicMatrix(0.0f, 0.0f, float(kClientWidth), float(kClientHeight), 0.0f, 100.0f);
+			Matrix4x4 worldViewProjectionMatrixSprite = worldMatrixSprite * viewMatrixSprite * projectionMatrixSprite;
+			*transformationMatrixDataSprite = worldViewProjectionMatrixSprite;
+
 
 			//	ImGuiの内部コマンドを生成
 			ImGui::Render();
@@ -827,9 +909,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 			//	TransitionBarrierを張る
 			commandList->ResourceBarrier(1, &barrier);
 
+			//	描画先のRTVとDSVを設定する
+			D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+			commandList->OMSetRenderTargets(1, &rtvHandle[backBufferIndex], false, &dsvHandle);
+			//	指定した深度で画面全体をクリアする
+			commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-			//	描画先のRTVを設定する
-			commandList->OMSetRenderTargets(1, &rtvHandle[backBufferIndex], false, nullptr);
 			//	指定した色で画面全体をクリアする
 			float clearColor[] = { 0.1f,0.25f,0.5f,1.0f };	//	青っぽい色、RGBA
 			commandList->ClearRenderTargetView(rtvHandle[backBufferIndex], clearColor, 0, nullptr);
@@ -857,6 +942,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 			//	SRVのDescriptorTableの先頭を設定。2はrootParameter[2]である
 			commandList->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
 			//	描画。（DrawCall/ドローコール）。3頂点で1つのインスタンス。インスタンスについては今後
+			commandList->DrawInstanced(6, 1, 0, 0);
+			//	Spriteの描画。変更が必要なものだけ変更する
+			commandList->IASetVertexBuffers(0, 1, &vertexBufferViewSprite);	//	VBVを設定
+			//	TransformationMatrixCBufferの場所を設定
+			commandList->SetGraphicsRootConstantBufferView(1, transformationMatrixResourceSprite->GetGPUVirtualAddress());
+			//	描画(DrawCall/ドローコール)
 			commandList->DrawInstanced(6, 1, 0, 0);
 
 			//	実際のcommandListのImGuiの描画コマンドを積む
@@ -904,6 +995,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 
 	//
 	depthStencilResource->Release();
+	dsvDescriptorHeap->Release();
+	transformationMatrixResourceSprite->Release();
+	vertexResourceSprite->Release();
+
 
 	//	Textureの解放
 	intermediateResource->Release();
