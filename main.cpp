@@ -15,9 +15,9 @@
 #include <dxcapi.h>
 #pragma comment(lib,"dxcompiler.lib")
 
-#include "Vector2.h"
-#include "Vector4.h"
-#include "Matrix4x4.h"
+#include "math/Vector2.h"
+#include "math/Vector4.h"
+#include "math/Matrix4x4.h"
 
 //	imguiのinclude
 #include "externals/imgui/imgui.h"
@@ -848,8 +848,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	};
 	
 
-
-	
 
 	//	ウィンドウの×ボタンが押されるまでループ
 	while (msg.message != WM_QUIT)
