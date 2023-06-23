@@ -22,6 +22,9 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{5e2a3a58-540e-44a2-890c-a18a6b09d457}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\WinApp">
+      <UniqueIdentifier>{baf20787-cd6a-4104-ba65-3ee572a5459e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -51,8 +54,11 @@
     <ClCompile Include="math\Matrix4x4.cpp">
       <Filter>math</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Engine.cpp">
+    <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="WinApp.cpp">
+      <Filter>Engine\WinApp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,8 +102,11 @@
     <ClInclude Include="math\Vector4.h">
       <Filter>math</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Engine.h">
+    <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="WinApp.h">
+      <Filter>Engine\WinApp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
