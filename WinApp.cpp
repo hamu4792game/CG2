@@ -8,6 +8,12 @@
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #include <string>
 
+WinApp* WinApp::GetInstance()
+{
+	static WinApp instance;
+	return &instance;
+}
+
 LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) {
@@ -43,13 +49,13 @@ void WinApp::CreateGameWindow(const wchar_t* title, int32_t clientWidth, int32_t
 	RegisterClass(&wc);
 
 	//	ウィンドウサイズを表す構造体にクライアント領域を入れる
-	//	{x座標,y座標}
+	//	{x座標,y座標,横幅,縦幅}
 	RECT wrc = { 0,0,clientWidth,clientHeight };
 
 	//	クライアント領域を元に実際のサイズにwrcを変更してもらう
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
 
-	HWND hwnd = CreateWindow(
+	hwnd = CreateWindow(
 		wc.lpszClassName,		//	利用するクラス名
 		title,					//	タイトルバーの文字（何でもいい）
 		WS_OVERLAPPEDWINDOW,	//	よく見るウィンドウスタイル
@@ -62,4 +68,29 @@ void WinApp::CreateGameWindow(const wchar_t* title, int32_t clientWidth, int32_t
 		wc.hInstance,			//	インスタンスハンドル
 		nullptr					//	オプション
 	);
+}
+
+bool WinApp::ProcessMessage()
+{
+	MSG msg{};
+	//	ウィンドウにメッセージが来てたら最優先で処理させる
+	if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	//	終了メッセージが来たらループを抜ける
+	if (msg.message == WM_QUIT)
+	{
+		return true;
+	}
+	return false;
+}
+
+void WinApp::DeleteGameWindow()
+{
+	//	登録したクラスの破棄
+	UnregisterClass(wc.lpszClassName, wc.hInstance);
+	//	COMの終了処理
+	CoUninitialize();
 }

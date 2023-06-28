@@ -25,6 +25,15 @@
     <Filter Include="Engine\WinApp">
       <UniqueIdentifier>{baf20787-cd6a-4104-ba65-3ee572a5459e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\CommandDirectX">
+      <UniqueIdentifier>{eaec827f-2464-4ac1-8784-fe038acef1fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ShaderManager">
+      <UniqueIdentifier>{0ecf4c5e-4e06-4d0a-bca0-3f481471d35b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Texture2D">
+      <UniqueIdentifier>{b706dcb7-f155-43ac-a58b-d1de3249d23f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -60,10 +69,21 @@
     <ClCompile Include="WinApp.cpp">
       <Filter>Engine\WinApp</Filter>
     </ClCompile>
+    <ClCompile Include="CommandDirectX.cpp">
+      <Filter>Engine\CommandDirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>Engine\ShaderManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>Engine\Texture2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.VS.hlsl" />
     <FxCompile Include="Object3d.PS.hlsl" />
+    <FxCompile Include="Texture2D.VS.hlsl" />
+    <FxCompile Include="Texture2D.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imstb_rectpack.h">
@@ -108,6 +128,18 @@
     <ClInclude Include="WinApp.h">
       <Filter>Engine\WinApp</Filter>
     </ClInclude>
+    <ClInclude Include="CommandDirectX.h">
+      <Filter>Engine\CommandDirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>Engine\ShaderManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>Engine\Texture2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt">
@@ -116,5 +148,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Object3d.hlsli" />
+    <None Include="Texture2D.hlsli" />
   </ItemGroup>
 </Project>

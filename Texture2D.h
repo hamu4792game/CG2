@@ -1,0 +1,50 @@
+#pragma once
+
+//	DirextXtex
+#include "externals/DirectXTex/DirectXTex.h"
+#include "externals/DirectXTex/d3dx12.h"
+#include <vector>
+
+#include <dxcapi.h>
+#pragma comment(lib,"dxcompiler.lib")
+#include "math/Vector4.h"
+
+class Texture2D
+{
+public:
+	Texture2D() = default;
+	~Texture2D() = default;
+
+	void Finalize();
+
+private:
+	ID3D12Resource* resource = nullptr;
+	ID3D12DescriptorHeap* SRVHeap = nullptr;
+
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
+	ID3D12Resource* vertexResource = nullptr;
+	IDxcBlob* vertexShader = nullptr;
+	IDxcBlob* pixelShader = nullptr;
+
+	ID3D12RootSignature* rootSignature = nullptr;
+	ID3D12PipelineState* graphicsPipelineState = nullptr;
+
+public:
+
+	void CreateDescriptor();
+
+	void CreateShader(const std::string& vsFileName, const std::string& psFileName);
+
+	void CreateGraphicsPipeline();
+
+	void Draw();
+
+public:
+	//	DirectX12のTextureResourceを作る
+	DirectX::ScratchImage LoadTexture(const std::string& filePath);
+
+	//	TextureResourceにデータを転送する
+	void UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
+
+};
+
