@@ -2,6 +2,13 @@
 #include "Log.h"
 #include <cassert>
 
+//	imguiのinclude
+#include "externals/imgui/imgui.h"
+#include "externals/imgui/imgui_impl_dx12.h"
+#include "externals/imgui/imgui_impl_win32.h"
+//	関数の外部宣言
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 CommandDirectX* CommandDirectX::GetInstance()
 {
 	static CommandDirectX instance;
@@ -27,6 +34,14 @@ void CommandDirectX::Initialize(WinApp* winApp, int32_t bufferWidth, int32_t buf
 
 void CommandDirectX::PreDraw()
 {
+	//	ImGuiにframeの始まりを伝える
+	ImGui_ImplDX12_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
+	//	ゲームの処理
+	ImGui::ShowDemoWindow();
+
 	//	ここから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
 
@@ -83,6 +98,13 @@ void CommandDirectX::PreDraw()
 
 void CommandDirectX::PostDraw()
 {
+	ID3D12DescriptorHeap* descriptorHeap[] = { srvDescriptorHeap };
+	commandList->SetDescriptorHeaps(1, descriptorHeap);
+	
+	//	ImGuiの内部コマンドを生成
+	ImGui::Render();
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
+
 	//	ここから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
 
@@ -138,6 +160,11 @@ void CommandDirectX::PostDraw()
 
 void CommandDirectX::Finalize()
 {
+	//	ImGuiの解放
+	ImGui_ImplDX12_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+
 	//	解放処理
 	fence->Release();
 	srvDescriptorHeap->Release();
@@ -293,7 +320,22 @@ void CommandDirectX::CreateRenderTargetView()
 	//	2つ目を作る
 	device->CreateRenderTargetView(swapChainResources[1], &rtvDesc, rtvHandle[1]);
 
-
+	//	swapChaine\のbufferCountの取得
+	DXGI_SWAP_CHAIN_DESC1 SCD;
+	swapChain->GetDesc1(&SCD);
+	//	ImGuiの初期化
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui::StyleColorsDark();
+	ImGui_ImplWin32_Init(winApp_->GetHwnd());
+	ImGui_ImplDX12_Init(device,
+		SCD.BufferCount,
+		rtvDesc.Format,
+		srvDescriptorHeap,
+		srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
+		srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart()
+	);
+	
 }
 
 void CommandDirectX::CreateFence()

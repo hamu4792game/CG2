@@ -8,6 +8,7 @@
 #include <dxcapi.h>
 #pragma comment(lib,"dxcompiler.lib")
 #include "math/Vector4.h"
+#include "ConstantBuffer.h"
 
 class Texture2D
 {
@@ -28,6 +29,14 @@ private:
 
 	ID3D12RootSignature* rootSignature = nullptr;
 	ID3D12PipelineState* graphicsPipelineState = nullptr;
+
+	struct Circle
+	{
+		Vector2 center;
+		float radius;
+	};
+	ConstantBuffer<Circle> cBuffer;
+	
 
 public:
 

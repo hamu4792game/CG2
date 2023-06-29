@@ -4,6 +4,8 @@
 #include "ShaderManager.h"
 #include "Log.h"
 
+#include "externals/imgui/imgui.h"
+
 
 Texture2D::~Texture2D()
 {
@@ -29,6 +31,9 @@ void Texture2D::Finalize()
 
 void Texture2D::Texture(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName)
 {
+	cBuffer->center = { 640.0f,360.0f };
+	cBuffer->radius = 100.0f;
+
 	CreateDescriptor(filePath);
 	CreateShader(vsFileName, psFileName);
 	CreateGraphicsPipeline();
@@ -42,8 +47,10 @@ void Texture2D::CreateDescriptor(const std::string& filePath)
 	UploadTextureData(resource, mipImages);
 
 	//	デスクリプタヒープを生成
-	SRVHeap = CreateDescriptorHeap(Engine::GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1, true);
-
+	SRVHeap = CreateDescriptorHeap(Engine::GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 10, true);
+	auto descriptorHandle = SRVHeap->GetCPUDescriptorHandleForHeapStart();
+	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	cBuffer.CreateView(descriptorHandle);
 	//	設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
@@ -88,12 +95,18 @@ void Texture2D::CreateGraphicsPipeline()
 	//
 	D3D12_ROOT_SIGNATURE_DESC sigDesc{};
 	sigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-	D3D12_DESCRIPTOR_RANGE range[1] = {};
+	D3D12_DESCRIPTOR_RANGE range[2] = {};
 	range[0].BaseShaderRegister = 0;
-	range[0].NumDescriptors = 1;
+	range[0].NumDescriptors = 1;	//	必要な数
 	range[0].RegisterSpace = 0;
 	range[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	range[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	range[1].BaseShaderRegister = 0;
+	range[1].NumDescriptors = 1;	//	必要な数
+	range[1].RegisterSpace = 0;
+	range[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+	range[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	D3D12_ROOT_PARAMETER rootParameter[1] = {};
 	rootParameter[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
@@ -193,6 +206,11 @@ void Texture2D::CreateGraphicsPipeline()
 
 void Texture2D::Draw()
 {
+	ImGui::Begin("a");
+	ImGui::DragFloat2("%0.2f", &cBuffer->center.x);
+	ImGui::DragFloat("%0.2f", &cBuffer->radius);
+	ImGui::End();
+
 	Engine::GetList()->SetGraphicsRootSignature(rootSignature);
 	Engine::GetList()->SetPipelineState(graphicsPipelineState);
 	Engine::GetList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);

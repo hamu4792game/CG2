@@ -18,7 +18,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	while (!WinApp::ProcessMessage()) {
 		//	フレームの開始
 		Engine::BeginFrame();
-
+		
 		texture->Draw();
 		//texture1->Draw();
 

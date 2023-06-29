@@ -34,6 +34,9 @@
     <Filter Include="Engine\Texture2D">
       <UniqueIdentifier>{b706dcb7-f155-43ac-a58b-d1de3249d23f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\ConstantBuffer">
+      <UniqueIdentifier>{6edf23a5-a3fc-4963-bcef-6e8c595e660c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -77,6 +80,9 @@
     </ClCompile>
     <ClCompile Include="Texture2D.cpp">
       <Filter>Engine\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>Engine\ConstantBuffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +143,9 @@
     </ClInclude>
     <ClInclude Include="Texture2D.h">
       <Filter>Engine\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>Engine\ConstantBuffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
