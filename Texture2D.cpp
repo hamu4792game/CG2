@@ -5,6 +5,17 @@
 #include "Log.h"
 
 
+Texture2D::~Texture2D()
+{
+	graphicsPipelineState->Release();
+	rootSignature->Release();
+	vertexShader->Release();
+	vertexResource->Release();
+	SRVHeap->Release();
+	pixelShader->Release();
+	resource->Release();
+}
+
 void Texture2D::Finalize()
 {
 	graphicsPipelineState->Release();
@@ -16,9 +27,16 @@ void Texture2D::Finalize()
 	resource->Release();
 }
 
-void Texture2D::CreateDescriptor()
+void Texture2D::Texture(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName)
 {
-	DirectX::ScratchImage mipImages = LoadTexture("./Resources/uvChecker.png");
+	CreateDescriptor(filePath);
+	CreateShader(vsFileName, psFileName);
+	CreateGraphicsPipeline();
+}
+
+void Texture2D::CreateDescriptor(const std::string& filePath)
+{
+	DirectX::ScratchImage mipImages = LoadTexture(filePath);
 	const DirectX::TexMetadata& metaData = mipImages.GetMetadata();
 	resource = Engine::CreateTextureResource(Engine::GetDevice(), metaData);
 	UploadTextureData(resource, mipImages);

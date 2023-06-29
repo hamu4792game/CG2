@@ -5,7 +5,7 @@ class ShaderManager
 {
 public:
 	ShaderManager() = default;
-	~ShaderManager();
+	~ShaderManager() = default;
 
 public:
 	/// <summary>

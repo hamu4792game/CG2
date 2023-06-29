@@ -13,7 +13,7 @@ class Texture2D
 {
 public:
 	Texture2D() = default;
-	~Texture2D() = default;
+	~Texture2D();
 
 	void Finalize();
 
@@ -31,15 +31,19 @@ private:
 
 public:
 
-	void CreateDescriptor();
+	void Texture(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName);
+
+private:
+	void CreateDescriptor(const std::string& filePath);
 
 	void CreateShader(const std::string& vsFileName, const std::string& psFileName);
 
 	void CreateGraphicsPipeline();
 
+public:
 	void Draw();
 
-public:
+private:
 	//	DirectX12のTextureResourceを作る
 	DirectX::ScratchImage LoadTexture(const std::string& filePath);
 

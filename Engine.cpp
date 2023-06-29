@@ -26,8 +26,8 @@ WinApp* winApp = nullptr;
 CommandDirectX* comDirect = nullptr;
 ShaderManager* sManager = nullptr;
 
-ID3D12Debug1* debugController;
-ID3D12InfoQueue* infoQueue;
+ID3D12Debug1* debugController = nullptr;
+ID3D12InfoQueue* infoQueue = nullptr;
 
 void Engine::Initialize(const char* title, int width, int height)
 {
@@ -57,10 +57,10 @@ void Engine::Initialize(const char* title, int width, int height)
 
 void Engine::Finalize()
 {
-	comDirect->Finalize();
 	sManager->Finalize();
-	debugController->Release();
-	infoQueue->Release();
+	sManager = nullptr;
+	comDirect->Finalize();
+	comDirect = nullptr;
 	//	リソースリークチェック
 	IDXGIDebug1* debug;
 	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug))))

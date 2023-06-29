@@ -80,8 +80,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Object3d.VS.hlsl" />
-    <FxCompile Include="Object3d.PS.hlsl" />
     <FxCompile Include="Texture2D.VS.hlsl" />
     <FxCompile Include="Texture2D.PS.hlsl" />
   </ItemGroup>
@@ -147,7 +145,6 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Object3d.hlsli" />
     <None Include="Texture2D.hlsli" />
   </ItemGroup>
 </Project>
