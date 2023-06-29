@@ -3,7 +3,7 @@
 Texture2D<float4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
-cbuffer Cercle : register(b0)
+cbuffer Circle : register(b0)
 {
     float2 center;
     float radius;
