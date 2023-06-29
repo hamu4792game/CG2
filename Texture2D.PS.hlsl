@@ -9,11 +9,17 @@ cbuffer Circle : register(b0)
     float radius;
 }
 
+
 float4 main(VertexOutput input) : SV_TARGET
 {
-    float4 output = gTexture.Sample(gSampler, input.texcoord);
+    float w, h, levels;
+    gTexture.GetDimensions(0, w, h, levels);
+    float dx = 1.0f / w; float dy = 1.0f / h;
     
-    float2 posCenter = input.potision.xy - center;
-    clip(length(posCenter) - radius);
+    //  どれだけずらすか
+    float4 output = gTexture.Sample(gSampler, input.texcoord + float2(-100.f * dx, dy));
+    
+    //float2 posCenter = input.potision.xy - center;
+    //clip(length(posCenter) - radius);
     return output;
 }
