@@ -33,6 +33,7 @@ void Texture2D::Texture(const std::string& filePath, const std::string& vsFileNa
 {
 	cBuffer->center = { 640.0f,360.0f };
 	cBuffer->radius = 100.0f;
+	cBuffer->color = { 0.0f,0.0f,0.0f,1.0f };
 
 	CreateDescriptor(filePath);
 	CreateShader(vsFileName, psFileName);
@@ -51,6 +52,7 @@ void Texture2D::CreateDescriptor(const std::string& filePath)
 	auto descriptorHandle = SRVHeap->GetCPUDescriptorHandleForHeapStart();
 	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	cBuffer.CreateView(descriptorHandle);
+	cColor.CreateView(descriptorHandle);
 	//	設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;

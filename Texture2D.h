@@ -36,7 +36,8 @@ private:
 		float radius;
 	};
 	ConstantBuffer<Circle> cBuffer;
-	
+	ConstantBuffer<Vector4> cColor;
+
 
 public:
 
