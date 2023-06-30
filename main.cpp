@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "Log.h"
 #include "Texture2D.h"
+#include "externals/imgui/imgui.h"
 
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
@@ -14,12 +15,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	//auto texture1 = std::make_unique<Texture2D>();
 	//texture1->Texture("./Resources/517-a.png", "Texture2D.VS.hlsl", "Texture2D.PS.hlsl");
 
+	uint32_t color = 0x1111ffff;
+
 	//	ウィンドウの×ボタンが押されるまでループ
 	while (!WinApp::ProcessMessage()) {
 		//	フレームの開始
 		Engine::BeginFrame();
 		
-		texture->Draw();
+		//ImGui::DragInt("%d", &color);
+
+		texture->Draw(color);
 		//texture1->Draw();
 
 		//	フレームの終了

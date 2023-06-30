@@ -17,12 +17,12 @@ cbuffer Iro : register(b1)
 
 float4 main(VertexOutput input) : SV_TARGET
 {
-    VertexOutput output = gTexture.Sample(gSampler, input.texcoord);
-    float4 textureColor = gTexture.Sample(gSampler, input.texcoord);
-    output.color = input.color * textureColor;
+    float4 textureColor = gTexture.Sample(gSampler, input.texcoord) * color;
+    float Y = dot(textureColor.xyz, float3(0.299f, 0.587f, 0.114f));
+    float4 monochrome = { Y, Y, Y, color.w };
     
     //float2 posCenter = input.potision.xy - center;
     //clip(length(posCenter) - radius);
     
-    return output;
+    return monochrome;
 }

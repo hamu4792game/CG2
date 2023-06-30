@@ -33,7 +33,7 @@ void Texture2D::Texture(const std::string& filePath, const std::string& vsFileNa
 {
 	cBuffer->center = { 640.0f,360.0f };
 	cBuffer->radius = 100.0f;
-	cBuffer->color = { 0.0f,0.0f,0.0f,1.0f };
+	*cColor = { 1.0f,1.0f,1.0f,1.0f };
 
 	CreateDescriptor(filePath);
 	CreateShader(vsFileName, psFileName);
@@ -52,6 +52,7 @@ void Texture2D::CreateDescriptor(const std::string& filePath)
 	auto descriptorHandle = SRVHeap->GetCPUDescriptorHandleForHeapStart();
 	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	cBuffer.CreateView(descriptorHandle);
+	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	cColor.CreateView(descriptorHandle);
 	//	設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
@@ -92,7 +93,9 @@ void Texture2D::CreateGraphicsPipeline()
 	{
 		mapData[i] = vertex[i];
 	}
+	//	重要
 	vertexResource->Unmap(0, nullptr);
+	
 
 	//
 	D3D12_ROOT_SIGNATURE_DESC sigDesc{};
@@ -105,14 +108,14 @@ void Texture2D::CreateGraphicsPipeline()
 	range[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	range[1].BaseShaderRegister = 0;
-	range[1].NumDescriptors = 1;	//	必要な数
+	range[1].NumDescriptors = 2;	//	必要な数
 	range[1].RegisterSpace = 0;
 	range[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
 	range[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	D3D12_ROOT_PARAMETER rootParameter[1] = {};
 	rootParameter[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootParameter[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameter[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameter[0].DescriptorTable.pDescriptorRanges = range;
 	rootParameter[0].DescriptorTable.NumDescriptorRanges = _countof(range);
 
@@ -206,12 +209,14 @@ void Texture2D::CreateGraphicsPipeline()
 	assert(SUCCEEDED(hr));
 }
 
-void Texture2D::Draw()
+void Texture2D::Draw(uint32_t color)
 {
 	ImGui::Begin("a");
 	ImGui::DragFloat2("%0.2f", &cBuffer->center.x);
 	ImGui::DragFloat("%0.2f", &cBuffer->radius);
 	ImGui::End();
+	//	色の変更
+	*cColor = ChangeColor(color);
 
 	Engine::GetList()->SetGraphicsRootSignature(rootSignature);
 	Engine::GetList()->SetPipelineState(graphicsPipelineState);
@@ -220,6 +225,18 @@ void Texture2D::Draw()
 	Engine::GetList()->SetDescriptorHeaps(1, &SRVHeap);
 	Engine::GetList()->SetGraphicsRootDescriptorTable(0, SRVHeap->GetGPUDescriptorHandleForHeapStart());
 	Engine::GetList()->DrawInstanced(4, 1, 0, 0);
+}
+
+Vector4 Texture2D::ChangeColor(uint32_t color)
+{
+	static const float nNum = 1.0f / 255.0f;
+
+	float red = static_cast<float>((color & 0xff000000) >> 24)* nNum;
+	float blue = static_cast<float>((color & 0x00ff0000) >> 16) * nNum;
+	float green = static_cast<float>((color & 0x0000ff00) >> 8) * nNum;
+	float alpha = static_cast<float>((color & 0x000000ff)) * nNum;
+	
+	return Vector4(red, blue, green, alpha);
 }
 
 

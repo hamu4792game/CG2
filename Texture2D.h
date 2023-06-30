@@ -51,7 +51,9 @@ private:
 	void CreateGraphicsPipeline();
 
 public:
-	void Draw();
+	void Draw(uint32_t color);
+
+	Vector4 ChangeColor(uint32_t color);
 
 private:
 	//	DirectX12のTextureResourceを作る
