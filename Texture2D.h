@@ -10,6 +10,19 @@
 #include "math/Vector4.h"
 #include "ConstantBuffer.h"
 
+// ブレンドモード
+enum BlendMode {
+	None,   //!< ブレンドなし
+	Normal, //!< 通常αブレンド。デフォルト。 Src * SrcA + Dest * (1 - SrcA)
+	Add,    //!< 加算。Src * SrcA + Dest * 1
+	Subtract, //!< 減算。Dest * 1 - Src * SrcA
+	Multily,  //!< 乗算。Src * 0 + Dest * Src
+	Screen,   //!< スクリーン。Src * (1 - Dest) + Dest * 1
+
+};
+
+
+
 class Texture2D
 {
 public:
@@ -54,6 +67,12 @@ public:
 	void Draw(uint32_t color);
 
 	Vector4 ChangeColor(uint32_t color);
+
+	BlendMode blend;
+	void SetBlend(BlendMode blend_) {
+		blend = blend_;
+	};
+	
 
 private:
 	//	DirectX12のTextureResourceを作る

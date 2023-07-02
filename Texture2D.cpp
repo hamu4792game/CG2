@@ -34,6 +34,7 @@ void Texture2D::Texture(const std::string& filePath, const std::string& vsFileNa
 	cBuffer->center = { 640.0f,360.0f };
 	cBuffer->radius = 100.0f;
 	*cColor = { 1.0f,1.0f,1.0f,1.0f };
+	blend = BlendMode::Normal;
 
 	CreateDescriptor(filePath);
 	CreateShader(vsFileName, psFileName);
@@ -73,6 +74,10 @@ void Texture2D::CreateShader(const std::string& vsFileName, const std::string& p
 
 void Texture2D::CreateGraphicsPipeline()
 {
+	if (graphicsPipelineState != nullptr) {
+		graphicsPipelineState->Release();
+	}
+	
 	//	頂点データ
 	VertexData vertex[4] = {
 		{{-1.0f,-1.0f,0.1f,1.0f},{0.0f,1.0f}},
@@ -164,9 +169,55 @@ void Texture2D::CreateGraphicsPipeline()
 	layoutDesc.pInputElementDescs = inputElementDesc;
 	layoutDesc.NumElements = _countof(inputElementDesc);
 
+	//	ブレンドモードの設定
 	D3D12_BLEND_DESC blendDesc{};
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 
+	//	ブレンドモードの分岐
+	
+	switch (blend)
+	{
+	case None:
+		blendDesc.RenderTarget[0].BlendEnable = false;
+		break;
+	case Normal:
+		blendDesc.RenderTarget[0].BlendEnable = true;
+		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+		break;
+	case Add:
+		blendDesc.RenderTarget[0].BlendEnable = true;
+		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+		break;
+	case Subtract:
+		blendDesc.RenderTarget[0].BlendEnable = true;
+		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_SUBTRACT;
+		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+		break;
+	case Multily:
+		blendDesc.RenderTarget[0].BlendEnable = true;
+		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_ZERO;
+		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_SRC_COLOR;
+		break;
+	case Screen:
+		blendDesc.RenderTarget[0].BlendEnable = true;
+		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_INV_DEST_COLOR;
+		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+		break;
+	default:
+		break;
+	}
+
+	//	ラスタライザの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
@@ -195,15 +246,6 @@ void Texture2D::CreateGraphicsPipeline()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;
 
-	//	ここからBlendの設定
-	graphicsPipelineStateDesc.BlendState.RenderTarget[0].BlendEnable = true;
-	graphicsPipelineStateDesc.BlendState.RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
-	graphicsPipelineStateDesc.BlendState.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
-	graphicsPipelineStateDesc.BlendState.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;	//	基本的にAdd
-	graphicsPipelineStateDesc.BlendState.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
-	graphicsPipelineStateDesc.BlendState.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
-	graphicsPipelineStateDesc.BlendState.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-
 	//	実際に生成
 	hr = Engine::GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
 	assert(SUCCEEDED(hr));
@@ -211,12 +253,15 @@ void Texture2D::CreateGraphicsPipeline()
 
 void Texture2D::Draw(uint32_t color)
 {
+	CreateGraphicsPipeline();
+	
 	ImGui::Begin("a");
 	ImGui::DragFloat2("%0.2f", &cBuffer->center.x);
 	ImGui::DragFloat("%0.2f", &cBuffer->radius);
 	ImGui::End();
 	//	色の変更
 	*cColor = ChangeColor(color);
+
 
 	Engine::GetList()->SetGraphicsRootSignature(rootSignature);
 	Engine::GetList()->SetPipelineState(graphicsPipelineState);
@@ -275,3 +320,4 @@ void Texture2D::UploadTextureData(ID3D12Resource* texture, const DirectX::Scratc
 	}
 
 }
+
