@@ -31,13 +31,14 @@ void Texture2D::Finalize()
 
 void Texture2D::Texture(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName)
 {
-	cBuffer->center = { 640.0f,360.0f };
-	cBuffer->radius = 100.0f;
+	cBuffer->pibot = { 0.0f,0.0f };
+	cBuffer->rate = 1.0f;
 	*cColor = { 1.0f,1.0f,1.0f,1.0f };
 	blend = BlendMode::Normal;
 
 	CreateDescriptor(filePath);
 	CreateShader(vsFileName, psFileName);
+	CreateVertexResource();
 	CreateGraphicsPipeline();
 }
 
@@ -72,13 +73,8 @@ void Texture2D::CreateShader(const std::string& vsFileName, const std::string& p
 	pixelShader = ShaderManager::GetInstance()->CompileShader(ConvertString(psFileName), L"ps_6_0");
 }
 
-void Texture2D::CreateGraphicsPipeline()
+void Texture2D::CreateVertexResource()
 {
-	if (graphicsPipelineState != nullptr) {
-		graphicsPipelineState->Release();
-		graphicsPipelineState = nullptr;
-	}
-	
 	//	頂点データ
 	VertexData vertex[4] = {
 		{{-1.0f,-1.0f,0.1f,1.0f},{0.0f,1.0f}},
@@ -101,8 +97,15 @@ void Texture2D::CreateGraphicsPipeline()
 	}
 	//	重要
 	vertexResource->Unmap(0, nullptr);
-	
+}
 
+void Texture2D::CreateGraphicsPipeline()
+{
+	if (graphicsPipelineState) {
+		graphicsPipelineState->Release();
+	}
+	graphicsPipelineState = nullptr;
+	
 	//
 	D3D12_ROOT_SIGNATURE_DESC sigDesc{};
 	sigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -149,6 +152,11 @@ void Texture2D::CreateGraphicsPipeline()
 		assert(false);
 	}
 	//	バイナリを元に生成
+	if (rootSignature)
+	{
+		rootSignature->Release();
+	}
+	rootSignature = nullptr;
 	hr = Engine::GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
 	assert(SUCCEEDED(hr));
 	if (errorBlob)
@@ -255,8 +263,7 @@ void Texture2D::CreateGraphicsPipeline()
 void Texture2D::Draw(uint32_t color)
 {	
 	ImGui::Begin("a");
-	ImGui::DragFloat2("%0.2f", &cBuffer->center.x);
-	ImGui::DragFloat("%0.2f", &cBuffer->radius);
+	ImGui::DragFloat2("%0.2f", &cBuffer->pibot.x, 1.0f);
 	ImGui::End();
 	//	色の変更
 	*cColor = ChangeColor(color);

@@ -43,12 +43,11 @@ private:
 	ID3D12RootSignature* rootSignature = nullptr;
 	ID3D12PipelineState* graphicsPipelineState = nullptr;
 
-	struct Circle
-	{
-		Vector2 center;
-		float radius;
+	struct Mono {
+		Vector2 pibot;
+		float rate;
 	};
-	ConstantBuffer<Circle> cBuffer;
+	ConstantBuffer<Mono> cBuffer;
 	ConstantBuffer<Vector4> cColor;
 
 
@@ -60,6 +59,8 @@ private:
 	void CreateDescriptor(const std::string& filePath);
 
 	void CreateShader(const std::string& vsFileName, const std::string& psFileName);
+
+	void CreateVertexResource();
 
 	void CreateGraphicsPipeline();
 

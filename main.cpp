@@ -23,9 +23,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 		Engine::BeginFrame();
 		
 		//ImGui::DragInt("%d", &color);
-		//texture1->SetBlend(BlendMode::Add);
+		//texture1->SetBlend(BlendMode::normal);
 		//texture1->Draw(color);
-		texture->SetBlend(BlendMode::Add);
+		texture->SetBlend(BlendMode::Normal);
 		texture->Draw(color);
 
 		//	フレームの終了
