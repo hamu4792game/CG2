@@ -69,9 +69,7 @@ public:
 	Vector4 ChangeColor(uint32_t color);
 
 	BlendMode blend;
-	void SetBlend(BlendMode blend_) {
-		blend = blend_;
-	};
+	void SetBlend(BlendMode blend_);
 	
 
 private:

@@ -76,6 +76,7 @@ void Texture2D::CreateGraphicsPipeline()
 {
 	if (graphicsPipelineState != nullptr) {
 		graphicsPipelineState->Release();
+		graphicsPipelineState = nullptr;
 	}
 	
 	//	頂点データ
@@ -252,9 +253,7 @@ void Texture2D::CreateGraphicsPipeline()
 }
 
 void Texture2D::Draw(uint32_t color)
-{
-	CreateGraphicsPipeline();
-	
+{	
 	ImGui::Begin("a");
 	ImGui::DragFloat2("%0.2f", &cBuffer->center.x);
 	ImGui::DragFloat("%0.2f", &cBuffer->radius);
@@ -282,6 +281,12 @@ Vector4 Texture2D::ChangeColor(uint32_t color)
 	float alpha = static_cast<float>((color & 0x000000ff)) * nNum;
 	
 	return Vector4(red, blue, green, alpha);
+}
+
+void Texture2D::SetBlend(BlendMode blend_)
+{
+	blend = blend_;
+	CreateGraphicsPipeline();
 }
 
 
