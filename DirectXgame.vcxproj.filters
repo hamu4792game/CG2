@@ -86,8 +86,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Texture2D.VS.hlsl" />
-    <FxCompile Include="Texture2D.PS.hlsl" />
+    <FxCompile Include="Shader\Texture2DDark.PS.hlsl" />
+    <FxCompile Include="Shader\Texture2D.PS.hlsl" />
+    <FxCompile Include="Shader\Texture2D.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imstb_rectpack.h">
@@ -154,6 +155,6 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Texture2D.hlsli" />
+    <None Include="Shader\Texture2D.hlsli" />
   </ItemGroup>
 </Project>

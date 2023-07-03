@@ -15,7 +15,8 @@ Texture2D::~Texture2D()
 	vertexResource->Release();
 	SRVHeap->Release();
 	pixelShader->Release();
-	resource->Release();
+	resource[0]->Release();
+	resource[1]->Release();
 }
 
 void Texture2D::Finalize()
@@ -26,7 +27,8 @@ void Texture2D::Finalize()
 	vertexResource->Release();
 	SRVHeap->Release();
 	pixelShader->Release();
-	resource->Release();
+	resource[0]->Release();
+	resource[1]->Release();
 }
 
 void Texture2D::Texture(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName)
@@ -46,13 +48,17 @@ void Texture2D::CreateDescriptor(const std::string& filePath)
 {
 	DirectX::ScratchImage mipImages = LoadTexture(filePath);
 	const DirectX::TexMetadata& metaData = mipImages.GetMetadata();
-	resource = Engine::CreateTextureResource(Engine::GetDevice(), metaData);
-	UploadTextureData(resource, mipImages);
+	resource[0] = Engine::CreateTextureResource(Engine::GetDevice(), metaData);
+	UploadTextureData(resource[0], mipImages);
+	DirectX::ScratchImage mipImages2 = LoadTexture("./Resources/zeno.png");
+	const DirectX::TexMetadata& metaData2 = mipImages2.GetMetadata();
+	resource[1] = Engine::CreateTextureResource(Engine::GetDevice(), metaData2);
+	UploadTextureData(resource[1], mipImages2);
 
 	//	デスクリプタヒープを生成
 	SRVHeap = CreateDescriptorHeap(Engine::GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 10, true);
 	auto descriptorHandle = SRVHeap->GetCPUDescriptorHandleForHeapStart();
-	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * 2u;
 	cBuffer.CreateView(descriptorHandle);
 	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	cColor.CreateView(descriptorHandle);
@@ -64,7 +70,10 @@ void Texture2D::CreateDescriptor(const std::string& filePath)
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
 	//	
-	Engine::GetDevice()->CreateShaderResourceView(resource, &srvDesc, SRVHeap->GetCPUDescriptorHandleForHeapStart());
+	Engine::GetDevice()->CreateShaderResourceView(resource[0], &srvDesc, SRVHeap->GetCPUDescriptorHandleForHeapStart());
+	auto heap = SRVHeap->GetCPUDescriptorHandleForHeapStart();
+	heap.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	Engine::GetDevice()->CreateShaderResourceView(resource[1], &srvDesc, heap);
 }
 
 void Texture2D::CreateShader(const std::string& vsFileName, const std::string& psFileName)
@@ -111,7 +120,7 @@ void Texture2D::CreateGraphicsPipeline()
 	sigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 	D3D12_DESCRIPTOR_RANGE range[2] = {};
 	range[0].BaseShaderRegister = 0;
-	range[0].NumDescriptors = 1;	//	必要な数
+	range[0].NumDescriptors = 2;	//	必要な数
 	range[0].RegisterSpace = 0;
 	range[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	range[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
@@ -220,6 +229,18 @@ void Texture2D::CreateGraphicsPipeline()
 		blendDesc.RenderTarget[0].BlendEnable = true;
 		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_INV_DEST_COLOR;
+		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+		break;
+	case Dark:
+		blendDesc.RenderTarget[0].BlendEnable = true;
+		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_MIN;
+		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+		break;
+	case Light:
+		blendDesc.RenderTarget[0].BlendEnable = true;
+		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_MAX;
+		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
 		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
 		break;
 	default:

@@ -11,9 +11,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	Engine::Initialize("Engine", windowWidth, windowHeight);
 
 	auto texture = std::make_unique<Texture2D>();
-	texture->Texture("./Resources/uvChecker.png", "Texture2D.VS.hlsl", "Texture2D.PS.hlsl");
+	texture->Texture("./Resources/textureA.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2DAbsolute.PS.hlsl");
 	//auto texture1 = std::make_unique<Texture2D>();
-	//texture1->Texture("./Resources/abcdef.png", "Texture2D.VS.hlsl", "Texture2D.PS.hlsl");
+	//texture->Texture("./Resources/zeno.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 
 	uint32_t color = 0xffffffff;
 
@@ -23,7 +23,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 		Engine::BeginFrame();
 		
 		//ImGui::DragInt("%d", &color);
-		//texture1->SetBlend(BlendMode::normal);
+		//texture1->SetBlend(BlendMode::Normal);
 		//texture1->Draw(color);
 		texture->SetBlend(BlendMode::Normal);
 		texture->Draw(color);

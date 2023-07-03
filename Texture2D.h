@@ -18,7 +18,8 @@ enum BlendMode {
 	Subtract, //!< 減算。Dest * 1 - Src * SrcA
 	Multily,  //!< 乗算。Src * 0 + Dest * Src
 	Screen,   //!< スクリーン。Src * (1 - Dest) + Dest * 1
-
+	Dark,	//	比較暗
+	Light,	//	比較明
 };
 
 
@@ -32,7 +33,7 @@ public:
 	void Finalize();
 
 private:
-	ID3D12Resource* resource = nullptr;
+	ID3D12Resource* resource[2] = {};
 	ID3D12DescriptorHeap* SRVHeap = nullptr;
 
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
