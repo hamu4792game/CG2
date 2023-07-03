@@ -25,8 +25,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 		//ImGui::DragInt("%d", &color);
 		//texture1->SetBlend(BlendMode::Normal);
 		//texture1->Draw(color);
-		texture->SetBlend(BlendMode::Normal);
+		//texture->SetBlend(BlendMode::Normal);
 		texture->Draw(color);
+
+		// ImGui のフレームに一つ目の ImGui のウィンドウを描く
+		ImGui::Begin("Control panel");
+		ImGui::Text("Frame rate: %6.2f fps", ImGui::GetIO().Framerate);
+		ImGui::End();
 
 		//	フレームの終了
 		Engine::EndFrame();
