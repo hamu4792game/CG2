@@ -3,6 +3,7 @@
 #include "Log.h"
 #include "Texture2D.h"
 #include "externals/imgui/imgui.h"
+#include "math/Matrix4x4.h"
 
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
@@ -11,9 +12,20 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	Engine::Initialize("Engine", windowWidth, windowHeight);
 
 	auto texture = std::make_unique<Texture2D>();
-	texture->Texture("./Resources/textureA.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2DAbsolute.PS.hlsl");
-	//auto texture1 = std::make_unique<Texture2D>();
-	//texture->Texture("./Resources/zeno.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	texture->Texture("./Resources/textureA.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	
+
+	Vector2 worldTranslate = { 0.0f,0.0f };
+	float rotate = 0.0f;
+	//	カメラ座標
+	Vector3 cameraTranslate = { 0.0f,0.0f,-5.0f };
+	Vector3 cameraRotate = { 0.0f,0.0f,0.0f };
+	
+	//	行列の生成
+	Matrix4x4 cameraMatrix{};
+	Matrix4x4 viewMatrix{};
+	Matrix4x4 projectionMatrix{};
+	Matrix4x4 viewProjectionMatrix{};
 
 	uint32_t color = 0xffffffff;
 
@@ -21,23 +33,28 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	while (!WinApp::ProcessMessage()) {
 		//	フレームの開始
 		Engine::BeginFrame();
-		
-		//ImGui::DragInt("%d", &color);
-		//texture1->SetBlend(BlendMode::Normal);
-		//texture1->Draw(color);
-		//texture->SetBlend(BlendMode::Normal);
-		texture->Draw(color);
 
 		// ImGui のフレームに一つ目の ImGui のウィンドウを描く
 		ImGui::Begin("Control panel");
 		ImGui::Text("Frame rate: %6.2f fps", ImGui::GetIO().Framerate);
+		ImGui::DragFloat2("worldMatrix", &worldTranslate.x, 5.0f);
+		ImGui::DragFloat("Rotate", &rotate, 0.1f);
 		ImGui::End();
+
+		//	行列の計算
+		cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
+		viewMatrix = Inverse(cameraMatrix);
+		projectionMatrix = MakeOrthographicMatrix(-640.0f, 360.0f, 640.0f, -360.0f, 0.1f, 10.0f);
+		viewProjectionMatrix = viewMatrix * projectionMatrix;
+
+		//texture->Draw(worldMatrix, viewProjectionMatrix, color);
+		texture->Draw(worldTranslate, { 1.0f,1.0f }, rotate, viewProjectionMatrix, 0xffffffff);
 
 		//	フレームの終了
 		Engine::EndFrame();
 	}
 
-	//texture1.reset();
+	texture->Finalize();
 	texture.reset();
 	Engine::Finalize();
 

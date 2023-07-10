@@ -7,28 +7,16 @@
 #include "externals/imgui/imgui.h"
 
 
-Texture2D::~Texture2D()
-{
-	graphicsPipelineState->Release();
-	rootSignature->Release();
-	vertexShader->Release();
-	vertexResource->Release();
-	SRVHeap->Release();
-	pixelShader->Release();
-	resource[0]->Release();
-	resource[1]->Release();
-}
-
 void Texture2D::Finalize()
 {
 	graphicsPipelineState->Release();
 	rootSignature->Release();
+	indexResource->Release();
 	vertexShader->Release();
 	vertexResource->Release();
 	SRVHeap->Release();
 	pixelShader->Release();
 	resource[0]->Release();
-	resource[1]->Release();
 }
 
 void Texture2D::Texture(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName)
@@ -36,6 +24,7 @@ void Texture2D::Texture(const std::string& filePath, const std::string& vsFileNa
 	cBuffer->pibot = { 0.0f,0.0f };
 	cBuffer->rate = 1.0f;
 	*cColor = { 1.0f,1.0f,1.0f,1.0f };
+	*cMat = MakeIdentity4x4();
 	blend = BlendMode::Normal;
 
 	CreateDescriptor(filePath);
@@ -50,18 +39,20 @@ void Texture2D::CreateDescriptor(const std::string& filePath)
 	const DirectX::TexMetadata& metaData = mipImages.GetMetadata();
 	resource[0] = Engine::CreateTextureResource(Engine::GetDevice(), metaData);
 	UploadTextureData(resource[0], mipImages);
-	DirectX::ScratchImage mipImages2 = LoadTexture("./Resources/zeno.png");
-	const DirectX::TexMetadata& metaData2 = mipImages2.GetMetadata();
-	resource[1] = Engine::CreateTextureResource(Engine::GetDevice(), metaData2);
-	UploadTextureData(resource[1], mipImages2);
+
+	//	画像サイズの代入
+	textureWidth = static_cast<uint32_t>(metaData.width);
+	textureHeight = static_cast<uint32_t>(metaData.height);
 
 	//	デスクリプタヒープを生成
 	SRVHeap = CreateDescriptorHeap(Engine::GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 10, true);
 	auto descriptorHandle = SRVHeap->GetCPUDescriptorHandleForHeapStart();
-	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * 2u;
-	cBuffer.CreateView(descriptorHandle);
+	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	cMat.CreateView(descriptorHandle);
 	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	cColor.CreateView(descriptorHandle);
+	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	cBuffer.CreateView(descriptorHandle);
 	//	設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
@@ -71,9 +62,6 @@ void Texture2D::CreateDescriptor(const std::string& filePath)
 
 	//	
 	Engine::GetDevice()->CreateShaderResourceView(resource[0], &srvDesc, SRVHeap->GetCPUDescriptorHandleForHeapStart());
-	auto heap = SRVHeap->GetCPUDescriptorHandleForHeapStart();
-	heap.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	Engine::GetDevice()->CreateShaderResourceView(resource[1], &srvDesc, heap);
 }
 
 void Texture2D::CreateShader(const std::string& vsFileName, const std::string& psFileName)
@@ -86,10 +74,10 @@ void Texture2D::CreateVertexResource()
 {
 	//	頂点データ
 	VertexData vertex[4] = {
-		{{-1.0f,-1.0f,0.1f,1.0f},{0.0f,1.0f}},
-		{{-1.0f,1.0f,0.1f,1.0f},{0.0f,0.0f}},
-		{{1.0f,-1.0f,0.1f,1.0f},{1.0f,1.0f}},
-		{{1.0f,1.0f,0.1f,1.0f},{1.0f,0.0f}},
+		{{-0.5f,0.5f,0.1f,1.0f},{0.0f,0.0f}},
+		{{0.5f,0.5f,0.1f,1.0f},{1.0f,0.0f}},
+		{{0.5f,-0.5f,0.1f,1.0f},{1.0f,1.0f}},
+		{{-0.5f,-0.5f,0.1f,1.0f},{0.0f,1.0f}},
 	};
 	vertexResource = Engine::CreateBufferResource(Engine::GetDevice(), sizeof(vertex));
 
@@ -106,6 +94,31 @@ void Texture2D::CreateVertexResource()
 	}
 	//	重要
 	vertexResource->Unmap(0, nullptr);
+
+	// index情報を作る
+	// 1.indexの情報を送るためにmap用のuint16_t型の配列を作る(中身は頂点の組み合わせ、要素番号)
+	uint16_t indices[6] = { 0,1,3,1,2,3 };
+	// 2.Resourceを生成
+	indexResource = Engine::CreateBufferResource(Engine::GetDevice(), sizeof(indices));
+	// 3.indexBufferViewを生成
+	indexBufferView.BufferLocation = indexResource->GetGPUVirtualAddress();
+	indexBufferView.Format = DXGI_FORMAT_R16_UINT;
+	indexBufferView.SizeInBytes = sizeof(indices);
+
+	// 4.GPUに送るためのMap用のuint16_tポインタを生成
+	uint16_t* indexData = nullptr;
+
+	// 5.resoureceのMap関数を呼んで関連付けさせる
+	indexResource->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
+
+	// 6.4で作ったものに3のものをコピー
+	for (auto i = 0; i < _countof(indices); i++)
+	{
+		indexData[i] = indices[i];
+	}
+
+	// 7.Unmapする
+	indexResource->Unmap(0, nullptr);
 }
 
 void Texture2D::CreateGraphicsPipeline()
@@ -120,13 +133,13 @@ void Texture2D::CreateGraphicsPipeline()
 	sigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 	D3D12_DESCRIPTOR_RANGE range[2] = {};
 	range[0].BaseShaderRegister = 0;
-	range[0].NumDescriptors = 2;	//	必要な数
+	range[0].NumDescriptors = 1;	//	必要な数
 	range[0].RegisterSpace = 0;
 	range[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	range[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	range[1].BaseShaderRegister = 0;
-	range[1].NumDescriptors = 2;	//	必要な数
+	range[1].NumDescriptors = 3;	//	必要な数
 	range[1].RegisterSpace = 0;
 	range[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
 	range[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
@@ -249,7 +262,9 @@ void Texture2D::CreateGraphicsPipeline()
 
 	//	ラスタライザの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
+	//	裏面を表示しない
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	//	塗りつぶす
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 	rasterizerDesc.DepthClipEnable = true;
 
@@ -281,22 +296,32 @@ void Texture2D::CreateGraphicsPipeline()
 	assert(SUCCEEDED(hr));
 }
 
-void Texture2D::Draw(uint32_t color)
+void Texture2D::Draw(Vector2 pos, Vector2 scale, float rotate, Matrix4x4 viewProjectionMat, uint32_t color)
 {	
 	ImGui::Begin("a");
 	ImGui::DragFloat2("%0.2f", &cBuffer->pibot.x, 1.0f);
 	ImGui::End();
 	//	色の変更
 	*cColor = ChangeColor(color);
-
+	*cMat = MakeAffineMatrix(
+		{ scale.x * static_cast<float>(textureWidth),scale.y * static_cast<float>(textureHeight),1.0f },
+		{ 0.0f,0.0f,rotate },
+		{ pos.x,pos.y,0.1f }
+	) * viewProjectionMat;
 
 	Engine::GetList()->SetGraphicsRootSignature(rootSignature);
 	Engine::GetList()->SetPipelineState(graphicsPipelineState);
-	Engine::GetList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	// インデックスを使わずに四角形以上を書くときは
+	// 個々の設定はD3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP
+	// インデックスを使うときは D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST
+	Engine::GetList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	Engine::GetList()->IASetVertexBuffers(0, 1, &vertexBufferView);
+	// ここにIndexBufferViewを設定
+	Engine::GetList()->IASetIndexBuffer(&indexBufferView);
+
 	Engine::GetList()->SetDescriptorHeaps(1, &SRVHeap);
 	Engine::GetList()->SetGraphicsRootDescriptorTable(0, SRVHeap->GetGPUDescriptorHandleForHeapStart());
-	Engine::GetList()->DrawInstanced(4, 1, 0, 0);
+	Engine::GetList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
 Vector4 Texture2D::ChangeColor(uint32_t color)

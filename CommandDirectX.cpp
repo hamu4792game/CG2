@@ -140,15 +140,11 @@ void CommandDirectX::PostDraw()
 	//	GetCompletedValueの初期値はFence作成時に渡した初期値
 	if (fence->GetCompletedValue() < fenceValue)
 	{
-		//	FenceのSignalを持つためのイベントを作成する
-		HANDLE fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-		assert(fenceEvent != nullptr);
+			
 		//	指定したSignalにたどり着いていないので、たどり着くまで待つようにイベントを設定する
 		fence->SetEventOnCompletion(fenceValue, fenceEvent);
 		//	イベント待つ
 		WaitForSingleObject(fenceEvent, INFINITE);
-		//	解放
-		CloseHandle(fenceEvent);
 	}
 
 	//	次のフレーム用のコマンドリストを用意
@@ -166,6 +162,7 @@ void CommandDirectX::Finalize()
 	ImGui::DestroyContext();
 
 	//	解放処理
+	CloseHandle(fenceEvent);
 	fence->Release();
 	srvDescriptorHeap->Release();
 	rtvDescriptorHeap->Release();
@@ -346,6 +343,9 @@ void CommandDirectX::CreateFence()
 	HRESULT hr = device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 	assert(SUCCEEDED(hr));
 
+	//	FenceのSignalを持つためのイベントを作成する
+	fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+	assert(fenceEvent != nullptr);
 }
 
 void CommandDirectX::ClearRenderTarget()

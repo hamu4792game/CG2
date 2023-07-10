@@ -9,6 +9,8 @@
 #pragma comment(lib,"dxcompiler.lib")
 #include "math/Vector4.h"
 #include "ConstantBuffer.h"
+#include "math/Matrix4x4.h"
+
 
 // ブレンドモード
 enum BlendMode {
@@ -28,16 +30,20 @@ class Texture2D
 {
 public:
 	Texture2D() = default;
-	~Texture2D();
+	~Texture2D() = default;
 
 	void Finalize();
 
 private:
-	ID3D12Resource* resource[2] = {};
+	ID3D12Resource* resource[1] = {};
 	ID3D12DescriptorHeap* SRVHeap = nullptr;
 
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
 	ID3D12Resource* vertexResource = nullptr;
+	// ここにindexBufferViewとindex用のリソースを作る
+	D3D12_INDEX_BUFFER_VIEW indexBufferView{};
+	ID3D12Resource* indexResource = nullptr;
+
 	IDxcBlob* vertexShader = nullptr;
 	IDxcBlob* pixelShader = nullptr;
 
@@ -48,9 +54,12 @@ private:
 		Vector2 pibot;
 		float rate;
 	};
-	ConstantBuffer<Mono> cBuffer;
+	ConstantBuffer<Matrix4x4> cMat;
 	ConstantBuffer<Vector4> cColor;
+	ConstantBuffer<Mono> cBuffer;
 
+	uint32_t textureWidth = 0;
+	uint32_t textureHeight = 0;
 
 public:
 
@@ -66,11 +75,12 @@ private:
 	void CreateGraphicsPipeline();
 
 public:
-	void Draw(uint32_t color);
+	//void Draw(Matrix4x4 worldMat, Matrix4x4 viewProjectionMat, uint32_t color);
+	void Draw(Vector2 pos, Vector2 scale, float rotate, Matrix4x4 viewProjectionMat, uint32_t color);
 
 	Vector4 ChangeColor(uint32_t color);
 
-	BlendMode blend;
+	BlendMode blend = BlendMode::Normal;
 	void SetBlend(BlendMode blend_);
 	
 

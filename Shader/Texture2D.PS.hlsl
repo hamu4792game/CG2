@@ -3,17 +3,17 @@
 Texture2D<float4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
-
-cbuffer Monochrome : register(b0)
-{
-    float2 monochromePibot;
-    float monochromeRate;
-}
-
 cbuffer Iro : register(b1)
 {
     float4 color;
 };
+
+
+cbuffer Monochrome : register(b2)
+{
+    float2 monochromePibot;
+    float monochromeRate;
+}
 
 float4 main(VertexOutput input) : SV_TARGET
 {

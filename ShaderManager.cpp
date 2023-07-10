@@ -84,6 +84,7 @@ IDxcBlob* ShaderManager::CompileShader(const std::wstring& filePath, const wchar
 		//	警告、エラーダメ絶対
 		assert(false);
 	}
+	shaderError->Release();
 
 	//	コンパイル結果から実行用のバイナリ部分を取得
 	IDxcBlob* shaderBlob = nullptr;

@@ -125,6 +125,7 @@ private:
 	//	フェンスの生成
 	ID3D12Fence* fence;
 	uint64_t fenceValue = 0;
+	HANDLE fenceEvent = nullptr;
 	//	RTVを2つ作るのでディスクリプタを2つ用意
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[2] = {};
 

@@ -25,15 +25,17 @@ ID3D12InfoQueue* infoQueue = nullptr;
 void Engine::Initialize(const char* title, int width, int height)
 {
 	//	COMの初期化を行う
-	CoInitializeEx(0, COINIT_MULTITHREADED);
+	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
+	assert(SUCCEEDED(hr));
 
 	//	ゲームウィンドウの作成
 	winApp = WinApp::GetInstance();
 	winApp->CreateGameWindow(ConvertString(title).c_str(), width, height);
 
+#ifdef _Debug
 	//	デバッグレイヤー
 	DebugLayer();
-
+#endif
 	//	ゲームウィンドウを表示する
 	ShowWindow(winApp->GetHwnd(), SW_SHOW);
 
@@ -43,8 +45,10 @@ void Engine::Initialize(const char* title, int width, int height)
 
 	sManager = ShaderManager::GetInstance();
 	sManager->DXcInitialize();
+#ifdef _DEBUG
 	//	ここまででエラーがあれば止める
 	ErrorStop(comDirect->GetDevice());
+#endif
 
 }
 
@@ -80,6 +84,8 @@ int Engine::ProcessMessage()
 {
 	return winApp->ProcessMessage();
 }
+
+#ifdef _DEBUG
 
 void Engine::DebugLayer()
 {
@@ -125,6 +131,8 @@ void Engine::ErrorStop(ID3D12Device* device_)
 		infoQueue->Release();
 	}
 }
+
+#endif
 
 
 //	BufferResourceを作る関数
