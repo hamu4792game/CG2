@@ -11,7 +11,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	Engine::Initialize("Engine", windowWidth, windowHeight);
 
 	auto texture = std::make_unique<Texture2D>();
-	texture->Texture("./Resources/textureA.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2DAbsolute.PS.hlsl");
+	texture->Texture("./Resources/zeno.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2DRed.PS.hlsl");
 	//auto texture1 = std::make_unique<Texture2D>();
 	//texture->Texture("./Resources/zeno.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 
