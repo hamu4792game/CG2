@@ -37,6 +37,9 @@
     <Filter Include="Engine\ConstantBuffer">
       <UniqueIdentifier>{6edf23a5-a3fc-4963-bcef-6e8c595e660c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Camera">
+      <UniqueIdentifier>{8287ad44-02a8-415a-90d1-a9a7f540318c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -83,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="ConstantBuffer.cpp">
       <Filter>Engine\ConstantBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Engine\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +153,9 @@
     </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
       <Filter>Engine\ConstantBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Engine\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

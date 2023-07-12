@@ -4,6 +4,7 @@
 #include "Texture2D.h"
 #include "externals/imgui/imgui.h"
 #include "math/Matrix4x4.h"
+#include "Camera.h"
 
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
@@ -17,14 +18,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 
 	Vector2 worldTranslate = { 0.0f,0.0f };
 	float rotate = 0.0f;
+	//	カメラの生成
+	Camera camera(10.0f);
 	//	カメラ座標
 	Vector3 cameraTranslate = { 0.0f,0.0f,-5.0f };
 	Vector3 cameraRotate = { 0.0f,0.0f,0.0f };
-	
-	//	行列の生成
-	Matrix4x4 cameraMatrix{};
-	Matrix4x4 viewMatrix{};
-	Matrix4x4 projectionMatrix{};
+	//	カメラ行列の生成
 	Matrix4x4 viewProjectionMatrix{};
 
 	uint32_t color = 0xffffffff;
@@ -41,11 +40,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 		ImGui::DragFloat("Rotate", &rotate, 0.1f);
 		ImGui::End();
 
-		//	行列の計算
-		cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
-		viewMatrix = Inverse(cameraMatrix);
-		projectionMatrix = MakeOrthographicMatrix(-640.0f, 360.0f, 640.0f, -360.0f, 0.1f, 10.0f);
-		viewProjectionMatrix = viewMatrix * projectionMatrix;
+		//	行列の計算 レンダリングパイプライン
+		viewProjectionMatrix = camera.GetViewProMat(cameraTranslate);
 
 		//texture->Draw(worldMatrix, viewProjectionMatrix, color);
 		texture->Draw(worldTranslate, { 1.0f,1.0f }, rotate, viewProjectionMatrix, 0xffffffff);

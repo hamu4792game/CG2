@@ -24,8 +24,6 @@ enum BlendMode {
 	Light,	//	比較明
 };
 
-
-
 class Texture2D
 {
 public:
