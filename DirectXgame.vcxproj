@@ -90,7 +90,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CommandDirectX.cpp" />
-    <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
     <ClCompile Include="externals\imgui\imgui_demo.cpp" />

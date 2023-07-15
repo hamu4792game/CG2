@@ -8,6 +8,7 @@
 
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
+	D3DResourceLeakChecker leak;
 	//OutputDebugStringA("Hello,DirectX!\n");
 	int32_t windowWidth = 1280; int32_t windowHeight = 720;
 	Engine::Initialize("Engine", windowWidth, windowHeight);
@@ -15,7 +16,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	auto texture = std::make_unique<Texture2D>();
 	texture->Texture("./Resources/textureA.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	
-
 	Vector2 worldTranslate = { 0.0f,0.0f };
 	float rotate = 0.0f;
 	//	カメラの生成

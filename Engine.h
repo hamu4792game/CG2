@@ -3,6 +3,9 @@
 #include "CommandDirectX.h"
 #include "ShaderManager.h"
 
+#include <dxgidebug.h>
+#pragma comment(lib,"dxguid.lib")
+
 class Engine
 {
 
@@ -61,4 +64,19 @@ public:
 	static ID3D12Device* GetDevice();
 	static ID3D12GraphicsCommandList* GetList();
 
+};
+
+class D3DResourceLeakChecker {
+public:
+	D3DResourceLeakChecker() = default;
+	~D3DResourceLeakChecker() {
+		//	リソースリークチェック
+		Microsoft::WRL::ComPtr<IDXGIDebug1>debug;
+		if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug))))
+		{
+			debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+			debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
+			debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
+		}
+	}
 };

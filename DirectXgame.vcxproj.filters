@@ -40,6 +40,9 @@
     <Filter Include="Engine\Camera">
       <UniqueIdentifier>{8287ad44-02a8-415a-90d1-a9a7f540318c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\TextureManager">
+      <UniqueIdentifier>{4a8d5895-10b5-485b-b0e0-9ff06a84cf8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -83,9 +86,6 @@
     </ClCompile>
     <ClCompile Include="Texture2D.cpp">
       <Filter>Engine\Texture2D</Filter>
-    </ClCompile>
-    <ClCompile Include="ConstantBuffer.cpp">
-      <Filter>Engine\ConstantBuffer</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Engine\Camera</Filter>

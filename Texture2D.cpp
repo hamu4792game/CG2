@@ -128,9 +128,12 @@ void Texture2D::CreateGraphicsPipeline()
 	}
 	graphicsPipelineState = nullptr;
 	
-	//
+#pragma region RootSignature
+
+	//	ルートシグネチャーの作成
 	D3D12_ROOT_SIGNATURE_DESC sigDesc{};
 	sigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
 	D3D12_DESCRIPTOR_RANGE range[2] = {};
 	range[0].BaseShaderRegister = 0;
 	range[0].NumDescriptors = 1;	//	必要な数
@@ -187,6 +190,10 @@ void Texture2D::CreateGraphicsPipeline()
 	}
 	signatureBlob->Release();
 
+#pragma endregion
+
+#pragma region InputLayout
+
 	D3D12_INPUT_ELEMENT_DESC inputElementDesc[2] = {};
 	inputElementDesc[0].SemanticName = "POSITION";
 	inputElementDesc[0].SemanticIndex = 0;
@@ -199,6 +206,10 @@ void Texture2D::CreateGraphicsPipeline()
 	D3D12_INPUT_LAYOUT_DESC layoutDesc{};
 	layoutDesc.pInputElementDescs = inputElementDesc;
 	layoutDesc.NumElements = _countof(inputElementDesc);
+
+#pragma endregion
+
+#pragma region BlendState
 
 	//	ブレンドモードの設定
 	D3D12_BLEND_DESC blendDesc{};
@@ -260,6 +271,10 @@ void Texture2D::CreateGraphicsPipeline()
 		break;
 	}
 
+#pragma endregion
+
+#pragma region RasterizerState
+
 	//	ラスタライザの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
 	//	裏面を表示しない
@@ -268,6 +283,9 @@ void Texture2D::CreateGraphicsPipeline()
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 	rasterizerDesc.DepthClipEnable = true;
 
+#pragma endregion
+
+#pragma region PSOの生成
 	//	PSO生成
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
 	graphicsPipelineStateDesc.pRootSignature = rootSignature;	//	RootSignature
@@ -290,6 +308,7 @@ void Texture2D::CreateGraphicsPipeline()
 	
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;
+#pragma endregion
 
 	//	実際に生成
 	hr = Engine::GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));

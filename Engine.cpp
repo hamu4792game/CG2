@@ -3,9 +3,6 @@
 #include <Windows.h>
 #include <cassert>
 
-#include <dxgidebug.h>
-#pragma comment(lib,"dxguid.lib")
-
 //	DirextXtex
 #include "externals/DirectXTex/DirectXTex.h"
 
@@ -58,15 +55,6 @@ void Engine::Finalize()
 	sManager = nullptr;
 	comDirect->Finalize();
 	comDirect = nullptr;
-	//	リソースリークチェック
-	IDXGIDebug1* debug;
-	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug))))
-	{
-		debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
-		debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
-		debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
-		debug->Release();
-	}
 	winApp->DeleteGameWindow();
 }
 
