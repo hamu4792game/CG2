@@ -21,14 +21,14 @@ public:
 	void UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
 
 	//	
-	void CreateDescriptor(const std::string& filePath);
+	//void CreateDescriptor(const std::string& filePath);
 
 private:
 	ID3D12PipelineState* graphicsPipelineState = nullptr;
 	//	デスクリプタヒープの生成
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap;
 	// テクスチャコンテナ
-	//std::array<Texture> textures_;
+	//std::array<Texture2D> textures_;
 
 };
 

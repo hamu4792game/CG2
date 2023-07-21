@@ -20,28 +20,28 @@
       <UniqueIdentifier>{d06ab4f4-a73b-41d2-8f76-adcb86a2e182}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine">
-      <UniqueIdentifier>{5e2a3a58-540e-44a2-890c-a18a6b09d457}</UniqueIdentifier>
+      <UniqueIdentifier>{ef6c4139-51ff-41d4-8c03-58d55b0cfe0e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\WinApp">
-      <UniqueIdentifier>{baf20787-cd6a-4104-ba65-3ee572a5459e}</UniqueIdentifier>
+      <UniqueIdentifier>{69858c87-4fc9-4096-abab-19f24ff717c9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\CommandDirectX">
-      <UniqueIdentifier>{eaec827f-2464-4ac1-8784-fe038acef1fc}</UniqueIdentifier>
+      <UniqueIdentifier>{4547f47f-f7b9-42a9-9ef1-5837d6fa477d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\ShaderManager">
-      <UniqueIdentifier>{0ecf4c5e-4e06-4d0a-bca0-3f481471d35b}</UniqueIdentifier>
+    <Filter Include="Engine\Manager">
+      <UniqueIdentifier>{61a0d26f-e0c3-4eab-b79c-ac1536c34a65}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Texture2D">
-      <UniqueIdentifier>{b706dcb7-f155-43ac-a58b-d1de3249d23f}</UniqueIdentifier>
+    <Filter Include="Engine\Manager\TextureManager">
+      <UniqueIdentifier>{8d7ee662-b849-4390-b6d0-7c89d6a5a07e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\ConstantBuffer">
-      <UniqueIdentifier>{6edf23a5-a3fc-4963-bcef-6e8c595e660c}</UniqueIdentifier>
+    <Filter Include="Engine\Manager\ShaderManager">
+      <UniqueIdentifier>{c52fb0f7-d808-4d78-b112-c50f1a466296}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Camera">
-      <UniqueIdentifier>{8287ad44-02a8-415a-90d1-a9a7f540318c}</UniqueIdentifier>
+      <UniqueIdentifier>{92761fcf-7033-4d35-a4d1-c5f568a10319}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\TextureManager">
-      <UniqueIdentifier>{4a8d5895-10b5-485b-b0e0-9ff06a84cf8b}</UniqueIdentifier>
+    <Filter Include="Engine\Texture">
+      <UniqueIdentifier>{31a8052c-13b6-4752-a7a0-b601b4b9e269}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -72,29 +72,27 @@
     <ClCompile Include="math\Matrix4x4.cpp">
       <Filter>math</Filter>
     </ClCompile>
-    <ClCompile Include="Engine.cpp">
+    <ClCompile Include="Engine\Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="WinApp.cpp">
+    <ClCompile Include="Engine\Base\WinApp.cpp">
       <Filter>Engine\WinApp</Filter>
     </ClCompile>
-    <ClCompile Include="CommandDirectX.cpp">
+    <ClCompile Include="Engine\Base\CommandDirectX.cpp">
       <Filter>Engine\CommandDirectX</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderManager.cpp">
-      <Filter>Engine\ShaderManager</Filter>
+    <ClCompile Include="Engine\Manager\ShaderManager.cpp">
+      <Filter>Engine\Manager\ShaderManager</Filter>
     </ClCompile>
-    <ClCompile Include="Texture2D.cpp">
-      <Filter>Engine\Texture2D</Filter>
+    <ClCompile Include="Engine\Manager\TextureManager.cpp">
+      <Filter>Engine\Manager\TextureManager</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
+    <ClCompile Include="Engine\Camera\Camera.cpp">
       <Filter>Engine\Camera</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shader\Texture2DDark.PS.hlsl" />
-    <FxCompile Include="Shader\Texture2D.PS.hlsl" />
-    <FxCompile Include="Shader\Texture2D.VS.hlsl" />
+    <ClCompile Include="Engine\Texture\Texture2D.cpp">
+      <Filter>Engine\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imstb_rectpack.h">
@@ -133,37 +131,37 @@
     <ClInclude Include="math\Vector4.h">
       <Filter>math</Filter>
     </ClInclude>
-    <ClInclude Include="Engine.h">
+    <ClInclude Include="Engine\Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="WinApp.h">
+    <ClInclude Include="Engine\Log.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ConstantBuffer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\WinApp.h">
       <Filter>Engine\WinApp</Filter>
     </ClInclude>
-    <ClInclude Include="CommandDirectX.h">
+    <ClInclude Include="Engine\Base\CommandDirectX.h">
       <Filter>Engine\CommandDirectX</Filter>
     </ClInclude>
-    <ClInclude Include="Log.h">
-      <Filter>Engine</Filter>
+    <ClInclude Include="Engine\Manager\ShaderManager.h">
+      <Filter>Engine\Manager\ShaderManager</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderManager.h">
-      <Filter>Engine\ShaderManager</Filter>
+    <ClInclude Include="Engine\Manager\TextureManager.h">
+      <Filter>Engine\Manager\TextureManager</Filter>
     </ClInclude>
-    <ClInclude Include="Texture2D.h">
-      <Filter>Engine\Texture2D</Filter>
-    </ClInclude>
-    <ClInclude Include="ConstantBuffer.h">
-      <Filter>Engine\ConstantBuffer</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="Engine\Camera\Camera.h">
       <Filter>Engine\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Texture\Texture2D.h">
+      <Filter>Engine\Texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt">
       <Filter>imgui</Filter>
     </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Shader\Texture2D.hlsli" />
   </ItemGroup>
 </Project>

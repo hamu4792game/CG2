@@ -1,4 +1,4 @@
-#include "Camera.h"
+#include "Engine/Camera/Camera.h"
 
 Camera::Camera(float farClip_, bool proType)
 {

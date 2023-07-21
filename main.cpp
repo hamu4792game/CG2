@@ -1,10 +1,9 @@
 #include <Windows.h>
-#include "Engine.h"
-#include "Log.h"
-#include "Texture2D.h"
+#include "Engine/Engine.h"
+#include "Engine/Texture/Texture2D.h"
 #include "externals/imgui/imgui.h"
 #include "math/Matrix4x4.h"
-#include "Camera.h"
+#include "Engine/Camera/Camera.h"
 
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {

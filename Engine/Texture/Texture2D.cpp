@@ -1,8 +1,8 @@
 #include "Texture2D.h"
-#include "Engine.h"
-#include "CommandDirectX.h"
-#include "ShaderManager.h"
-#include "Log.h"
+#include "Engine/Engine.h"
+#include "Engine/Base/CommandDirectX.h"
+#include "Engine/Manager/ShaderManager.h"
+#include "Engine/Log.h"
 
 #include "externals/imgui/imgui.h"
 

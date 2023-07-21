@@ -9,8 +9,8 @@
 #include "externals/DirectXTex/d3dx12.h"
 #include <vector>
 
-#include "Log.h"
-#include "Texture2D.h"
+#include "Engine/Log.h"
+#include "Engine/Texture/Texture2D.h"
 
 WinApp* winApp = nullptr;
 CommandDirectX* comDirect = nullptr;

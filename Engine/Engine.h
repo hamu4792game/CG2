@@ -1,7 +1,7 @@
 #pragma once
-#include "WinApp.h"
-#include "CommandDirectX.h"
-#include "ShaderManager.h"
+#include "Engine/Base/WinApp.h"
+#include "Engine/Base/CommandDirectX.h"
+#include "Engine/Manager/ShaderManager.h"
 
 #include <dxgidebug.h>
 #pragma comment(lib,"dxguid.lib")

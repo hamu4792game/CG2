@@ -1,5 +1,5 @@
-#include "TextureManager.h"
-#include "Log.h"
+#include "Engine/Manager/TextureManager.h"
+#include "Engine/Log.h"
 
 TextureManager* TextureManager::GetInstance() {
 	static TextureManager instance;
@@ -39,15 +39,15 @@ void TextureManager::UploadTextureData(ID3D12Resource* texture, const DirectX::S
 		assert(SUCCEEDED(hr));
 	}
 }
-
-void TextureManager::CreateDescriptor(const std::string& filePath)
-{
-	// 読み込み済みテクスチャを検索
-	auto it = std::find_if(textures_.begin(), textures_.end(), [&](const auto& texture) {
-		return texture.name == fileName;
-		});
-	if (it != textures_.end()) {
-		// 読み込み済みテクスチャの要素番号を取得
-		return static_cast<uint32_t>(std::distance(textures_.begin(), it));
-	}
-}
+//
+//void TextureManager::CreateDescriptor(const std::string& filePath)
+//{
+//	// 読み込み済みテクスチャを検索
+//	auto it = std::find_if(textures_.begin(), textures_.end(), [&](const auto& texture) {
+//		return texture.name == fileName;
+//		});
+//	if (it != textures_.end()) {
+//		// 読み込み済みテクスチャの要素番号を取得
+//		return static_cast<uint32_t>(std::distance(textures_.begin(), it));
+//	}
+//}
