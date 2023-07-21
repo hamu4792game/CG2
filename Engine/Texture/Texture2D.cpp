@@ -2,6 +2,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Base/CommandDirectX.h"
 #include "Engine/Manager/ShaderManager.h"
+#include "Engine/Manager/TextureManager.h"
 #include "Engine/Log.h"
 
 #include "externals/imgui/imgui.h"

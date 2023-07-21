@@ -1,6 +1,9 @@
 #include "Engine/Manager/TextureManager.h"
 #include "Engine/Log.h"
 
+#include <fstream>
+#include <sstream>
+
 TextureManager* TextureManager::GetInstance() {
 	static TextureManager instance;
 	return &instance;
@@ -39,6 +42,20 @@ void TextureManager::UploadTextureData(ID3D12Resource* texture, const DirectX::S
 		assert(SUCCEEDED(hr));
 	}
 }
+ModelData TextureManager::LoadObfFile(const std::string& directoryPath, const std::string& filename)
+{
+	//	必要な変数の宣言
+	ModelData modelData;	// 構築するModelData
+	std::vector<Vector4> position;	// 位置
+	std::vector<Vector3> normals;	// 法線
+	std::vector<Vector2> texcoords;	// テクスチャ座標
+	std::string line;	// ファイルから読んだ1行を格納するもの
+	/*p5_2 12*/
+
+	return ModelData();
+}
+
+
 //
 //void TextureManager::CreateDescriptor(const std::string& filePath)
 //{
