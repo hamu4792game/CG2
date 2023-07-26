@@ -35,6 +35,11 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState = nullptr;
 
+	//	depthStencilResourceの生成
+	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource = nullptr;
+	//	DSV用のヒープでディスクリプタの数は1。DSVはShader内で触るものではないので、ShaderVisibleはfalse
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap = nullptr;
+
 	struct Mono {
 		Vector2 pibot;
 		float rate;

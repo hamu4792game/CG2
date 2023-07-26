@@ -7,6 +7,7 @@
 #pragma comment(lib,"dxgi.lib")
 
 #include "WinApp.h"
+#include <wrl.h>
 
 class CommandDirectX
 {
@@ -98,7 +99,13 @@ private:
 	/// </summary>
 	void ClearRenderTarget();
 
-	
+	/// <summary>
+	/// 
+	/// </summary>
+	void CreateDepthStencilResource();
+
+	//	DepthStencilTextureを作る
+	ID3D12Resource* CreateDepthStencilTexture(ID3D12Device* device, int32_t width, int32_t height);
 
 private:
 	//	DXGIファクトリーの生成
@@ -120,6 +127,8 @@ private:
 	ID3D12DescriptorHeap* rtvDescriptorHeap;
 	//	SRV用のヒープでディスクリプタの数は128。SRVはShader内で触るものなので、ShaderVisibleはtrue
 	ID3D12DescriptorHeap* srvDescriptorHeap;
+	//	DSV用のヒープでディスクリプタの数は1。DSVはShader内で触るものではないので、ShaderVisibleはfalse
+	ID3D12DescriptorHeap* dsvDescriptorHeap;
 	//	SwapChainからResourceを引っ張ってくる
 	ID3D12Resource* swapChainResources[2];
 	//	フェンスの生成
@@ -128,6 +137,10 @@ private:
 	HANDLE fenceEvent = nullptr;
 	//	RTVを2つ作るのでディスクリプタを2つ用意
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[2] = {};
+
+	//	depthStencilResourceの生成
+	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource = nullptr;
+	
 
 
 public:
