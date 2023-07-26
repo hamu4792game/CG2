@@ -55,9 +55,11 @@ private:
 
 	void CreateVertexResource();
 
+	void CreateVertexSphere();
+
 	void CreateGraphicsPipeline();
 
 public:
-	void Draw(Vector2 pos, Vector2 scale, float rotate, Matrix4x4 viewProjectionMat, uint32_t color);
+	void Draw(Vector3 pos, Vector3 scale, Vector3 rotate, Matrix4x4 viewProjectionMat, uint32_t color);
 
 };

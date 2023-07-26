@@ -72,6 +72,7 @@ ModelData TextureManager::LoadObjFile(const std::string& filename)
 		else if (identifier == "vt") {
 			Vector2 texcoord{};
 			s >> texcoord.x >> texcoord.y;
+			texcoord.y = 1.0f - texcoord.y;
 			texcoords.push_back(texcoord);
 		}
 		else if (identifier == "vn") {
@@ -80,6 +81,7 @@ ModelData TextureManager::LoadObjFile(const std::string& filename)
 			normals.push_back(normal);
 		}
 		else if (identifier == "f") {
+			VertexData triangle[3]{};
 			//	面は三角形限定。その他は未対応
 			for (int32_t faceVertex = 0; faceVertex < 3; faceVertex++)
 			{
@@ -97,11 +99,22 @@ ModelData TextureManager::LoadObjFile(const std::string& filename)
 				}
 				//	要素へのIndexから、実際の要素の値を取得して、頂点を構築していく
 				Vector4 position = positions[static_cast<std::vector<Vector4, std::allocator<Vector4>>::size_type>(elementIndices[0]) - 1];
+				position.x *= -1.0f;
 				Vector2 texcoord = texcoords[static_cast<std::vector<Vector2, std::allocator<Vector2>>::size_type>(elementIndices[1]) - 1];
 				Vector3 normal = normals[static_cast<std::vector<Vector3, std::allocator<Vector3>>::size_type>(elementIndices[2]) - 1];
-				VertexData vertex = { position, texcoord,normal };
-				modelData.vertices.push_back(vertex);
+				normal.x *= -1.0f;
+				triangle[faceVertex] = { position,texcoord,normal };
 			}
+			//	頂点を逆で登録することで、周り順を逆にする
+			modelData.vertices.push_back(triangle[2]);
+			modelData.vertices.push_back(triangle[1]);
+			modelData.vertices.push_back(triangle[0]);
+		}
+		else if (identifier == "mtllib") {
+			std::string materialFilename;
+			s >> materialFilename;
+			//	基本的に
+			modelData.material = LoadMaterialTemplateFile(materialFilename);
 		}
 	}
 	return modelData;
@@ -120,3 +133,41 @@ ModelData TextureManager::LoadObjFile(const std::string& filename)
 //		return static_cast<uint32_t>(std::distance(textures_.begin(), it));
 //	}
 //}
+
+Vector4 TextureManager::ChangeColor(uint32_t color)
+{
+	static const float nNum = 1.0f / 255.0f;
+
+	float red = static_cast<float>((color & 0xff000000) >> 24) * nNum;
+	float blue = static_cast<float>((color & 0x00ff0000) >> 16) * nNum;
+	float green = static_cast<float>((color & 0x0000ff00) >> 8) * nNum;
+	float alpha = static_cast<float>((color & 0x000000ff)) * nNum;
+
+	return Vector4(red, blue, green, alpha);
+}
+
+MaterialData TextureManager::LoadMaterialTemplateFile(const std::string& filename)
+{
+	//	変数の宣言
+	
+	MaterialData materialData; // 構築するデータ
+	std::string line;	// ファイルから読んだ1行を格納するもの
+	std::ifstream file("./Resources/" + filename);	//ファイルを開く
+	assert(file.is_open());
+
+	while (std::getline(file, line)) {
+		std::string identifier;
+		std::istringstream s(line);
+		s >> identifier;
+
+		//
+		if (identifier == "map_Kd") {
+			std::string textureFilename;
+			s >> textureFilename;
+			//	連結してファイルパスにする
+			materialData.textureFilePath = textureFilename;
+		}
+	}
+
+	return materialData;
+}

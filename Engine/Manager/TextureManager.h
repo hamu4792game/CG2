@@ -14,9 +14,15 @@ struct VertexData {
 	Vector3 normal;
 };
 
+//	mtl
+struct MaterialData {
+	std::string textureFilePath;
+};
+
 //	モデルデータ構造体
 struct ModelData {
 	std::vector<VertexData> vertices;
+	MaterialData material;
 };
 
 class TextureManager
@@ -30,10 +36,11 @@ public:
 	static TextureManager* GetInstance();
 
 	//	DirectX12のTextureResourceを作る
-	DirectX::ScratchImage LoadTexture(const std::string& filePath);
+	//	DirectX12のTextureResourceを作る
+	static DirectX::ScratchImage LoadTexture(const std::string& filePath);
 
 	//	TextureResourceにデータを転送する
-	void UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
+	static void UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
 
 	//	
 	//void CreateDescriptor(const std::string& filePath);
@@ -48,5 +55,11 @@ private:
 public:
 	//	オブジェクトファイルを読み込む関数
 	static ModelData LoadObjFile(const std::string&  filename);
+
+	static Vector4 ChangeColor(uint32_t color);
+
+	static MaterialData LoadMaterialTemplateFile(const std::string& filename);
+
+	
 };
 

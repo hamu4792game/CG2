@@ -1,5 +1,8 @@
 #include "Model.h"
 #include "Engine/Manager/TextureManager.h"
+#include <numbers>
+
+#include "externals/imgui/imgui.h"
 
 void Model::Texture(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName)
 {
@@ -11,6 +14,7 @@ void Model::Texture(const std::string& filePath, const std::string& vsFileName, 
 	CreateDescriptor(filePath);
 	CreateShader(vsFileName, psFileName);
 	CreateVertexResource();
+	//CreateVertexSphere();
 	CreateGraphicsPipeline();
 }
 
@@ -18,6 +22,11 @@ void Model::CreateDescriptor(const std::string& filePath)
 {
 	//	モデル読み込み
 	modelData = TextureManager::LoadObjFile(filePath);
+
+	DirectX::ScratchImage mipImages = TextureManager::LoadTexture("./Resources/" + modelData.material.textureFilePath);
+	const DirectX::TexMetadata& metaData = mipImages.GetMetadata();
+	resource[0] = Engine::CreateTextureResource(Engine::GetDevice(), metaData);
+	TextureManager::UploadTextureData(resource[0].Get(), mipImages);
 
 	//	デスクリプタヒープを生成
 	SRVHeap = CreateDescriptorHeap(Engine::GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 10, true);
@@ -28,9 +37,12 @@ void Model::CreateDescriptor(const std::string& filePath)
 	cColor.CreateView(descriptorHandle);
 	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	cBuffer.CreateView(descriptorHandle);
+
 	//	設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Format = metaData.format;
+	srvDesc.Texture2D.MipLevels = static_cast<UINT>(metaData.mipLevels);
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
 	//	
@@ -47,7 +59,6 @@ void Model::CreateVertexResource()
 {
 	//	頂点データ
 	
-	//作れないどうして
 	vertexResource = Engine::CreateBufferResource(Engine::GetDevice(), sizeof(VertexData) * modelData.vertices.size());
 
 	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
@@ -61,6 +72,73 @@ void Model::CreateVertexResource()
 
 	//	重要
 	vertexResource->Unmap(0, nullptr);
+}
+
+void Model::CreateVertexSphere()
+{
+	VertexData* vertex = nullptr;
+
+	const uint32_t kSubdivision = 16;
+
+	//	経度分割1つ分の角度
+	const float kLonEvery = std::numbers::pi_v<float> *2.0f / static_cast<float>(kSubdivision);
+	//	緯度分割1つ分の角度
+	const float kLatEvery = std::numbers::pi_v<float> / static_cast<float>(kSubdivision);
+
+	//	緯度の方向に分割
+	for (uint32_t latIndex = 0; latIndex < kSubdivision; latIndex++)
+	{
+		//	現在の緯度
+		float lat = -std::numbers::pi_v<float> / 2.0f + kLatEvery * latIndex;
+		for (uint32_t lonIndex = 0; lonIndex < kSubdivision; lonIndex++)
+		{
+			uint32_t start = (latIndex * kSubdivision + lonIndex) * 6;
+			//	現在の経度
+			float lon = lonIndex * kLonEvery;
+
+			//	world座標系でのabcを求める
+			Vector3 a, b, c, d;
+			a = { (cosf(lat) * cosf(lon)) ,sinf(lat) ,(cosf(lat) * sinf(lon)) };
+			b = { cosf(lat + kLatEvery) * cosf(lon) ,sinf(lat + kLatEvery) ,cosf(lat + kLatEvery) * sinf(lon) };
+			c = { cosf(lat) * cosf(lon + kLonEvery) ,sinf(lat),cosf(lat) * sinf(lon + kLonEvery) };
+			d = { cosf(lat + kLatEvery) * cosf(lon + kLonEvery),sinf(lat + kLatEvery),cosf(lat + kLatEvery) * sinf(lon + kLonEvery) };
+			
+			Vector2 uv;
+			uv = Vector2(float(lonIndex) / float(kSubdivision), 1.0f - float(latIndex) / float(kSubdivision));
+
+			vertex[start].position = Vector4(a.x, a.y, a.z, 1.0f);
+			vertex[start].texcoord = uv;
+
+			vertex[start + 1].position = Vector4(b.x, b.y, b.z, 1.0f);
+			vertex[start + 1].texcoord = Vector2(uv.x, uv.y - float(kSubdivision));
+
+			vertex[start + 2].position = Vector4(c.x, c.y, c.z, 1.0f);
+			vertex[start + 2].texcoord = Vector2(uv.x + float(kSubdivision), uv.y);
+
+			vertex[start + 3].position = vertex[start + 1].position;
+			vertex[start + 3].texcoord = vertex[start + 1].texcoord;
+
+			vertex[start + 4].position = vertex[start + 2].position;
+			vertex[start + 4].texcoord = vertex[start + 2].texcoord;
+
+			vertex[start + 5].position = Vector4(d.x, d.y, d.z, 1.0f);
+			vertex[start + 5].texcoord = Vector2(uv.x + float(kSubdivision), uv.y - float(kSubdivision));
+
+		}
+	}
+
+	vertexResource = Engine::CreateBufferResource(Engine::GetDevice(), sizeof(vertex));
+
+	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
+	vertexBufferView.SizeInBytes = sizeof(vertex);
+	vertexBufferView.StrideInBytes = sizeof(VertexData);
+
+	//	
+	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertex));
+	std::copy(modelData.vertices.begin(), modelData.vertices.end(), vertex);
+	//	重要
+	vertexResource->Unmap(0, nullptr);
+
 }
 
 void Model::CreateGraphicsPipeline()
@@ -209,19 +287,26 @@ void Model::CreateGraphicsPipeline()
 	assert(SUCCEEDED(hr));
 }
 
-void Model::Draw(Vector2 pos, Vector2 scale, float rotate, Matrix4x4 viewProjectionMat, uint32_t color)
+void Model::Draw(Vector3 pos, Vector3 scale, Vector3 rotate, Matrix4x4 viewProjectionMat, uint32_t color)
 {
-	*cMat = viewProjectionMat;
+	//	色の変更
+	*cColor = TextureManager::ChangeColor(color);
+	*cMat = MakeAffineMatrix(
+		{ scale.x,scale.y ,scale.z },
+		{ rotate.x,rotate.y,rotate.z },
+		{ pos.x,pos.y,pos.z }
+	) * viewProjectionMat;
 
 	Engine::GetList()->SetGraphicsRootSignature(rootSignature.Get());
 	Engine::GetList()->SetPipelineState(graphicsPipelineState.Get());
 	// インデックスを使わずに四角形以上を書くときは
 	// 個々の設定はD3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP
 	// インデックスを使うときは D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST
-	Engine::GetList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	Engine::GetList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	Engine::GetList()->IASetVertexBuffers(0, 1, &vertexBufferView);
 	
 	Engine::GetList()->SetDescriptorHeaps(1, &SRVHeap);
 	Engine::GetList()->SetGraphicsRootDescriptorTable(0, SRVHeap->GetGPUDescriptorHandleForHeapStart());
 	Engine::GetList()->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
+	//Engine::GetList()->DrawInstanced(UINT(16 * 16 * 6), 1, 0, 0);
 }
