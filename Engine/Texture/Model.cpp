@@ -182,7 +182,7 @@ void Model::CreateGraphicsPipeline()
 #pragma region PSOの生成
 	//	PSO生成
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-	graphicsPipelineStateDesc.pRootSignature = rootSignature;	//	RootSignature
+	graphicsPipelineStateDesc.pRootSignature = rootSignature.Get();	//	RootSignature
 	graphicsPipelineStateDesc.InputLayout = layoutDesc;	//	InputLayout
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -213,8 +213,8 @@ void Model::Draw(Vector2 pos, Vector2 scale, float rotate, Matrix4x4 viewProject
 {
 	*cMat = viewProjectionMat;
 
-	Engine::GetList()->SetGraphicsRootSignature(rootSignature);
-	Engine::GetList()->SetPipelineState(graphicsPipelineState);
+	Engine::GetList()->SetGraphicsRootSignature(rootSignature.Get());
+	Engine::GetList()->SetPipelineState(graphicsPipelineState.Get());
 	// インデックスを使わずに四角形以上を書くときは
 	// 個々の設定はD3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP
 	// インデックスを使うときは D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST

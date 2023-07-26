@@ -145,7 +145,7 @@ ID3D12Resource* Engine::CreateBufferResource(ID3D12Device* device, size_t sizeIn
 	ID3D12Resource* Resource = nullptr;
 	HRESULT hr = device->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
 		&ResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&Resource));
-	//hr = device->GetDeviceRemovedReason();
+	hr = device->GetDeviceRemovedReason();
 	assert(SUCCEEDED(hr));
 	return Resource;
 

@@ -31,7 +31,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 
 	//	モデル読み込み
 	auto model = std::make_unique<Model>();
-	model->Texture("Resources/plane.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	model->Texture("Resources/multiMesh.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	
 
 	//	ウィンドウの×ボタンが押されるまでループ
