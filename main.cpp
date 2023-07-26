@@ -5,6 +5,8 @@
 #include "math/Matrix4x4.h"
 #include "Engine/Camera/Camera.h"
 
+#include "Engine/Texture/Model.h"
+
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
 	D3DResourceLeakChecker leak;
@@ -12,8 +14,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	int32_t windowWidth = 1280; int32_t windowHeight = 720;
 	Engine::Initialize("Engine", windowWidth, windowHeight);
 
-	auto texture = std::make_unique<Texture2D>();
-	texture->Texture("./Resources/textureA.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	//auto texture = std::make_unique<Texture2D>();
+	//texture->Texture("./Resources/textureA.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	
 	Vector2 worldTranslate = { 0.0f,0.0f };
 	float rotate = 0.0f;
@@ -26,6 +28,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	Matrix4x4 viewProjectionMatrix{};
 
 	uint32_t color = 0xffffffff;
+
+	//	モデル読み込み
+	auto model = std::make_unique<Model>();
+	model->Texture("Resources/plane.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	
 
 	//	ウィンドウの×ボタンが押されるまでループ
 	while (!WinApp::ProcessMessage()) {
@@ -43,14 +50,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 		viewProjectionMatrix = camera.GetViewProMat(cameraTranslate);
 
 		//texture->Draw(worldMatrix, viewProjectionMatrix, color);
-		texture->Draw(worldTranslate, { 1.0f,1.0f }, rotate, viewProjectionMatrix, 0xffffffff);
+		//texture->Draw(worldTranslate, { 1.0f,1.0f }, rotate, viewProjectionMatrix, 0xffffffff);
+
+		model->Draw(worldTranslate, { 1.0f,1.0f }, rotate, viewProjectionMatrix, 0xffffffff);
 
 		//	フレームの終了
 		Engine::EndFrame();
 	}
 
-	texture->Finalize();
-	texture.reset();
+	//texture->Finalize();
+	//texture.reset();
 	Engine::Finalize();
 
 	return 0;

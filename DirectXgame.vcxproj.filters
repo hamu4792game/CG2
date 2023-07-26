@@ -43,6 +43,9 @@
     <Filter Include="Engine\Texture">
       <UniqueIdentifier>{31a8052c-13b6-4752-a7a0-b601b4b9e269}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Model">
+      <UniqueIdentifier>{6be00a5d-a29e-43cc-be49-3457eaf293ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -92,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Texture\Texture2D.cpp">
       <Filter>Engine\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Texture\Model.cpp">
+      <Filter>Engine\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Texture\Texture2D.h">
       <Filter>Engine\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Texture\Model.h">
+      <Filter>Engine\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

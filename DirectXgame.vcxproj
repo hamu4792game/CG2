@@ -96,6 +96,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\Manager\ShaderManager.cpp" />
     <ClCompile Include="Engine\Manager\TextureManager.cpp" />
+    <ClCompile Include="Engine\Texture\Model.cpp" />
     <ClCompile Include="Engine\Texture\Texture2D.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
     <ClCompile Include="externals\imgui\imgui_demo.cpp" />
@@ -119,6 +120,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Log.h" />
     <ClInclude Include="Engine\Manager\ShaderManager.h" />
     <ClInclude Include="Engine\Manager\TextureManager.h" />
+    <ClInclude Include="Engine\Texture\Model.h" />
     <ClInclude Include="Engine\Texture\Texture2D.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />
     <ClInclude Include="externals\imgui\imgui.h" />

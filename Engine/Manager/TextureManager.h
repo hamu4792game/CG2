@@ -11,11 +11,12 @@
 struct VertexData {
 	Vector4 position;
 	Vector2 texcoord;
+	Vector3 normal;
 };
 
 //	モデルデータ構造体
 struct ModelData {
-	std::vector<VertexData> vartices;
+	std::vector<VertexData> vertices;
 };
 
 class TextureManager
@@ -46,7 +47,6 @@ private:
 
 public:
 	//	オブジェクトファイルを読み込む関数
-	ModelData LoadObfFile(const std::string& directoryPath, const std::string& filename);
-
+	static ModelData LoadObjFile(const std::string&  filename);
 };
 
