@@ -219,7 +219,7 @@ void Model::CreateGraphicsPipeline()
 
 #pragma region InputLayout
 
-	D3D12_INPUT_ELEMENT_DESC inputElementDesc[2] = {};
+	D3D12_INPUT_ELEMENT_DESC inputElementDesc[3] = {};
 	inputElementDesc[0].SemanticName = "POSITION";
 	inputElementDesc[0].SemanticIndex = 0;
 	inputElementDesc[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -228,6 +228,10 @@ void Model::CreateGraphicsPipeline()
 	inputElementDesc[1].SemanticIndex = 0;
 	inputElementDesc[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	inputElementDesc[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	inputElementDesc[2].SemanticName = "NORMAL";
+	inputElementDesc[2].SemanticIndex = 0;
+	inputElementDesc[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	inputElementDesc[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 	D3D12_INPUT_LAYOUT_DESC layoutDesc{};
 	layoutDesc.pInputElementDescs = inputElementDesc;
 	layoutDesc.NumElements = _countof(inputElementDesc);
