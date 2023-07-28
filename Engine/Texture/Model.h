@@ -48,6 +48,7 @@ private:
 	ConstantBuffer<Vector4> cColor;
 	ConstantBuffer<Mono> cBuffer;
 
+	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
 
 public:
 

@@ -13,31 +13,30 @@ void Model::Texture(const std::string& filePath, const std::string& vsFileName, 
 
 	CreateDescriptor(filePath);
 	CreateShader(vsFileName, psFileName);
-	//CreateVertexResource();
-	CreateVertexSphere();
+	CreateVertexResource();
+	//CreateVertexSphere();
 	CreateGraphicsPipeline();
 }
 
 void Model::CreateDescriptor(const std::string& filePath)
 {
 	//	モデル読み込み
-	//modelData = TextureManager::LoadObjFile(filePath);
+	modelData = TextureManager::LoadObjFile(filePath);
 
-	//DirectX::ScratchImage mipImages = TextureManager::LoadTexture("./Resources/" + modelData.material.textureFilePath);
-	DirectX::ScratchImage mipImages = TextureManager::LoadTexture("./Resources/uvChecker.png");
+	DirectX::ScratchImage mipImages = TextureManager::LoadTexture("./Resources/" + modelData.material.textureFilePath);
+	//DirectX::ScratchImage mipImages = TextureManager::LoadTexture("./Resources/uvChecker.png");
 	const DirectX::TexMetadata& metaData = mipImages.GetMetadata();
 	resource[0] = Engine::CreateTextureResource(Engine::GetDevice(), metaData);
 	TextureManager::UploadTextureData(resource[0].Get(), mipImages);
 
+	// 幅
+	const UINT SRVsize = Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
 	//	デスクリプタヒープを生成
 	SRVHeap = CreateDescriptorHeap(Engine::GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 10, true);
-	auto descriptorHandle = SRVHeap->GetCPUDescriptorHandleForHeapStart();
-	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	cMat.CreateView(descriptorHandle);
-	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	cColor.CreateView(descriptorHandle);
-	descriptorHandle.ptr += Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	cBuffer.CreateView(descriptorHandle);
+	cMat.CreateView(GetCPUDescriptorHandle(SRVHeap, SRVsize, 1));
+	cColor.CreateView(GetCPUDescriptorHandle(SRVHeap, SRVsize, 2));
+	cBuffer.CreateView(GetCPUDescriptorHandle(SRVHeap, SRVsize, 3));
 
 	//	設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
@@ -45,9 +44,9 @@ void Model::CreateDescriptor(const std::string& filePath)
 	srvDesc.Format = metaData.format;
 	srvDesc.Texture2D.MipLevels = static_cast<UINT>(metaData.mipLevels);
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-
 	//	
 	Engine::GetDevice()->CreateShaderResourceView(resource[0].Get(), &srvDesc, SRVHeap->GetCPUDescriptorHandleForHeapStart());
+	textureSrvHandleGPU = GetGPUDescriptorHandle(SRVHeap, Engine::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV), 0);
 }
 
 void Model::CreateShader(const std::string& vsFileName, const std::string& psFileName)
@@ -326,7 +325,6 @@ void Model::Draw(Vector3 pos, Vector3 scale, Vector3 rotate, Matrix4x4 viewProje
 	Engine::GetList()->IASetVertexBuffers(0, 1, &vertexBufferView);
 	
 	Engine::GetList()->SetDescriptorHeaps(1, &SRVHeap);
-	Engine::GetList()->SetGraphicsRootDescriptorTable(0, SRVHeap->GetGPUDescriptorHandleForHeapStart());
+	Engine::GetList()->SetGraphicsRootDescriptorTable(0, textureSrvHandleGPU);
 	Engine::GetList()->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
-	//Engine::GetList()->DrawInstanced(UINT(16 * 16 * 6), 1, 0, 0);
 }
