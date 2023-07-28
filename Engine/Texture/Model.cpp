@@ -13,17 +13,18 @@ void Model::Texture(const std::string& filePath, const std::string& vsFileName, 
 
 	CreateDescriptor(filePath);
 	CreateShader(vsFileName, psFileName);
-	CreateVertexResource();
-	//CreateVertexSphere();
+	//CreateVertexResource();
+	CreateVertexSphere();
 	CreateGraphicsPipeline();
 }
 
 void Model::CreateDescriptor(const std::string& filePath)
 {
 	//	モデル読み込み
-	modelData = TextureManager::LoadObjFile(filePath);
+	//modelData = TextureManager::LoadObjFile(filePath);
 
-	DirectX::ScratchImage mipImages = TextureManager::LoadTexture("./Resources/" + modelData.material.textureFilePath);
+	//DirectX::ScratchImage mipImages = TextureManager::LoadTexture("./Resources/" + modelData.material.textureFilePath);
+	DirectX::ScratchImage mipImages = TextureManager::LoadTexture("./Resources/uvChecker.png");
 	const DirectX::TexMetadata& metaData = mipImages.GetMetadata();
 	resource[0] = Engine::CreateTextureResource(Engine::GetDevice(), metaData);
 	TextureManager::UploadTextureData(resource[0].Get(), mipImages);
@@ -76,9 +77,19 @@ void Model::CreateVertexResource()
 
 void Model::CreateVertexSphere()
 {
-	VertexData* vertex = nullptr;
 
 	const uint32_t kSubdivision = 16;
+
+	const uint32_t startIndex = kSubdivision * kSubdivision * 6;
+
+	modelData.vertices.clear();
+	modelData.vertices.resize(startIndex);
+
+	vertexResource = Engine::CreateBufferResource(Engine::GetDevice(), sizeof(VertexData) * modelData.vertices.size());
+
+	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
+	vertexBufferView.SizeInBytes = UINT(sizeof(VertexData) * modelData.vertices.size());
+	vertexBufferView.StrideInBytes = sizeof(VertexData);
 
 	//	経度分割1つ分の角度
 	const float kLonEvery = std::numbers::pi_v<float> *2.0f / static_cast<float>(kSubdivision);
@@ -106,36 +117,31 @@ void Model::CreateVertexSphere()
 			Vector2 uv;
 			uv = Vector2(float(lonIndex) / float(kSubdivision), 1.0f - float(latIndex) / float(kSubdivision));
 
-			vertex[start].position = Vector4(a.x, a.y, a.z, 1.0f);
-			vertex[start].texcoord = uv;
+			modelData.vertices[start].position = Vector4(a.x, a.y, a.z, 1.0f);
+			modelData.vertices[start].texcoord = uv;
 
-			vertex[start + 1].position = Vector4(b.x, b.y, b.z, 1.0f);
-			vertex[start + 1].texcoord = Vector2(uv.x, uv.y - float(kSubdivision));
+			modelData.vertices[start + 1].position = Vector4(b.x, b.y, b.z, 1.0f);
+			modelData.vertices[start + 1].texcoord = Vector2(uv.x, uv.y - 1.0f / float(kSubdivision));
 
-			vertex[start + 2].position = Vector4(c.x, c.y, c.z, 1.0f);
-			vertex[start + 2].texcoord = Vector2(uv.x + float(kSubdivision), uv.y);
+			modelData.vertices[start + 2].position = Vector4(c.x, c.y, c.z, 1.0f);
+			modelData.vertices[start + 2].texcoord = Vector2(uv.x + 1.0f / float(kSubdivision), uv.y);
 
-			vertex[start + 3].position = vertex[start + 1].position;
-			vertex[start + 3].texcoord = vertex[start + 1].texcoord;
+			modelData.vertices[start + 3].position = modelData.vertices[start + 1].position;
+			modelData.vertices[start + 3].texcoord = modelData.vertices[start + 1].texcoord;
 
-			vertex[start + 4].position = vertex[start + 2].position;
-			vertex[start + 4].texcoord = vertex[start + 2].texcoord;
+			modelData.vertices[start + 4].position = Vector4(d.x, d.y, d.z, 1.0f);
+			modelData.vertices[start + 4].texcoord = Vector2(uv.x + 1.0f / float(kSubdivision), uv.y - 1.0f / float(kSubdivision));
 
-			vertex[start + 5].position = Vector4(d.x, d.y, d.z, 1.0f);
-			vertex[start + 5].texcoord = Vector2(uv.x + float(kSubdivision), uv.y - float(kSubdivision));
+			modelData.vertices[start + 5].position = modelData.vertices[start + 2].position;
+			modelData.vertices[start + 5].texcoord = modelData.vertices[start + 2].texcoord;
 
 		}
 	}
-
-	vertexResource = Engine::CreateBufferResource(Engine::GetDevice(), sizeof(vertex));
-
-	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
-	vertexBufferView.SizeInBytes = sizeof(vertex);
-	vertexBufferView.StrideInBytes = sizeof(VertexData);
-
 	//	
-	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertex));
-	std::copy(modelData.vertices.begin(), modelData.vertices.end(), vertex);
+	VertexData* mapData = nullptr;
+	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&mapData));
+	std::copy(modelData.vertices.begin(), modelData.vertices.end(), mapData);
+
 	//	重要
 	vertexResource->Unmap(0, nullptr);
 
