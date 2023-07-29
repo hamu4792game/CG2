@@ -31,25 +31,43 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	float spriteRotate = { 0.0f };
 	Vector2 spriteWorldTranslate = { -360.0f,180.0f };
 	bool spriteFlag = false;
-	uint32_t spriteColor = 0xffffffff;
+	Vector4 spriteColor = { 255.0f,255.0f,255.0f,255.0f };
+	//uint32_t spriteColor = 0xffffffff;
 
 	Vector3 multiMaterialScale = { 1.0f,1.0f,1.0f };
 	Vector3 multiMaterialRotate = { 0.0f };
 	Vector3 multiMaterialWorldTranslate = { 0.0f };
 	bool multiMaterialFlag = false;
-	uint32_t multiMaterialColor = 0xffffffff;
+	Vector4 multiMaterialColor = { 255.0f,255.0f,255.0f,255.0f };
+	//uint32_t multiMaterialColor = 0xffffffff;
 
 	Vector3 teapotScale = { 1.0f,1.0f };
 	Vector3 teapotRotate = { 0.0f };
 	Vector3 teapotWorldTranslate = { 0.0f };
 	bool teapotFlag = false;
-	uint32_t teapotColor = 0xffffffff;
+	Vector4 teapotColor = { 255.0f,255.0f,255.0f,255.0f };
+	//uint32_t teapotColor = 0xffffffff;
 	
 	Vector3 bunnyScale = { 1.0f,1.0f };
 	Vector3 bunnyRotate = { 0.0f };
 	Vector3 bunnyWorldTranslate = { 0.0f };
 	bool bunnyFlag = false;
-	uint32_t bunnyColor = 0xffffffff;
+	Vector4 bunnyColor = { 255.0f,255.0f,255.0f,255.0f };
+	//uint32_t bunnyColor = 0xffffffff;
+	
+	Vector3 sphereScale = { 1.0f,1.0f };
+	Vector3 sphereRotate = { 0.0f };
+	Vector3 sphereWorldTranslate = { 0.0f };
+	bool sphereFlag = false;
+	Vector4 sphereColor = { 255.0f,255.0f,255.0f,255.0f };
+	//uint32_t sphereColor = 0xfffffffff;
+	
+	Vector3 triangleScale = { 1.0f,1.0f };
+	Vector3 triangleRotate = { 0.0f };
+	Vector3 triangleWorldTranslate = { 0.0f };
+	bool triangleFlag = false;
+	Vector4 triangleColor = { 255.0f,255.0f,255.0f,255.0f };
+	//uint32_t triangleColor = 0xfffffffff;
 	
 
 	//	モデル読み込み
@@ -59,12 +77,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	teapot->Texture("Resources/teapot.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	auto bunny = std::make_unique<Model>();
 	bunny->Texture("Resources/bunny.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	
 	auto sphere = std::make_unique<Model>();
-	bunny->Sphere("Resources/uvChecker.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	sphere->Sphere("Resources/uvChecker.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+
+	auto triangle = std::make_unique<Model>();
+	triangle->Triangle("Resources/uvChecker.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 
 	//	テクスチャ
 	auto texture = std::make_unique<Texture2D>();
 	texture->Texture("Resources/uvChecker.png", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	
 	
 	//	ウィンドウの×ボタンが押されるまでループ
 	while (!WinApp::ProcessMessage()) {
@@ -84,6 +107,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 				ImGui::DragFloat2("SpriteTranslate", &spriteWorldTranslate.x, 1.0f);
 				ImGui::DragFloat2("SpriteScale", &spriteScale.x, 0.1f, 0.0f);
 				ImGui::DragFloat("SpriteRotate", &spriteRotate, 0.1f, -3.14f * 2.0f, 3.14f * 2.0f);
+				ImGui::DragFloat4("SpriteColor", &spriteColor.x, 1.0f, 0.0f, 255.0f);
 				ImGui::TreePop();
 			}
 		}
@@ -94,6 +118,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 				ImGui::DragFloat3("MultiMaterialTranslate", &multiMaterialWorldTranslate.x, 0.1f);
 				ImGui::DragFloat3("MultiMaterialScale", &multiMaterialScale.x, 0.1f, 0.0f);
 				ImGui::DragFloat3("MultiMaterialRotate", &multiMaterialRotate.x, 0.1f, -3.14f * 2.0f, 3.14f * 2.0f);
+				ImGui::DragFloat4("MultiMaterialColor", &multiMaterialColor.x, 1.0f, 0.0f, 255.0f);
 				ImGui::TreePop();
 			}
 		}
@@ -103,6 +128,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 				ImGui::DragFloat3("TeapotTranslate", &teapotWorldTranslate.x, 0.1f);
 				ImGui::DragFloat3("TeapotScale", &teapotScale.x, 0.1f, 0.0f);
 				ImGui::DragFloat3("TeapotRotate", &teapotRotate.x, 0.1f, -3.14f * 2.0f, 3.14f * 2.0f);
+				ImGui::DragFloat4("TeapotColor", &teapotColor.x, 1.0f, 0.0f, 255.0f);
 				ImGui::TreePop();
 			}
 		}
@@ -112,6 +138,28 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 				ImGui::DragFloat3("BunnyTranslate", &bunnyWorldTranslate.x, 0.1f);
 				ImGui::DragFloat3("BunnyScale", &bunnyScale.x, 0.1f, 0.0f);
 				ImGui::DragFloat3("BunnyRotate", &bunnyRotate.x, 0.1f, -3.14f * 2.0f, 3.14f * 2.0f);
+				ImGui::DragFloat4("BunnyColor", &bunnyColor.x, 1.0f, 0.0f, 255.0f);
+				ImGui::TreePop();
+			}
+		}
+		ImGui::Checkbox("Sphere", &sphereFlag);
+		if (sphereFlag)	{
+			if (ImGui::TreeNode("Sphere")) {
+				ImGui::DragFloat3("SphereTranslate", &sphereWorldTranslate.x, 0.1f);
+				ImGui::DragFloat3("SphereScale", &sphereScale.x, 0.1f, 0.0f);
+				ImGui::DragFloat3("SphereRotate", &sphereRotate.x, 0.1f, -3.14f * 2.0f, 3.14f * 2.0f);
+				ImGui::DragFloat4("SphereColor", &sphereColor.x, 1.0f, 0.0f, 255.0f);
+				//ImGui::ColorEdit4("SphereColor", &sphereColor.x);
+				ImGui::TreePop();
+			}
+		}
+		ImGui::Checkbox("Triangle", &triangleFlag);
+		if (triangleFlag)	{
+			if (ImGui::TreeNode("Triangle")) {
+				ImGui::DragFloat3("TriangleTranslate", &triangleWorldTranslate.x, 0.1f);
+				ImGui::DragFloat3("TriangleScale", &triangleScale.x, 0.1f, 0.0f);
+				ImGui::DragFloat3("TriangleRotate", &triangleRotate.x, 0.1f, -3.14f * 2.0f, 3.14f * 2.0f);
+				ImGui::DragFloat4("TriangleColor", &triangleColor.x, 1.0f, 0.0f, 255.0f);
 				ImGui::TreePop();
 			}
 		}
@@ -123,30 +171,32 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 		viewProjectionMatrix = spriteCamera.GetViewProMat(cameraTranslate);
 		//	スプライトの描画
 		if (spriteFlag)	{
-			texture->Draw(spriteWorldTranslate, spriteScale, spriteRotate, viewProjectionMatrix, spriteColor);
+			texture->Draw(spriteWorldTranslate, spriteScale, spriteRotate, viewProjectionMatrix, TextureManager::ChangeColor(spriteColor));
 		}
 		
 		//	モデルの切り替え
 		viewProjectionMatrix = camera.GetViewProMat(cameraTranslate);
 		//	モデルの描画
 		if (multiMaterialFlag) {
-			multiMaterial->Draw(multiMaterialWorldTranslate, multiMaterialScale, multiMaterialRotate, viewProjectionMatrix, multiMaterialColor);
+			multiMaterial->Draw(multiMaterialWorldTranslate, multiMaterialScale, multiMaterialRotate, viewProjectionMatrix, TextureManager::ChangeColor(multiMaterialColor));
 		}
 		if (teapotFlag)	{
-			teapot->Draw(teapotWorldTranslate, teapotScale, teapotRotate, viewProjectionMatrix, teapotColor);
+			teapot->Draw(teapotWorldTranslate, teapotScale, teapotRotate, viewProjectionMatrix, TextureManager::ChangeColor(teapotColor));
 		}
 		if (bunnyFlag)	{
-			bunny->Draw(bunnyWorldTranslate, bunnyScale, bunnyRotate, viewProjectionMatrix, bunnyColor);
+			bunny->Draw(bunnyWorldTranslate, bunnyScale, bunnyRotate, viewProjectionMatrix, TextureManager::ChangeColor(bunnyColor));
 		}
-
-		sphere->Draw(bunnyWorldTranslate, bunnyScale, bunnyRotate, viewProjectionMatrix, bunnyColor);
+		if (sphereFlag)	{
+			sphere->Draw(sphereWorldTranslate, sphereScale, sphereRotate, viewProjectionMatrix, TextureManager::ChangeColor(sphereColor));
+		}
+		if (triangleFlag)	{
+			triangle->Draw(triangleWorldTranslate, triangleScale, triangleRotate, viewProjectionMatrix, TextureManager::ChangeColor(triangleColor));
+		}
 
 		//	フレームの終了
 		Engine::EndFrame();
 	}
 
-	//texture->Finalize();
-	//texture.reset();
 	Engine::Finalize();
 
 	return 0;

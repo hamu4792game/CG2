@@ -27,8 +27,20 @@ void Model::Sphere(const std::string& filePath, const std::string& vsFileName, c
 
 	CreateSphereDescriptor(filePath);
 	CreateShader(vsFileName, psFileName);
-	//CreateVertexResource();
 	CreateVertexSphere();
+	CreateGraphicsPipeline();
+}
+
+void Model::Triangle(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName)
+{
+	cBuffer->pibot = { 0.0f,0.0f };
+	cBuffer->rate = 1.0f;
+	*cColor = { 1.0f,1.0f,1.0f,1.0f };
+	*cMat = MakeIdentity4x4();
+
+	CreateSphereDescriptor(filePath);
+	CreateShader(vsFileName, psFileName);
+	CreateVertexTriangle();
 	CreateGraphicsPipeline();
 }
 
@@ -185,6 +197,38 @@ void Model::CreateVertexSphere()
 	//	重要
 	vertexResource->Unmap(0, nullptr);
 
+}
+
+void Model::CreateVertexTriangle()
+{
+	//	頂点データ
+	
+	modelData.vertices.clear();
+	modelData.vertices.resize(3);
+
+	vertexResource = Engine::CreateBufferResource(Engine::GetDevice(), sizeof(VertexData) * modelData.vertices.size());
+
+	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
+	vertexBufferView.SizeInBytes = UINT(sizeof(VertexData) * modelData.vertices.size());
+	vertexBufferView.StrideInBytes = sizeof(VertexData);
+
+	//	左下
+	modelData.vertices[0].position = Vector4(-0.5f, -0.5f, 0.0f, 1.0f);
+	modelData.vertices[0].texcoord = Vector2(0.0f, 1.0f);
+	//	上
+	modelData.vertices[1].position = Vector4(0.0f,0.5f,0.0f,1.0f);
+	modelData.vertices[1].texcoord = Vector2(0.5f,0.0f);
+	//	右下
+	modelData.vertices[2].position = Vector4(0.5f, -0.5f, 0.0f, 1.0f);
+	modelData.vertices[2].texcoord = Vector2(1.0f, 1.0f);
+
+	//	
+	VertexData* mapData = nullptr;
+	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&mapData));
+	std::copy(modelData.vertices.begin(), modelData.vertices.end(), mapData);
+
+	//	重要
+	vertexResource->Unmap(0, nullptr);
 }
 
 void Model::CreateGraphicsPipeline()

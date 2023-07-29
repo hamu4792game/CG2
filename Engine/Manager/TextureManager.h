@@ -58,6 +58,8 @@ public:
 
 	static Vector4 ChangeColor(uint32_t color);
 
+	static uint32_t ChangeColor(Vector4 color);
+
 	static MaterialData LoadMaterialTemplateFile(const std::string& filename);
 
 	

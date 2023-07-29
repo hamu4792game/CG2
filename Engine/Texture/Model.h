@@ -54,6 +54,7 @@ public:
 
 	void Texture(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName);
 	void Sphere(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName);
+	void Triangle(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName);
 
 private:
 	void CreateDescriptor(const std::string& filePath);
@@ -65,6 +66,8 @@ private:
 	void CreateVertexResource();
 
 	void CreateVertexSphere();
+
+	void CreateVertexTriangle();
 
 	void CreateGraphicsPipeline();
 

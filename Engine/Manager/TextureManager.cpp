@@ -146,6 +146,17 @@ Vector4 TextureManager::ChangeColor(uint32_t color)
 	return Vector4(red, blue, green, alpha);
 }
 
+uint32_t TextureManager::ChangeColor(Vector4 color)
+{
+	uint32_t result = 0x00;
+	result += static_cast<uint32_t>(color.x) << 24;
+	result += static_cast<uint32_t>(color.y) << 16;
+	result += static_cast<uint32_t>(color.z) << 8;
+	result += static_cast<uint32_t>(color.w);
+	
+	return result;
+}
+
 MaterialData TextureManager::LoadMaterialTemplateFile(const std::string& filename)
 {
 	//	変数の宣言
