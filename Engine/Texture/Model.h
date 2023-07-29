@@ -53,9 +53,12 @@ private:
 public:
 
 	void Texture(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName);
+	void Sphere(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName);
 
 private:
 	void CreateDescriptor(const std::string& filePath);
+
+	void CreateSphereDescriptor(const std::string& filePath);
 
 	void CreateShader(const std::string& vsFileName, const std::string& psFileName);
 

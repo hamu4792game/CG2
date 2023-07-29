@@ -113,7 +113,8 @@ private:
 	//	使用するアダプタ用の変数
 	IDXGIAdapter4* useAdapter;
 	//	デバイスの生成
-	ID3D12Device* device;
+	//ID3D12Device* device;
+	Microsoft::WRL::ComPtr<ID3D12Device> device;
 	//	GPUに命令を投げるキューの生成
 	ID3D12CommandQueue* commandQueue;
 	//	命令保存用メモリ管理機構の生成
@@ -147,7 +148,7 @@ public:
 	/// <summary>
 	/// デバイスの取得
 	/// </summary>
-	ID3D12Device* GetDevice() const { return device; };
+	ID3D12Device* GetDevice() const { return device.Get(); };
 
 	ID3D12GraphicsCommandList* GetList() const { return commandList; };
 

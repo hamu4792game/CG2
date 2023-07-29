@@ -289,9 +289,9 @@ void CommandDirectX::CreateRenderTargetView()
 	HRESULT hr = S_FALSE;
 	//	ディスクリプタヒープの生成
 	//	RTV用のヒープでディスクリプタの数は2。RTVはShader内で触るものではないので、ShaderVisibleはfalse
-	rtvDescriptorHeap = CreateDescriptorHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
+	rtvDescriptorHeap = CreateDescriptorHeap(device.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
 	//	SRV用のヒープでディスクリプタの数は128。SRVはShader内で触るものなので、ShaderVisibleはtrue
-	srvDescriptorHeap = CreateDescriptorHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
+	srvDescriptorHeap = CreateDescriptorHeap(device.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
 
 	//	SwapChainからResourceを引っ張ってくる
 	swapChainResources[0] = nullptr;
@@ -325,7 +325,7 @@ void CommandDirectX::CreateRenderTargetView()
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(winApp_->GetHwnd());
-	ImGui_ImplDX12_Init(device,
+	ImGui_ImplDX12_Init(device.Get(),
 		SCD.BufferCount,
 		rtvDesc.Format,
 		srvDescriptorHeap,
@@ -361,10 +361,10 @@ void CommandDirectX::ClearRenderTarget()
 void CommandDirectX::CreateDepthStencilResource()
 {
 	//	depthStencilResourceの生成
-	depthStencilResource = CreateDepthStencilTexture(device, bufferWidth_, bufferHeight_);
+	depthStencilResource = CreateDepthStencilTexture(device.Get(), bufferWidth_, bufferHeight_);
 	//	2_5_p16
 	//	DSV用のヒープでディスクリプタの数は1。DSVはShader内で触るものではないので、ShaderVisibleはfalse
-	dsvDescriptorHeap = CreateDescriptorHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
+	dsvDescriptorHeap = CreateDescriptorHeap(device.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 	//	DSVの設定
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;	//	Format。基本的にはResourceに合わせる

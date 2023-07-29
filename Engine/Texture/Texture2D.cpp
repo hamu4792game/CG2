@@ -318,9 +318,9 @@ void Texture2D::CreateGraphicsPipeline()
 
 void Texture2D::Draw(Vector2 pos, Vector2 scale, float rotate, Matrix4x4 viewProjectionMat, uint32_t color)
 {	
-	ImGui::Begin("a");
+	/*ImGui::Begin("a");
 	ImGui::DragFloat2("%0.2f", &cBuffer->pibot.x, 1.0f);
-	ImGui::End();
+	ImGui::End();*/
 	//	色の変更
 	*cColor = ChangeColor(color);
 	*cMat = MakeAffineMatrix(
