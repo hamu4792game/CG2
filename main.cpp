@@ -22,10 +22,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	Vector3 cameraRotate = { 0.0f,0.0f,0.0f };
 	//	カメラ行列の生成
 	Matrix4x4 viewProjectionMatrix{};
-
-
-	Vector3 worldTranslate = { 0.0f,0.0f,0.0f };
-	Vector3 rotate = { 0.0f,0.0f,0.0f };
 	
 	Vector2 spriteScale = { 1.1f,0.7f };
 	float spriteRotate = { 0.0f };
@@ -34,35 +30,35 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	Vector4 spriteColor = { 255.0f,255.0f,255.0f,255.0f };
 	//uint32_t spriteColor = 0xffffffff;
 
-	Vector3 multiMaterialScale = { 1.0f,1.0f,1.0f };
-	Vector3 multiMaterialRotate = { 0.0f };
-	Vector3 multiMaterialWorldTranslate = { 0.0f };
-	bool multiMaterialFlag = false;
-	Vector4 multiMaterialColor = { 255.0f,255.0f,255.0f,255.0f };
-	//uint32_t multiMaterialColor = 0xffffffff;
+	Vector3 multiMeshScale = { 1.0f,1.0f,1.0f };
+	Vector3 multiMeshRotate = { 0.0f };
+	Vector3 multiMeshWorldTranslate = { 0.0f };
+	bool multiMeshFlag = false;
+	Vector4 multiMeshColor = { 255.0f,255.0f,255.0f,255.0f };
+	//uint32_t multiMeshColor = 0xffffffff;
 
-	Vector3 teapotScale = { 1.0f,1.0f };
+	Vector3 teapotScale = { 1.0f,1.0f,1.0f };
 	Vector3 teapotRotate = { 0.0f };
 	Vector3 teapotWorldTranslate = { 0.0f };
 	bool teapotFlag = false;
 	Vector4 teapotColor = { 255.0f,255.0f,255.0f,255.0f };
 	//uint32_t teapotColor = 0xffffffff;
 	
-	Vector3 bunnyScale = { 1.0f,1.0f };
+	Vector3 bunnyScale = { 1.0f,1.0f,1.0f };
 	Vector3 bunnyRotate = { 0.0f };
 	Vector3 bunnyWorldTranslate = { 0.0f };
 	bool bunnyFlag = false;
 	Vector4 bunnyColor = { 255.0f,255.0f,255.0f,255.0f };
 	//uint32_t bunnyColor = 0xffffffff;
 	
-	Vector3 sphereScale = { 1.0f,1.0f };
+	Vector3 sphereScale = { 1.0f,1.0f,1.0f };
 	Vector3 sphereRotate = { 0.0f };
 	Vector3 sphereWorldTranslate = { 0.0f };
 	bool sphereFlag = false;
 	Vector4 sphereColor = { 255.0f,255.0f,255.0f,255.0f };
 	//uint32_t sphereColor = 0xfffffffff;
 	
-	Vector3 triangleScale = { 1.0f,1.0f };
+	Vector3 triangleScale = { 1.0f,1.0f,1.0f };
 	Vector3 triangleRotate = { 0.0f };
 	Vector3 triangleWorldTranslate = { 0.0f };
 	bool triangleFlag = false;
@@ -71,8 +67,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	
 
 	//	モデル読み込み
-	auto multiMaterial = std::make_unique<Model>();
-	multiMaterial->Texture("Resources/multiMaterial.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	auto multiMesh = std::make_unique<Model>();
+	multiMesh->Texture("Resources/multiMesh.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	auto teapot = std::make_unique<Model>();
 	teapot->Texture("Resources/teapot.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	auto bunny = std::make_unique<Model>();
@@ -97,8 +93,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 		// ImGui のフレームに一つ目の ImGui のウィンドウを描く
 		ImGui::Begin("Control panel");
 		ImGui::Text("Frame rate: %6.2f fps", ImGui::GetIO().Framerate);
-		ImGui::DragFloat3("worldMatrix", &worldTranslate.x, 1.0f);
-		ImGui::DragFloat3("Rotate", &rotate.x, 0.1f);
+		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.1f);
+		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 
 		ImGui::Checkbox("Sptite", &spriteFlag);
 		if (spriteFlag)	{
@@ -111,14 +107,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 				ImGui::TreePop();
 			}
 		}
-		ImGui::Checkbox("MultiMaterial", &multiMaterialFlag);
-		if (multiMaterialFlag) {
-			if (ImGui::TreeNode("MultiMaterial")) {
+		ImGui::Checkbox("MultiMesh", &multiMeshFlag);
+		if (multiMeshFlag) {
+			if (ImGui::TreeNode("MultiMesh")) {
 
-				ImGui::DragFloat3("MultiMaterialTranslate", &multiMaterialWorldTranslate.x, 0.1f);
-				ImGui::DragFloat3("MultiMaterialScale", &multiMaterialScale.x, 0.1f, 0.0f);
-				ImGui::DragFloat3("MultiMaterialRotate", &multiMaterialRotate.x, 0.1f, -3.14f * 2.0f, 3.14f * 2.0f);
-				ImGui::DragFloat4("MultiMaterialColor", &multiMaterialColor.x, 1.0f, 0.0f, 255.0f);
+				ImGui::DragFloat3("MultiMeshTranslate", &multiMeshWorldTranslate.x, 0.1f);
+				ImGui::DragFloat3("MultiMeshScale", &multiMeshScale.x, 0.1f, 0.0f);
+				ImGui::DragFloat3("MultiMeshRotate", &multiMeshRotate.x, 0.1f, -3.14f * 2.0f, 3.14f * 2.0f);
+				ImGui::DragFloat4("MultiMeshColor", &multiMeshColor.x, 1.0f, 0.0f, 255.0f);
 				ImGui::TreePop();
 			}
 		}
@@ -168,17 +164,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 
 
 		//	行列の計算 レンダリングパイプライン
-		viewProjectionMatrix = spriteCamera.GetViewProMat(cameraTranslate);
+		viewProjectionMatrix = spriteCamera.GetViewProMat();
 		//	スプライトの描画
 		if (spriteFlag)	{
 			texture->Draw(spriteWorldTranslate, spriteScale, spriteRotate, viewProjectionMatrix, TextureManager::ChangeColor(spriteColor));
 		}
 		
 		//	モデルの切り替え
-		viewProjectionMatrix = camera.GetViewProMat(cameraTranslate);
+		viewProjectionMatrix = camera.GetViewProMat(cameraTranslate, cameraRotate);
 		//	モデルの描画
-		if (multiMaterialFlag) {
-			multiMaterial->Draw(multiMaterialWorldTranslate, multiMaterialScale, multiMaterialRotate, viewProjectionMatrix, TextureManager::ChangeColor(multiMaterialColor));
+		if (multiMeshFlag) {
+			multiMesh->Draw(multiMeshWorldTranslate, multiMeshScale, multiMeshRotate, viewProjectionMatrix, TextureManager::ChangeColor(multiMeshColor));
 		}
 		if (teapotFlag)	{
 			teapot->Draw(teapotWorldTranslate, teapotScale, teapotRotate, viewProjectionMatrix, TextureManager::ChangeColor(teapotColor));

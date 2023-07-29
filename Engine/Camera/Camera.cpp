@@ -6,7 +6,7 @@ Camera::Camera(float farClip_, bool proType)
 	type = proType;
 }
 
-Matrix4x4 Camera::GetViewProMat(Vector3 translate, Vector3 scale, Vector3 rotate)
+Matrix4x4 Camera::GetViewProMat(Vector3 translate, Vector3 rotate, Vector3 scale)
 {
 	//	行列の計算
 	cameraMatrix = MakeAffineMatrix(scale, rotate, translate);

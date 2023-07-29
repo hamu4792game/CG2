@@ -23,6 +23,6 @@ private:
 	Matrix4x4 viewProjectionMatrix{};
 public:
 	//	viewProjectionMatrixの取得
-	Matrix4x4 GetViewProMat(Vector3 translate = { 0.0f,0.0f,-5.0f }, Vector3 scale = { 1.0f,1.0f,1.0f }, Vector3 rotate = { 0.0f,0.0f,0.0f });
+	Matrix4x4 GetViewProMat(Vector3 translate = { 0.0f,0.0f,-5.0f }, Vector3 rotate = { 0.0f,0.0f,0.0f }, Vector3 scale = { 1.0f,1.0f,1.0f });
 };
 
