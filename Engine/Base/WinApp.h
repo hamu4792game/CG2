@@ -64,6 +64,7 @@ private:
 
 public:	// ゲッター
 
-	const HWND GetHwnd() { return hwnd; };
+	static const HWND GetHwnd() { return GetInstance()->hwnd; };
+	static const WNDCLASS GetWc() { return GetInstance()->wc; };
 
 };

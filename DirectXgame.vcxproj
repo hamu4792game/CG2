@@ -93,7 +93,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Base\CommandDirectX.cpp" />
     <ClCompile Include="Engine\Base\WinApp.cpp" />
     <ClCompile Include="Engine\Camera\Camera.cpp" />
+    <ClCompile Include="Engine\Camera\DebugCamera\DebugCamera.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\Input\KeyInput\KeyInput.cpp" />
     <ClCompile Include="Engine\Manager\ShaderManager.cpp" />
     <ClCompile Include="Engine\Manager\TextureManager.cpp" />
     <ClCompile Include="Engine\Texture\Model.cpp" />
@@ -112,11 +114,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Base\CommandDirectX.h" />
     <ClInclude Include="Engine\Base\WinApp.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />
+    <ClInclude Include="Engine\Camera\DebugCamera\DebugCamera.h" />
     <ClInclude Include="Engine\ConstantBuffer.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\Input\KeyInput\KeyInput.h" />
     <ClInclude Include="Engine\Log.h" />
     <ClInclude Include="Engine\Manager\ShaderManager.h" />
     <ClInclude Include="Engine\Manager\TextureManager.h" />

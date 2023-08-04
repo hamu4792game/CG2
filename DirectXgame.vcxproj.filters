@@ -46,6 +46,15 @@
     <Filter Include="Engine\Model">
       <UniqueIdentifier>{6be00a5d-a29e-43cc-be49-3457eaf293ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Camera\DebugCamera">
+      <UniqueIdentifier>{eb49325f-d88c-4f00-a424-c0484ab2c131}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Input">
+      <UniqueIdentifier>{50922ffa-aaa3-45ee-abbf-58204c39dabd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Input\KeyInput">
+      <UniqueIdentifier>{7f235346-9a68-4ee7-abdd-434d7dd4241d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -98,6 +107,12 @@
     </ClCompile>
     <ClCompile Include="Engine\Texture\Model.cpp">
       <Filter>Engine\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Camera\DebugCamera\DebugCamera.cpp">
+      <Filter>Engine\Camera\DebugCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Input\KeyInput\KeyInput.cpp">
+      <Filter>Engine\Input\KeyInput</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +181,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Texture\Model.h">
       <Filter>Engine\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Camera\DebugCamera\DebugCamera.h">
+      <Filter>Engine\Camera\DebugCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Input\KeyInput\KeyInput.h">
+      <Filter>Engine\Input\KeyInput</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

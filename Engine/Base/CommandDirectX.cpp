@@ -1,6 +1,7 @@
 #include "CommandDirectX.h"
 #include "Engine/Log.h"
 #include <cassert>
+#include "Engine/Input/KeyInput/KeyInput.h"
 
 //	imguiのinclude
 #include "externals/imgui/imgui.h"
@@ -31,6 +32,9 @@ void CommandDirectX::Initialize(WinApp* winApp, int32_t bufferWidth, int32_t buf
 	CreateRenderTargetView();
 	CreateFence();
 	CreateDepthStencilResource();
+
+	//	Inputの初期化処理
+	KeyInput::InputInitialize();
 }
 
 void CommandDirectX::PreDraw()
@@ -42,6 +46,9 @@ void CommandDirectX::PreDraw()
 
 	//	ゲームの処理
 	ImGui::ShowDemoWindow();
+
+	//	Input初期の更新
+	KeyInput::Updata();
 
 	//	ここから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
