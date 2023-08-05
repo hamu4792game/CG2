@@ -95,7 +95,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Camera\Camera.cpp" />
     <ClCompile Include="Engine\Camera\DebugCamera\DebugCamera.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\Input\AudioInput\AudioInput.cpp" />
     <ClCompile Include="Engine\Input\KeyInput\KeyInput.cpp" />
+    <ClCompile Include="Engine\Manager\AudioManager\AudioManager.cpp" />
     <ClCompile Include="Engine\Manager\ShaderManager.cpp" />
     <ClCompile Include="Engine\Manager\TextureManager.cpp" />
     <ClCompile Include="Engine\Texture\Model.cpp" />
@@ -120,8 +122,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\Input\AudioInput\AudioInput.h" />
     <ClInclude Include="Engine\Input\KeyInput\KeyInput.h" />
     <ClInclude Include="Engine\Log.h" />
+    <ClInclude Include="Engine\Manager\AudioManager\AudioManager.h" />
     <ClInclude Include="Engine\Manager\ShaderManager.h" />
     <ClInclude Include="Engine\Manager\TextureManager.h" />
     <ClInclude Include="Engine\Texture\Model.h" />

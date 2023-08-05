@@ -55,6 +55,12 @@
     <Filter Include="Engine\Input\KeyInput">
       <UniqueIdentifier>{7f235346-9a68-4ee7-abdd-434d7dd4241d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Input\AudioInput">
+      <UniqueIdentifier>{1d654f16-6d5d-44c2-a1ae-83d9ceeb9d6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Manager\AudioManager">
+      <UniqueIdentifier>{78ce7726-d36f-4abb-a304-8e4a270c54cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -113,6 +119,12 @@
     </ClCompile>
     <ClCompile Include="Engine\Input\KeyInput\KeyInput.cpp">
       <Filter>Engine\Input\KeyInput</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Input\AudioInput\AudioInput.cpp">
+      <Filter>Engine\Input\AudioInput</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Manager\AudioManager\AudioManager.cpp">
+      <Filter>Engine\Manager\AudioManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +199,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Input\KeyInput\KeyInput.h">
       <Filter>Engine\Input\KeyInput</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Input\AudioInput\AudioInput.h">
+      <Filter>Engine\Input\AudioInput</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Manager\AudioManager\AudioManager.h">
+      <Filter>Engine\Manager\AudioManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

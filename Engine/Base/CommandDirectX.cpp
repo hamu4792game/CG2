@@ -2,6 +2,7 @@
 #include "Engine/Log.h"
 #include <cassert>
 #include "Engine/Input/KeyInput/KeyInput.h"
+#include "Engine/Manager/AudioManager/AudioManager.h"
 
 //	imguiのinclude
 #include "externals/imgui/imgui.h"
@@ -35,6 +36,9 @@ void CommandDirectX::Initialize(WinApp* winApp, int32_t bufferWidth, int32_t buf
 
 	//	Inputの初期化処理
 	KeyInput::InputInitialize();
+
+	//	Audioの初期化処理
+	AudioManager::Initialize();
 }
 
 void CommandDirectX::PreDraw()

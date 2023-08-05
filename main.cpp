@@ -7,6 +7,7 @@
 
 #include "Engine/Texture/Model.h"
 #include "Engine/Input/KeyInput/KeyInput.h"
+#include "Engine/Input/AudioInput/AudioInput.h"
 
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
@@ -34,7 +35,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	//	モデル読み込み
 	
 	auto bunny = std::make_unique<Model>();
-	bunny->Texture("Resources/multiMesh.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	bunny->Texture("Resources/plane.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+
+	auto oto = std::make_unique<AudioInput>();
+	oto->SoundLoadWave("./Resources/sound/Alarm01.wav");
+
+	AudioManager::GetInstance()->Initialize();
 	
 	//	ウィンドウの×ボタンが押されるまでループ
 	while (!WinApp::ProcessMessage()) {
@@ -59,6 +65,20 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 		}
 		ImGui::End();
 
+
+		if (KeyInput::PushKey(DIK_SPACE))
+		{
+			oto->SoundPlayWave();
+		}if (KeyInput::PushKey(DIK_D))
+		{
+			oto->ReStart();
+		}
+		if (KeyInput::PushKey(DIK_A))
+		{
+			//AudioInput::SoundPlayWave(soundData2);
+			oto->Pose();
+		}
+
 		//	行列の計算 レンダリングパイプライン
 		viewProjectionMatrix = spriteCamera.GetViewProMat();
 		//	スプライトの描画
@@ -72,6 +92,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 
 		//	フレームの終了
 		Engine::EndFrame();
+		if (KeyInput::PushKey(DIK_ESCAPE)) {
+			return 0;
+		}
 	}
 
 	Engine::Finalize();
