@@ -170,9 +170,6 @@
     <ClInclude Include="Engine\Log.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ConstantBuffer.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Base\WinApp.h">
       <Filter>Engine\WinApp</Filter>
     </ClInclude>
@@ -205,6 +202,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Manager\AudioManager\AudioManager.h">
       <Filter>Engine\Manager\AudioManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\ConstantBuffer.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

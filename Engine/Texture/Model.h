@@ -8,7 +8,7 @@
 #include <dxcapi.h>
 #pragma comment(lib,"dxcompiler.lib")
 #include "math/Vector4.h"
-#include "Engine/ConstantBuffer.h"
+#include "Engine/Base/ConstantBuffer.h"
 #include "math/Matrix4x4.h"
 #include "Engine/Manager/TextureManager.h"
 #include <wrl.h>

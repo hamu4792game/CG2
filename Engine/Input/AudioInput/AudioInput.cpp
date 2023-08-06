@@ -83,6 +83,8 @@ void AudioInput::SoundPlayWave()
 	buf.pAudioData = soundData.pBuffer;
 	buf.AudioBytes = soundData.bufferSize;
 	buf.Flags = XAUDIO2_END_OF_STREAM;
+	//	ループしたい時
+	/*buf.LoopCount = XAUDIO2_LOOP_INFINITE;*/
 	result = pSourceVoice->SubmitSourceBuffer(&buf);
 	//	波形データの再生
 	result = pSourceVoice->Start();
