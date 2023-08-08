@@ -36,7 +36,7 @@ void KeyInput::InputInitialize()
 	KeyInput::GetInstance()->Initialize();
 }
 
-void KeyInput::Updata()
+void KeyInput::Update()
 {
 	KeyInput* instance = KeyInput::GetInstance();
 	//	キーボード情報の取得開始

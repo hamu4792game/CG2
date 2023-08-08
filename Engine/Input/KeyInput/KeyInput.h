@@ -30,7 +30,7 @@ public:
 	static void InputInitialize();
 
 	// 更新処理
-	static void Updata();
+	static void Update();
 
 private:	//変数
 	//	DirectInputの初期化

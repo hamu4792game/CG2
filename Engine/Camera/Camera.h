@@ -11,6 +11,7 @@ public:
 	/// <param name="proType">false = 正射影 true = 透視投影</param>
 	Camera(float farClip_ = 1000.0f, bool proType = false);
 	~Camera() = default;
+
 private:
 	//	深度値
 	float farZ;

@@ -4,6 +4,6 @@ void DebugCamera::Initialize()
 {
 }
 
-void DebugCamera::Updata()
+void DebugCamera::Update()
 {
 }

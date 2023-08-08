@@ -14,7 +14,7 @@ public:
 	//	初期化処理
 	void Initialize();
 	//	更新処理
-	void Updata();
+	void Update();
 
 private:
 	//	X,Y,Z周りのローカル回転角

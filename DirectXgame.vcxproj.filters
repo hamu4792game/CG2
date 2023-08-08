@@ -61,6 +61,24 @@
     <Filter Include="Engine\Manager\AudioManager">
       <UniqueIdentifier>{78ce7726-d36f-4abb-a304-8e4a270c54cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{cdd141cf-38aa-4813-bf04-abd7e48557f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Skydome">
+      <UniqueIdentifier>{95e7ceb0-8156-4dc4-beab-4b5a40c27ea5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene">
+      <UniqueIdentifier>{67c1c47e-678c-40ad-a36b-4686e0de776d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene\Battle">
+      <UniqueIdentifier>{b6913ebe-10d6-4ee8-a3b0-8a4ea23ba7f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Player">
+      <UniqueIdentifier>{03694e7a-93a7-4f6c-8b06-7fda6275147d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\WorldTransform">
+      <UniqueIdentifier>{9f38a513-c383-4a49-a14f-c8ca4dd71001}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -125,6 +143,21 @@
     </ClCompile>
     <ClCompile Include="Engine\Manager\AudioManager\AudioManager.cpp">
       <Filter>Engine\Manager\AudioManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Skydome\Skydome.cpp">
+      <Filter>Game\Skydome</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameScene\GameScene.cpp">
+      <Filter>Game\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameScene\Battle\Battle.cpp">
+      <Filter>Game\GameScene\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Player\Player.cpp">
+      <Filter>Game\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\WorldTransform\WorldTransform.cpp">
+      <Filter>Engine\WorldTransform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +238,21 @@
     </ClInclude>
     <ClInclude Include="Engine\Base\ConstantBuffer.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Skydome\Skydome.h">
+      <Filter>Game\Skydome</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameScene\GameScene.h">
+      <Filter>Game\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameScene\Battle\Battle.h">
+      <Filter>Game\GameScene\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Player\Player.h">
+      <Filter>Game\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\WorldTransform\WorldTransform.h">
+      <Filter>Engine\WorldTransform</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

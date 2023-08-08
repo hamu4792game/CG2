@@ -52,7 +52,7 @@ void CommandDirectX::PreDraw()
 	ImGui::ShowDemoWindow();
 
 	//	Input初期の更新
-	KeyInput::Updata();
+	KeyInput::Update();
 
 	//	ここから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();

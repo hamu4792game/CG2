@@ -14,7 +14,6 @@ void Model::Texture(const std::string& filePath, const std::string& vsFileName, 
 	CreateDescriptor(filePath);
 	CreateShader(vsFileName, psFileName);
 	CreateVertexResource();
-	//CreateVertexSphere();
 	CreateGraphicsPipeline();
 }
 
