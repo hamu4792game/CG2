@@ -394,15 +394,11 @@ void Model::CreateGraphicsPipeline()
 	assert(SUCCEEDED(hr));
 }
 
-void Model::Draw(Vector3 pos, Vector3 scale, Vector3 rotate, Matrix4x4 viewProjectionMat, uint32_t color)
+void Model::Draw(WorldTransform worldTransform, const Matrix4x4& viewProjectionMat, uint32_t color)
 {
 	//	色の変更
 	*cColor = TextureManager::ChangeColor(color);
-	*cMat = MakeAffineMatrix(
-		{ scale.x,scale.y ,scale.z },
-		{ rotate.x,rotate.y,rotate.z },
-		{ pos.x,pos.y,pos.z }
-	) * viewProjectionMat;
+	*cMat = worldTransform.worldMatrix * viewProjectionMat;
 
 	Engine::GetList()->SetGraphicsRootSignature(rootSignature.Get());
 	Engine::GetList()->SetPipelineState(graphicsPipelineState.Get());

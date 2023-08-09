@@ -19,15 +19,24 @@ ShaderManager* sManager = nullptr;
 ID3D12Debug1* debugController = nullptr;
 ID3D12InfoQueue* infoQueue = nullptr;
 
+Engine* Engine::GetInstance()
+{
+	static Engine instance;
+	return &instance;
+}
+
 void Engine::Initialize(const char* title, int width, int height)
 {
+	Engine::GetInstance()->WindowWidth = width;
+	Engine::GetInstance()->WindowHeight = height;
+
 	//	COMの初期化を行う
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 	assert(SUCCEEDED(hr));
 
 	//	ゲームウィンドウの作成
 	winApp = WinApp::GetInstance();
-	winApp->CreateGameWindow(ConvertString(title).c_str(), width, height);
+	winApp->CreateGameWindow(ConvertString(title).c_str(), Engine::GetInstance()->WindowWidth, Engine::GetInstance()->WindowHeight);
 
 #ifdef _Debug
 	//	デバッグレイヤー
@@ -38,7 +47,7 @@ void Engine::Initialize(const char* title, int width, int height)
 
 	//	DirectXの初期化
 	comDirect = CommandDirectX::GetInstance();
-	comDirect->Initialize(winApp, width, height);
+	comDirect->Initialize(winApp, Engine::GetInstance()->WindowWidth, Engine::GetInstance()->WindowHeight);
 
 	sManager = ShaderManager::GetInstance();
 	sManager->DXcInitialize();

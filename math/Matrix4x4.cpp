@@ -253,6 +253,15 @@ Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix)
 	return resultVec;
 }
 
+Vector3 TransformNormal(const Vector3& vector, const Matrix4x4& matrix)
+{
+	Vector3 resultVec{};
+	resultVec.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0];
+	resultVec.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1];
+	resultVec.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2];
+	return resultVec;
+}
+
 Matrix4x4 MakeRotateXMatrix(float radian)
 {
 	Matrix4x4 result;
@@ -296,6 +305,11 @@ Matrix4x4 MakeRotateZMatrix(float radian)
 	result.m[0][1] = std::sinf(radian);
 
 	return result;
+}
+
+Matrix4x4 MakeRotateMatrix(const Vector3& rotate)
+{
+	return MakeRotateXMatrix(rotate.x) * MakeRotateYMatrix(rotate.y) * MakeRotateZMatrix(rotate.z);
 }
 
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate)

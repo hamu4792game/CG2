@@ -33,9 +33,7 @@ private:
 
 	//	カメラの生成
 	std::unique_ptr<Camera> camera;
-	//	カメラ座標
-	Vector3 cameraTranslate = { 0.0f,0.0f,-10.0f };
-	Vector3 cameraRotate = { 0.0f,0.0f,0.0f };
+
 	//	カメラ行列の生成
 	Matrix4x4 viewProjectionMatrix{};
 

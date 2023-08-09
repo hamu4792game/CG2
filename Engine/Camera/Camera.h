@@ -1,5 +1,6 @@
 #pragma once
 #include "math/Matrix4x4.h"
+#include "Engine/WorldTransform/WorldTransform.h"
 
 class Camera
 {
@@ -22,8 +23,22 @@ private:
 	Matrix4x4 viewMatrix{};
 	Matrix4x4 projectionMatrix{};
 	Matrix4x4 viewProjectionMatrix{};
+
+	void Update();
 public:
+	Vector3 translate;
+	Vector3 rotate;
+	Vector3 scale;
+
 	//	viewProjectionMatrixの取得
-	Matrix4x4 GetViewProMat(Vector3 translate = { 0.0f,0.0f,-5.0f }, Vector3 rotate = { 0.0f,0.0f,0.0f }, Vector3 scale = { 1.0f,1.0f,1.0f });
+	Matrix4x4 GetViewProMat();
+
+private:
+	//	追従対象
+	const WorldTransform* target_ = nullptr;
+public:
+	//	追従対象の設定
+	void SetTarget(const WorldTransform* target) { target_ = target; };
+
 };
 

@@ -20,12 +20,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	int32_t windowWidth = 1280; int32_t windowHeight = 720;
 	Engine::Initialize("Engine", windowWidth, windowHeight);
 	
-	Vector3 bunnyScale = { 1.0f,1.0f,1.0f };
-	Vector3 bunnyRotate = { 0.0f };
-	Vector3 bunnyWorldTranslate = { 0.0f };
-	bool bunnyFlag = false;
-	Vector4 bunnyColor = { 255.0f,255.0f,255.0f,255.0f };
-	//uint32_t bunnyColor = 0xffffffff;
 	
 	//	モデル読み込み
 

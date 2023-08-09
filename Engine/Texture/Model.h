@@ -12,6 +12,7 @@
 #include "math/Matrix4x4.h"
 #include "Engine/Manager/TextureManager.h"
 #include <wrl.h>
+#include <Engine/WorldTransform/WorldTransform.h>
 
 class Model
 {
@@ -72,6 +73,6 @@ private:
 	void CreateGraphicsPipeline();
 
 public:
-	void Draw(Vector3 pos, Vector3 scale, Vector3 rotate, Matrix4x4 viewProjectionMat, uint32_t color);
+	void Draw(WorldTransform worldTransform, const Matrix4x4& viewProjectionMat, uint32_t color);
 
 };

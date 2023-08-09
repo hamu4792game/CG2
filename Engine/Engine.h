@@ -7,11 +7,10 @@
 #pragma comment(lib,"dxguid.lib")
 
 class Engine
-{
-
-private:
-	
+{	
 public:
+
+	static Engine* GetInstance();
 
 	/// <summary>
 	/// 初期化
@@ -63,6 +62,10 @@ public:
 public:
 	static ID3D12Device* GetDevice();
 	static ID3D12GraphicsCommandList* GetList();
+
+public:
+	int WindowWidth;
+	int WindowHeight;
 
 };
 
