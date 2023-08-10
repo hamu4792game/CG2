@@ -14,7 +14,7 @@ void GameScene::Initialize()
 	player = std::make_unique<Player>();
 	player->Initialize();
 	skydome = std::make_unique<Skydome>("Resources/boxSky.obj");
-	camera = std::make_unique<Camera>(100.0f, true);
+	camera = std::make_unique<Camera>(2000.0f, true);
 
 	//	playerの角度セット
 	player->SetViewProjection(camera.get());

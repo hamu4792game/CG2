@@ -39,8 +39,6 @@ void Player::ModelLoad()
 
 void Player::Update()
 {
-	ImGui::DragFloat3("Rotate", &transform.rotation_.x, 0.1f);
-
 	Vector3 move = { 0.0f,0.0f,0.0f };
 
 	if (KeyInput::GetKey(DIK_W))
@@ -50,6 +48,14 @@ void Player::Update()
 	if (KeyInput::GetKey(DIK_S))
 	{
 		move.z -= 0.2f;
+	}
+	if (KeyInput::GetKey(DIK_D))
+	{
+		move.x += 0.2f;
+	}
+	if (KeyInput::GetKey(DIK_A))
+	{
+		move.x -= 0.2f;
 	}
 
 	//	移動があれば更新
@@ -65,7 +71,6 @@ void Player::Update()
 	}
 	//	座標移動（ベクトルの加算）
 	transform.translation_ += move;
-
 
 	transform.UpdateMatrix();
 	for (auto& i : parts_) {

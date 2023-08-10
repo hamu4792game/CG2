@@ -33,8 +33,8 @@ private:
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShader = nullptr;
 	Microsoft::WRL::ComPtr<IDxcBlob> pixelShader = nullptr;
 
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState = nullptr;
+	static Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature;
+	static Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState;
 
 	//	depthStencilResourceの生成
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource = nullptr;
@@ -54,21 +54,13 @@ private:
 public:
 
 	void Texture(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName);
-	void Sphere(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName);
-	void Triangle(const std::string& filePath, const std::string& vsFileName, const std::string& psFileName);
 
 private:
 	void CreateDescriptor(const std::string& filePath);
 
-	void CreateSphereDescriptor(const std::string& filePath);
-
 	void CreateShader(const std::string& vsFileName, const std::string& psFileName);
 
 	void CreateVertexResource();
-
-	void CreateVertexSphere();
-
-	void CreateVertexTriangle();
 
 	void CreateGraphicsPipeline();
 

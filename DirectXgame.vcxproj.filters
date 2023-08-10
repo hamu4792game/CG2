@@ -79,6 +79,9 @@
     <Filter Include="Engine\WorldTransform">
       <UniqueIdentifier>{9f38a513-c383-4a49-a14f-c8ca4dd71001}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Ground">
+      <UniqueIdentifier>{2132c422-f6dc-4d43-8d61-f07fd7d9a788}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
