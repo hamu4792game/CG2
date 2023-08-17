@@ -22,7 +22,16 @@ public:
 	Vector3& operator=(const Vector3& num);
 
 	Vector3 operator*(const float& num) const;
-	Vector3 operator*(const Vector3& num) const;
 };
 
 Vector3 Normalize(Vector3 vec3);
+
+Vector3 AbsoluteValue(const Vector3& num);
+
+Vector3 NormalizeRad(const Vector3& vec);
+
+//	弧度法から度数法へ変換する
+float AngleToRadian(float angle);
+
+//	度数法から弧度法へ変換する
+float RadianToAngle(float radian);

@@ -1,5 +1,7 @@
 #include "Engine/Camera/Camera.h"
 #include "Engine/Engine.h"
+#include "externals/imgui/imgui.h"
+#include "Engine/Input/KeyInput/KeyInput.h"
 
 Camera::Camera(float farClip_, bool proType) {
 	farZ = farClip_;
@@ -11,33 +13,48 @@ Camera::Camera(float farClip_, bool proType) {
 		projectionMatrix = MakeOrthographicMatrix(-float(Engine::GetInstance()->WindowWidth / 2), float(Engine::GetInstance()->WindowHeight / 2),
 			float(Engine::GetInstance()->WindowWidth / 2), -float(Engine::GetInstance()->WindowHeight / 2), 0.1f, farZ);
 	}
-	translate = { 0.0f,0.0f,-5.0f };
-	rotate = { 0.0f,0.0f,0.0f };
-	scale = { 1.0f,1.0f,1.0f };
+	transform.translation_ = { 0.0f,0.0f,-5.0f };
+	transform.rotation_ = { 0.0f,0.0f,0.0f };
+	transform.scale_ = { 1.0f,1.0f,1.0f };
+
+	camerapos = { 0.0f,5.0f,-70.0f };
 }
 
 void Camera::Update()
 {
 	//	ターゲットがあれば追従
-	if (target_)
-	{
-		//	追従対象からカメラまでのオフセット
-		Vector3 offset = { 0.0f,2.0f,-20.0f };
+	if (true)
+	{	
+		/*if (KeyInput::GetKey(DIK_W))
+		{
+			camerapos.z += 0.2f;
+		}
+		if (KeyInput::GetKey(DIK_S))
+		{
+			camerapos.z -= 0.2f;
+		}*/
 
-		//	カメラの角度から回転行列を計算する
-		Matrix4x4 rotatoMat = MakeRotateMatrix(this->rotate);
+		Vector3 pos = lockon_->GetTranslate() - target_->GetTranslate();
+		pos.y = 0.0f;
+		pos = Normalize(pos);
 
-		offset = TransformNormal(offset, rotatoMat);
+		degree = atan2f(pos.x, pos.z);
+		transform.rotation_.y = degree;
+		Matrix4x4 rom = MakeRotateYMatrix(degree);
+
+		Vector3 offset = TransformNormal(camerapos, rom);
 
 		//	座標をコピーしてオフセット分ずらす
-		translate = target_->translation_ + offset;
+		//	カメラはエネミーを中心に回転する
+		transform.translation_ = lockon_->GetTranslate() + offset;
+
 	}
 }
 
 Matrix4x4 Camera::GetViewProMat() {
 	Update();
 	//	行列の計算
-	cameraMatrix = MakeAffineMatrix(scale, rotate, translate);
+	cameraMatrix = MakeAffineMatrix(transform.scale_, transform.rotation_, transform.translation_);
 	viewMatrix = Inverse(cameraMatrix);
 	viewProjectionMatrix = viewMatrix * projectionMatrix;
 	return viewProjectionMatrix;

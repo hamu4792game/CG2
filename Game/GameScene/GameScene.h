@@ -24,18 +24,15 @@ public:
 
 	
 private:
-	Battle battle;
-	std::unique_ptr<Player> player;
-	
-
+	//	天球の生成
 	std::unique_ptr<Skydome> skydome;
-
-
 	//	カメラの生成
-	std::unique_ptr<Camera> camera;
-
+	std::shared_ptr<Camera> camera;
 	//	カメラ行列の生成
 	Matrix4x4 viewProjectionMatrix{};
+
+	//	シーン用インスタンス
+	Battle battle;
 
 public:
 

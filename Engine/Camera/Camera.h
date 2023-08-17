@@ -25,20 +25,28 @@ private:
 	Matrix4x4 viewProjectionMatrix{};
 
 	void Update();
-public:
-	Vector3 translate;
-	Vector3 rotate;
-	Vector3 scale;
 
+	//	追従対象からカメラまでの初期位置
+	Vector3 camerapos = { 0.0f,5.0f,-70.0f };
+
+public:
+	WorldTransform transform;
+	//	Y軸の角度
+	float degree;
 	//	viewProjectionMatrixの取得
 	Matrix4x4 GetViewProMat();
 
 private:
-	//	追従対象
+	//	追従対象 (player)
 	const WorldTransform* target_ = nullptr;
+	//	注視点 (enemy)
+	const WorldTransform* lockon_ = nullptr;
+	
 public:
 	//	追従対象の設定
 	void SetTarget(const WorldTransform* target) { target_ = target; };
+	//	追従対象の設定
+	void SetLockon(const WorldTransform* lockon) { lockon_ = lockon; };
 
 };
 

@@ -4,13 +4,13 @@
 #include "Engine/WorldTransform/WorldTransform.h"
 #include "Engine/Camera/Camera.h"
 
-class Player
+class Enemy
 {
 public:
-	Player() : num(4) {};
-	~Player() = default;
+	Enemy() : num(1) {};
+	~Enemy() = default;
 
-	//	初期化処理
+	//	初期化
 	void Initialize();
 	//	モデルのロード
 	void ModelLoad();
@@ -19,13 +19,8 @@ public:
 	//	描画処理
 	void Draw(const Matrix4x4& viewProjection);
 
-	
-
 private:
-	
 	WorldTransform transform;
-
-	uint32_t color = 0xffffffff;
 
 	const uint16_t num;
 
@@ -33,11 +28,7 @@ private:
 	std::vector<std::unique_ptr < Model>> models_;
 	//	パーツ用データ
 	std::vector<WorldTransform> parts_;
-
-	const Camera* camera = nullptr;
 public:
-	//	カメラのセット
-	void SetViewProjection(const Camera* view) { camera = view; };
 
 	/// <summary>
 	/// ワールド変換データを取得
@@ -45,6 +36,5 @@ public:
 	/// <returns>ワールド変換データ</returns>
 	const WorldTransform& GetWorldTransform() { return transform; };
 
-	
 
 };

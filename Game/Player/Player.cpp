@@ -7,7 +7,7 @@
 
 void Player::Initialize()
 {
-	transform.translation_ = Vector3(0.0f, 0.0f, 0.0f);
+	transform.translation_ = Vector3(0.0f, 10.0f, -40.0f);
 
 	for (uint16_t i = 0; i < num; i++)
 	{
@@ -39,35 +39,40 @@ void Player::ModelLoad()
 
 void Player::Update()
 {
+	ImGui::DragFloat3("PlayerTranslate", &transform.translation_.x, 0.1f);
 	Vector3 move = { 0.0f,0.0f,0.0f };
+	const float speed = 0.2f;
 
 	if (KeyInput::GetKey(DIK_W))
 	{
-		move.z += 0.2f;
+		move.z += speed;
 	}
 	if (KeyInput::GetKey(DIK_S))
 	{
-		move.z -= 0.2f;
+		move.z -= speed;
 	}
 	if (KeyInput::GetKey(DIK_D))
 	{
-		move.x += 0.2f;
+		move.x += speed;
 	}
 	if (KeyInput::GetKey(DIK_A))
 	{
-		move.x -= 0.2f;
+		move.x -= speed;
 	}
 
 	//	移動があれば更新
 	if (move.x != 0.0f || move.y != 0.0f || move.z != 0.0f)
 	{
-		//	移動量の正規化
-		move = Normalize(move) * 0.2f;
+		//	移動量の正規化 * speed
+		move = Normalize(move) * speed;
 		//	移動ベクトルをカメラの角度だけ回転させる
-		move = TransformNormal(move, MakeRotateMatrix(camera->rotate));
+		move = TransformNormal(move, MakeRotateMatrix(camera->transform.rotation_));
 
 		//	移動方向に見た目を合わせる
-		transform.rotation_.y = std::atan2f(move.x, move.z);
+		//transform.rotation_.y = std::atan2f(move.x, move.z);
+
+		//	敵の方向を見続ける
+		transform.rotation_.y = camera->degree;
 	}
 	//	座標移動（ベクトルの加算）
 	transform.translation_ += move;

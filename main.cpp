@@ -20,11 +20,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	int32_t windowWidth = 1280; int32_t windowHeight = 720;
 	Engine::Initialize("Engine", windowWidth, windowHeight);
 	
-	
-	//	モデル読み込み
-
-	
-
 	GameScene::GetInstance()->Initialize();
 
 	//	ウィンドウの×ボタンが押されるまでループ

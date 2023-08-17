@@ -16,11 +16,14 @@ private:
 	
 public:
 	//	加算
-	Matrix4x4 operator+(const Matrix4x4& mat);
+	Matrix4x4 operator+(const Matrix4x4& mat) const;
+	Matrix4x4& operator+=(const Matrix4x4& mat);
 	//	減算
-	Matrix4x4 operator-(const Matrix4x4& mat);
+	Matrix4x4 operator-(const Matrix4x4& mat) const;
+	Matrix4x4& operator-=(const Matrix4x4& mat);
 	//	行列の積
-	Matrix4x4 operator*(const Matrix4x4& mat);
+	Matrix4x4 operator*(const Matrix4x4& mat) const;
+	Matrix4x4& operator*=(const Matrix4x4& mat);
 	//	行列の代入
 	Matrix4x4& operator=(const Matrix4x4& mat);
 	
