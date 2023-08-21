@@ -114,6 +114,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameScene\Battle\Battle.cpp" />
     <ClCompile Include="Game\GameScene\GameScene.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
+    <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Game\Skydome\Skydome.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math\Matrix4x4.cpp" />
@@ -147,6 +148,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameScene\Battle\Battle.h" />
     <ClInclude Include="Game\GameScene\GameScene.h" />
     <ClInclude Include="Game\Player\Player.h" />
+    <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Game\Skydome\Skydome.h" />
     <ClInclude Include="math\Matrix4x4.h" />
     <ClInclude Include="math\Vector2.h" />

@@ -85,6 +85,9 @@
     <Filter Include="Game\Enemy">
       <UniqueIdentifier>{07575ff1-38ea-4518-9f0e-adea8693764a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Player\PlayerBullet">
+      <UniqueIdentifier>{9f61e05a-cd91-4265-aada-ba71058d3e3a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -170,6 +173,9 @@
     </ClCompile>
     <ClCompile Include="Game\Enemy\Enemy.cpp">
       <Filter>Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp">
+      <Filter>Game\Player\PlayerBullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -268,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="Game\Enemy\Enemy.h">
       <Filter>Game\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h">
+      <Filter>Game\Player\PlayerBullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
