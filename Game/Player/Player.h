@@ -3,6 +3,7 @@
 #include <vector>
 #include "Engine/WorldTransform/WorldTransform.h"
 #include "Engine/Camera/Camera.h"
+#include "Game/Player/PlayerBullet/PlayerBullet.h"
 
 class Player
 {
@@ -19,7 +20,6 @@ public:
 	//	描画処理
 	void Draw(const Matrix4x4& viewProjection);
 
-	
 
 private:
 	
@@ -35,6 +35,10 @@ private:
 	std::vector<WorldTransform> parts_;
 
 	const Camera* camera = nullptr;
+
+	//	弾のデータ
+	std::vector<std::unique_ptr<PlayerBullet>> bullets_;
+
 public:
 	//	カメラのセット
 	void SetViewProjection(const Camera* view) { camera = view; };

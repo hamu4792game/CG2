@@ -25,6 +25,7 @@ void Player::Initialize()
 	color = 0xffffffff;
 
 	ModelLoad();
+
 }
 
 void Player::ModelLoad()
@@ -77,6 +78,15 @@ void Player::Update()
 	//	座標移動（ベクトルの加算）
 	transform.translation_ += move;
 
+	if (KeyInput::PushKey(DIK_SPACE)) {
+		bullets_.push_back(std::make_unique<PlayerBullet>());
+		(*bullets_.rbegin())->Initialize(camera->transform.rotation_);
+	}
+	//	弾更新
+	for (auto i = bullets_.begin(); i != bullets_.end(); i++) {
+		(*i)->Update();
+	}
+
 	transform.UpdateMatrix();
 	for (auto& i : parts_) {
 		i.UpdateMatrix();
@@ -88,5 +98,8 @@ void Player::Draw(const Matrix4x4& viewProjection)
 	for (uint16_t i = 0u; i < parts_.size(); i++)
 	{
 		models_[i]->Draw(parts_[i], viewProjection, color);
+	}
+	for (auto i = bullets_.begin(); i != bullets_.end(); i++) {
+		(*i)->Draw(viewProjection);
 	}
 }
