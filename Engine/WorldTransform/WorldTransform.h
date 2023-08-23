@@ -8,6 +8,8 @@ public:
 	WorldTransform() = default;
 	~WorldTransform() = default;
 
+	WorldTransform& operator=(const WorldTransform &trans);
+
 public:
 	// ローカルスケール
 	Vector3 scale_ = { 1.0f, 1.0f, 1.0f };

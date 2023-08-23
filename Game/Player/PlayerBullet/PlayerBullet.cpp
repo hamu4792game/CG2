@@ -1,19 +1,15 @@
 #include "Game/Player/PlayerBullet/PlayerBullet.h"
-#include "Game/Player/Player.h"
 
 
-void PlayerBullet::Initialize(const Vector3& camerarotate)
+void PlayerBullet::Initialize(const Vector3& vector, const WorldTransform& player)
 {
-	transform.parent_ = &player->GetWorldTransform();
-	transform.translation_.y = 10.0f;
+	//transform.parent_ = &player;
+	transform.translation_ = player.translation_;
+	transform.translation_.y += 5.0f;
 	models_ = std::make_unique<Model>();
 
 	//	移動量の正規化 * speed
-	move = { 0.0f,0.0f,0.2f };
-	move = Normalize(move) * 0.2f;
-	//	移動ベクトルをカメラの角度だけ回転させる
-	move = TransformNormal(move, MakeRotateMatrix(camerarotate));
-
+	move = vector * 0.5f;
 	ModelLoad();
 }
 

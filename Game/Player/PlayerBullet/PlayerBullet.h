@@ -2,15 +2,13 @@
 #include "Engine/WorldTransform/WorldTransform.h"
 #include "Engine/Texture/Model.h"
 
-class Player;
-
 class PlayerBullet
 {
 public:
 	PlayerBullet() = default;
 	~PlayerBullet() = default;
 
-	void Initialize(const Vector3& camerarotate);
+	void Initialize(const Vector3& vector, const WorldTransform& player);
 	//	モデルのロード
 	void ModelLoad();
 
@@ -21,8 +19,6 @@ public:
 private:
 	WorldTransform transform;
 	
-	Player* player;
-
 	Vector3 move;
 
 	//	Y軸の角度

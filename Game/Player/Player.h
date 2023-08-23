@@ -13,17 +13,32 @@ public:
 
 	//	初期化処理
 	void Initialize();
-	//	モデルのロード
-	void ModelLoad();
 	//	更新処理
 	void Update();
 	//	描画処理
 	void Draw(const Matrix4x4& viewProjection);
 
+private:
+	//	モデルのロード
+	void ModelLoad();
+	//	移動制限
+	void MoveLimit();
+
+public:
+	//	移動処理
+	void Move();
+	//	攻撃処理
+	void Attack(const Vector3& distance);
+
 
 private:
 	
 	WorldTransform transform;
+
+	//	前座標の移動分ベクトル
+	Vector3 oldMove;
+	//	前座標
+	Vector3 oldPos;
 
 	uint32_t color = 0xffffffff;
 

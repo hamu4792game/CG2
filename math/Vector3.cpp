@@ -67,10 +67,15 @@ Vector3& Vector3::operator*=(const float& num)
 	return *this;
 }
 
+float OuterProduct(const Vector3& vec)
+{
+	return sqrtf((vec.x * vec.x) + (vec.y * vec.y) + (vec.z * vec.z));
+}
+
 Vector3 Normalize(Vector3 vec3)
 {
 	Vector3 result;
-	float w = sqrtf((vec3.x * vec3.x) + (vec3.y * vec3.y) + (vec3.z * vec3.z));
+	float w = OuterProduct(vec3);
 	if (w == 0)	{
 		return Vector3(0.0f, 0.0f, 0.0f);
 	}
@@ -108,4 +113,9 @@ float AngleToRadian(float angle)
 float RadianToAngle(float radian)
 {
 	return radian * (180.0f / std::numbers::pi_v<float>);
+}
+
+Vector3 FindVector(const Vector3& vec1, const Vector3& vec2)
+{
+	return Normalize(vec2 - vec1);
 }

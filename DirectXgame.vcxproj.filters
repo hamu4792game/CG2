@@ -177,6 +177,9 @@
     <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp">
       <Filter>Game\Player\PlayerBullet</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Ground\Ground.cpp">
+      <Filter>Game\Ground</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imstb_rectpack.h">
@@ -277,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h">
       <Filter>Game\Player\PlayerBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Ground\Ground.h">
+      <Filter>Game\Ground</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

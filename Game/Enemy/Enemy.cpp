@@ -2,9 +2,9 @@
 
 void Enemy::Initialize()
 {
-	transform.translation_ = Vector3(0.0f, 10.0f, 0.0f);
+	transform.translation_ = Vector3(0.0f, 5.0f, 0.0f);
 	transform.rotation_ = Vector3(0.0f, 0.0f, 0.0f);
-	transform.scale_ = Vector3(1.0f, 1.0f, 1.0f);
+	transform.scale_ = Vector3(1.0f, 10.0f, 1.0f);
 
 	for (uint16_t i = 0; i < num; i++)
 	{

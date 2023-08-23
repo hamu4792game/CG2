@@ -26,4 +26,9 @@ private:	// 必要なメンバ変数のインスタンス
 	std::unique_ptr<Player> player;
 
 	std::unique_ptr<Enemy> enemy;
+
+private:
+	//	エネミーからプレイヤーに伸びるベクトル
+	Vector3 vec;
+
 };

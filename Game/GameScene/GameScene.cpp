@@ -12,6 +12,7 @@ void GameScene::Initialize()
 {
 	//	モデルの読み込みと生成
 	skydome = std::make_unique<Skydome>("Resources/box.obj");
+	ground = std::make_unique<Ground>("Resources/ground.obj");
 	camera = std::make_shared<Camera>(2000.0f, true);
 
 	//	初期化
@@ -43,6 +44,7 @@ void GameScene::Update()
 void GameScene::Draw()
 {
 	skydome->Draw(viewProjectionMatrix);
+	ground->Draw(viewProjectionMatrix);
 	
 	switch (scene)
 	{

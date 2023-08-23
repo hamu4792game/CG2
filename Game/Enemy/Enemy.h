@@ -19,7 +19,7 @@ public:
 	//	描画処理
 	void Draw(const Matrix4x4& viewProjection);
 
-private:
+public:
 	WorldTransform transform;
 
 	const uint16_t num;

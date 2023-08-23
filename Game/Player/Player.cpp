@@ -4,10 +4,11 @@
 #include "math/Matrix4x4.h"
 #include "Engine/Input/KeyInput/KeyInput.h"
 #include <cmath>
+#include <algorithm>
 
 void Player::Initialize()
 {
-	transform.translation_ = Vector3(0.0f, 10.0f, -40.0f);
+	transform.translation_ = Vector3(0.0f, 0.0f, -40.0f);
 
 	for (uint16_t i = 0; i < num; i++)
 	{
@@ -28,6 +29,19 @@ void Player::Initialize()
 
 }
 
+void Player::Update()
+{
+	//	弾更新
+	for (auto i = bullets_.begin(); i != bullets_.end(); i++) {
+		(*i)->Update();
+	}
+
+	transform.UpdateMatrix();
+	for (auto& i : parts_) {
+		i.UpdateMatrix();
+	}
+}
+
 void Player::ModelLoad()
 {
 	
@@ -38,7 +52,7 @@ void Player::ModelLoad()
 
 }
 
-void Player::Update()
+void Player::Move()
 {
 	ImGui::DragFloat3("PlayerTranslate", &transform.translation_.x, 0.1f);
 	Vector3 move = { 0.0f,0.0f,0.0f };
@@ -68,29 +82,27 @@ void Player::Update()
 		move = Normalize(move) * speed;
 		//	移動ベクトルをカメラの角度だけ回転させる
 		move = TransformNormal(move, MakeRotateMatrix(camera->transform.rotation_));
-
+			
 		//	移動方向に見た目を合わせる
-		//transform.rotation_.y = std::atan2f(move.x, move.z);
+		transform.rotation_.y = std::atan2f(move.x, move.z);
 
 		//	敵の方向を見続ける
-		transform.rotation_.y = camera->degree;
+		//transform.rotation_.y = camera->degree;
 	}
 	//	座標移動（ベクトルの加算）
-	transform.translation_ += move;
+	if (fabs(transform.translation_.x + move.x) <= 1.0f && fabs(transform.translation_.z + move.z) <= 1.0f) {
+		transform.translation_ += oldMove;
+	}
+	else {
+		transform.translation_ += move;
+	}
+	oldMove = move;
 
-	if (KeyInput::PushKey(DIK_SPACE)) {
-		bullets_.push_back(std::make_unique<PlayerBullet>());
-		(*bullets_.rbegin())->Initialize(camera->transform.rotation_);
-	}
-	//	弾更新
-	for (auto i = bullets_.begin(); i != bullets_.end(); i++) {
-		(*i)->Update();
-	}
+	//	移動制限
+	MoveLimit();
 
-	transform.UpdateMatrix();
-	for (auto& i : parts_) {
-		i.UpdateMatrix();
-	}
+	カメラのパラメーターをプレイヤーで操作してカメラの更新はCamera.Updateにやらせるように変更する
+
 }
 
 void Player::Draw(const Matrix4x4& viewProjection)
@@ -101,5 +113,22 @@ void Player::Draw(const Matrix4x4& viewProjection)
 	}
 	for (auto i = bullets_.begin(); i != bullets_.end(); i++) {
 		(*i)->Draw(viewProjection);
+	}
+}
+
+void Player::MoveLimit()
+{
+	transform.translation_.x = std::clamp(transform.translation_.x, -50.0f, 50.0f);
+	transform.translation_.z = std::clamp(transform.translation_.z, -50.0f, 50.0f);
+	//transform.translation_.y = 0.0f;
+}
+
+void Player::Attack(const Vector3& distance)
+{
+	if (KeyInput::PushKey(DIK_SPACE)) {
+		//if (OuterProduct(distance) >= 10.0f) {
+			bullets_.push_back(std::make_unique<PlayerBullet>());
+			(*bullets_.rbegin())->Initialize(distance, transform);
+		//}
 	}
 }

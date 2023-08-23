@@ -2,6 +2,7 @@
 #include "Engine/Engine.h"
 #include "Game/GameScene/Battle/Battle.h"
 #include "Game/Skydome/Skydome.h"
+#include "Game/Ground/Ground.h"
 #include "Game/Player/Player.h"
 #include "Engine/Texture/Model.h"
 #include "Engine/Camera/Camera.h"
@@ -26,6 +27,8 @@ public:
 private:
 	//	天球の生成
 	std::unique_ptr<Skydome> skydome;
+	//	地面の生成
+	std::unique_ptr<Ground> ground;
 	//	カメラの生成
 	std::shared_ptr<Camera> camera;
 	//	カメラ行列の生成

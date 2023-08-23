@@ -27,7 +27,7 @@ private:
 	void Update();
 
 	//	追従対象からカメラまでの初期位置
-	//Vector3 camerapos = { 0.0f,5.0f,-70.0f };
+	Vector3 camerapos = { 0.0f,5.0f,-70.0f };
 
 public:
 	WorldTransform transform;
@@ -50,7 +50,7 @@ private:
 public:
 	//	追従対象の設定
 	void SetTarget(const WorldTransform* target) { target_ = target; };
-	//	追従対象の設定
+	//	注視点設定
 	void SetLockon(const WorldTransform* lockon) { lockon_ = lockon; };
 
 };

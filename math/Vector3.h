@@ -25,8 +25,11 @@ public:
 	Vector3& operator*=(const float& num);
 };
 
+//	外積を求める
+float OuterProduct(const Vector3& vec);
+//	正規化
 Vector3 Normalize(Vector3 vec3);
-
+//	絶対値を求める
 Vector3 AbsoluteValue(const Vector3& num);
 
 Vector3 NormalizeRad(const Vector3& vec);
@@ -36,3 +39,11 @@ float AngleToRadian(float angle);
 
 //	度数法から弧度法へ変換する
 float RadianToAngle(float radian);
+
+/// <summary>
+/// vec1からvec2のベクトルを求める
+/// </summary>
+/// <param name="vec1">引くベクトル</param>
+/// <param name="vec2">引かれるベクトル</param>
+/// <returns>正規化されたベクトル</returns>
+Vector3 FindVector(const Vector3& vec1, const Vector3& vec2);
