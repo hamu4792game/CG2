@@ -22,6 +22,7 @@ public:
 	Vector3& operator=(const Vector3& num);
 
 	Vector3 operator*(const float& num) const;
+	Vector3& operator*=(const float& num);
 };
 
 Vector3 Normalize(Vector3 vec3);

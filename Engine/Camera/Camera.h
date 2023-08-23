@@ -27,7 +27,7 @@ private:
 	void Update();
 
 	//	追従対象からカメラまでの初期位置
-	Vector3 camerapos = { 0.0f,5.0f,-70.0f };
+	//Vector3 camerapos = { 0.0f,5.0f,-70.0f };
 
 public:
 	WorldTransform transform;
@@ -35,6 +35,11 @@ public:
 	float degree;
 	//	viewProjectionMatrixの取得
 	Matrix4x4 GetViewProMat();
+
+	Vector3 position;	//カメラの座標
+	Vector3 target;		//カメラの注視点
+	Vector3 playerPosition;	//playerの座標
+	Vector3 enemyPosition;	//enemyの座標
 
 private:
 	//	追従対象 (player)

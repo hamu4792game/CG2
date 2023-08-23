@@ -60,6 +60,13 @@ Vector3 Vector3::operator*(const float& num) const
 	return result;
 }
 
+Vector3& Vector3::operator*=(const float& num)
+{
+	*this = *this * num;
+
+	return *this;
+}
+
 Vector3 Normalize(Vector3 vec3)
 {
 	Vector3 result;
