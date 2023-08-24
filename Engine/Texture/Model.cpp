@@ -246,7 +246,7 @@ void Model::CreateGraphicsPipeline()
 void Model::Draw(WorldTransform worldTransform, const Matrix4x4& viewProjectionMat, uint32_t color)
 {
 	//	色の変更
-	*cColor = TextureManager::ChangeColor(color);
+	*cColor = ChangeColor(color);
 	*cMat = worldTransform.worldMatrix * viewProjectionMat;
 
 	Engine::GetList()->SetGraphicsRootSignature(rootSignature.Get());

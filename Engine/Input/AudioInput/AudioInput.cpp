@@ -68,23 +68,24 @@ void AudioInput::SoundUnload(SoundData* soundData)
 	soundData->wfex = {};
 }
 
-void AudioInput::SoundPlayWave()
+void AudioInput::SoundPlayWave(bool loop)
 {
 	HRESULT result = 0;
 	
 	//	波形フォーマットを元にSourceVoiceの生成
 	//	既にあればスルー
-	pSourceVoice = nullptr;
-	result = AudioManager::GetInstance()->GetAudio2()->CreateSourceVoice(&pSourceVoice, &soundData.wfex);
-	assert(SUCCEEDED(result));
-
+	if (!pSourceVoice) {
+		result = AudioManager::GetInstance()->GetAudio2()->CreateSourceVoice(&pSourceVoice, &soundData.wfex);
+		assert(SUCCEEDED(result));
+	}
+	
 	//	再生する波形データの設定
 	XAUDIO2_BUFFER buf{};
 	buf.pAudioData = soundData.pBuffer;
 	buf.AudioBytes = soundData.bufferSize;
 	buf.Flags = XAUDIO2_END_OF_STREAM;
 	//	ループしたい時
-	/*buf.LoopCount = XAUDIO2_LOOP_INFINITE;*/
+	if (loop) { buf.LoopCount = XAUDIO2_LOOP_INFINITE; };
 	result = pSourceVoice->SubmitSourceBuffer(&buf);
 	//	波形データの再生
 	result = pSourceVoice->Start();

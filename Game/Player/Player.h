@@ -39,7 +39,7 @@ public:
 	//	移動処理
 	void Move();
 	//	攻撃処理
-	void Attack(const Vector3& distance);
+	void Attack();
 
 	void CameraMove();
 
@@ -55,6 +55,9 @@ private:
 	uint32_t color = 0xffffffff;
 
 	const uint16_t num;
+
+	//	敵からの距離
+	float distance = 0.0f;
 
 	//	モデルデータ配列
 	std::vector<std::unique_ptr < Model>> models_;

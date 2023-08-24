@@ -24,6 +24,8 @@ void Player::Initialize()
 	parts_[Head].translation_ = { 0.0f,1.5f,0.0f };
 
 	color = 0xffffffff;
+	distance = 0.0f;
+
 
 	ModelLoad();
 
@@ -31,6 +33,15 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	//	
+	distance = OuterProduct(transform.translation_ - enemy_->transform.translation_);
+	ImGui::Text("%f", distance);
+
+
+	Move();
+	Attack();
+
+
 	//	弾更新
 	for (auto i = bullets_.begin(); i != bullets_.end(); i++) {
 		(*i)->Update(enemy_->transform.translation_);
@@ -58,7 +69,7 @@ void Player::Move()
 	Vector3 move = { 0.0f,0.0f,0.0f };
 	const float speed = 0.2f;
 
-	if (KeyInput::GetKey(DIK_W))
+	if (KeyInput::GetKey(DIK_W) && distance >= 15.0f)
 	{
 		move.z += speed;
 	}
@@ -102,8 +113,6 @@ void Player::Move()
 	//	移動制限
 	MoveLimit();
 
-	//カメラのパラメーターをプレイヤーで操作してカメラの更新はCamera.Updateにやらせるように変更する
-
 }
 
 void Player::Draw(const Matrix4x4& viewProjection)
@@ -124,16 +133,17 @@ void Player::MoveLimit()
 	transform.translation_.y = 0.0f;
 }
 
-void Player::Attack(const Vector3& distance)
+void Player::Attack()
 {
 	//	生存フラグが折れたら要素を取り除く
-	std::erase_if(bullets_, [](std::unique_ptr<PlayerBullet>& bullet) {return bullet->isAlive == false; });
-	ImGui::Text("%f", OuterProduct(distance));
+	if (std::erase_if(bullets_, [](std::unique_ptr<PlayerBullet>& bullet) {return bullet->isAlive == false; })) {
+		enemy_->Damage();
+	}
 	if (KeyInput::PushKey(DIK_SPACE)) {
-		if (OuterProduct(distance) >= 15.0f) {
+		if (distance >= 15.0f) {
 		//	弾を追加する
 			bullets_.push_back(std::make_unique<PlayerBullet>());
-			(*bullets_.rbegin())->Initialize(distance, transform);
+			(*bullets_.rbegin())->Initialize(enemy_->transform.translation_, transform);
 		}
 	}
 }
@@ -155,7 +165,7 @@ void Player::CameraMove()
 		//プレイヤーの座標に求めたベクトルを足して、カメラの座標とします。
 		camera->position = transform.translation_ + pos;
 		//	カメラを回転してあげる 逆ベクトルなので-
-		camera->transform.rotation_.y = atan2f(-camera->position.x, -camera->position.z);
+		camera->transform.rotation_.y = atan2f(-pos.x, -pos.z);
 		//transform.rotation_.x = atan2f(-position.y, -position.z);
 
 		//	座標の反映

@@ -23,13 +23,8 @@ void Battle::Initialize(std::shared_ptr<Camera> camera)
 
 void Battle::Update()
 {
-	vec = FindVector(player->GetWorldTransform().GetTranslate(), enemy->GetWorldTransform().GetTranslate());
-
-	player->Move();
-	player->Attack(vec);
-
-	player->Update();
 	enemy->Update();
+	player->Update();
 	if (KeyInput::PushKey(DIK_L))
 	{
 		/*GameScene::GetInstance()->scene = GameScene::Scene::RESULT;*/

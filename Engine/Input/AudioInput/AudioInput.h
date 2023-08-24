@@ -50,13 +50,15 @@ public:
 	void SoundUnload(SoundData* soundData);
 
 	//	音声再生
-	void SoundPlayWave();
+	void SoundPlayWave(bool loop = false);
 
 	//	音声のストップ
 	void SoundStop();
 
+	//	ポーズ
 	void Pose();
 	
+	//	ポーズで止めていたところから再生
 	void ReStart();
 
 	//	音量のセット

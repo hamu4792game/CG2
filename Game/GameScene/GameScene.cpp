@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "Battle/Battle.h"
 #include <externals/imgui/imgui.h>
+#include "Engine/Input/KeyInput/KeyInput.h"
 
 GameScene* GameScene::GetInstance()
 {
@@ -14,6 +15,10 @@ void GameScene::Initialize()
 	skydome = std::make_unique<Skydome>("Resources/box.obj");
 	ground = std::make_unique<Ground>("Resources/ground.obj");
 	camera = std::make_shared<Camera>(2000.0f, true);
+
+	battleBGM.SoundLoadWave("./Resources/sound/w006.wav");
+	battleBGM.SoundPlayWave(true);
+	battleBGM.SetVolume(0.5f);
 
 	//	初期化
 	battle.Initialize(camera);
@@ -31,7 +36,7 @@ void GameScene::Update()
 		break;
 	case GameScene::Scene::BATTLE:
 		battle.Update();
-
+		
 		break;
 	case GameScene::Scene::RESULT:
 		break;

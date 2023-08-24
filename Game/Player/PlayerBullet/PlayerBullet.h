@@ -8,6 +8,11 @@ public:
 	PlayerBullet() = default;
 	~PlayerBullet() = default;
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="vector">対象 今回はenemy</param>
+	/// <param name="player">発射位置</param>
 	void Initialize(const Vector3& vector, const WorldTransform& player);
 	//	モデルのロード
 	void ModelLoad();
@@ -16,7 +21,7 @@ public:
 
 	void Draw(const Matrix4x4& viewProjection);
 	//	生存フラグ
-	bool isAlive;
+	bool isAlive = 0.0f;
 
 private:
 	WorldTransform transform;

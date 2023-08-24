@@ -6,6 +6,7 @@
 #include "Game/Player/Player.h"
 #include "Engine/Texture/Model.h"
 #include "Engine/Camera/Camera.h"
+#include "Engine/Input/AudioInput/AudioInput.h"
 
 class GameScene
 {
@@ -36,6 +37,8 @@ private:
 
 	//	シーン用インスタンス
 	Battle battle;
+
+	AudioInput battleBGM;
 
 public:
 

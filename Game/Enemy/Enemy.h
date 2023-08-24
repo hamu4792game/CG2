@@ -19,10 +19,15 @@ public:
 	//	描画処理
 	void Draw(const Matrix4x4& viewProjection);
 
+	//	ダメージを受けたら
+	void Damage();
+
 public:
 	WorldTransform transform;
 
 	const uint16_t num;
+
+	Vector4 color;
 
 	//	モデルデータ配列
 	std::vector<std::unique_ptr < Model>> models_;

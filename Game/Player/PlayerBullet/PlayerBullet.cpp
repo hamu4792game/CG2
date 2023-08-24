@@ -9,14 +9,14 @@ void PlayerBullet::Initialize(const Vector3& vector, const WorldTransform& playe
 	models_ = std::make_unique<Model>();
 
 	//	移動量の正規化 * speed
-	velocity = Normalize(vector) * 0.5f;
+	velocity = Normalize(FindVector(player.translation_, vector)) * 0.5f;
 	isAlive = true;
 	ModelLoad();
 }
 
 void PlayerBullet::ModelLoad()
 {
-	models_->Texture("Resources/sphere.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	models_->Texture("Resources/bullet/bullet.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 }
 
 void PlayerBullet::Update(const Vector3& vector)
@@ -28,9 +28,8 @@ void PlayerBullet::Update(const Vector3& vector)
 	if (isAlive) {
 		//	移動量の追加
 		transform.translation_ += velocity;
-	}
-	else {
-		transform.translation_ = Vector3(0.0f, -50.0f, 0.0f);
+		//	回転
+		transform.rotation_.y += AngleToRadian(10.0f);
 	}
 	
 	//	更新
