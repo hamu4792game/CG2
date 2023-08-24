@@ -31,8 +31,6 @@ private:
 
 public:
 	WorldTransform transform;
-	//	Y軸の角度
-	float degree;
 	//	viewProjectionMatrixの取得
 	Matrix4x4 GetViewProMat();
 

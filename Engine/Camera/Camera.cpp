@@ -54,17 +54,15 @@ void Camera::Update()
 		position = playerPosition + pos;
 		//	カメラを回転してあげる 逆ベクトルなので-
 		transform.rotation_.y = atan2f(-position.x, -position.z);
+		//transform.rotation_.x = atan2f(-position.y, -position.z);
 
 		//	座標の反映
 		transform.translation_ = position;
 	}
-
-	
-
 }
 
 Matrix4x4 Camera::GetViewProMat() {
-	Update();
+	//Update();
 	//	行列の計算
 	cameraMatrix = MakeAffineMatrix(transform.scale_, transform.rotation_, transform.translation_);
 	viewMatrix = Inverse(cameraMatrix);

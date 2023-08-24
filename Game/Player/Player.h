@@ -4,6 +4,7 @@
 #include "Engine/WorldTransform/WorldTransform.h"
 #include "Engine/Camera/Camera.h"
 #include "Game/Player/PlayerBullet/PlayerBullet.h"
+#include "Game/Enemy/Enemy.h"
 
 class Player
 {
@@ -19,6 +20,16 @@ public:
 	void Draw(const Matrix4x4& viewProjection);
 
 private:
+	enum PARTS
+	{
+		Body,
+		Head,
+		L_arm,
+		R_arm,
+
+		Num
+	};
+
 	//	モデルのロード
 	void ModelLoad();
 	//	移動制限
@@ -30,6 +41,7 @@ public:
 	//	攻撃処理
 	void Attack(const Vector3& distance);
 
+	void CameraMove();
 
 private:
 	
@@ -49,14 +61,17 @@ private:
 	//	パーツ用データ
 	std::vector<WorldTransform> parts_;
 
-	const Camera* camera = nullptr;
+	Camera* camera = nullptr;
+
+	Enemy* enemy_ = nullptr;
 
 	//	弾のデータ
 	std::vector<std::unique_ptr<PlayerBullet>> bullets_;
 
 public:
 	//	カメラのセット
-	void SetViewProjection(const Camera* view) { camera = view; };
+	void SetViewProjection(Camera* view) { camera = view; };
+	void SetEnemy_ptr(Enemy* enemy) { enemy_ = enemy; };
 
 	/// <summary>
 	/// ワールド変換データを取得

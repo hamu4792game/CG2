@@ -17,11 +17,11 @@ void Player::Initialize()
 
 	parts_.resize(models_.size());
 	for (auto& i : parts_) {
-		i.parent_ = &parts_[0];
+		i.parent_ = &parts_[Body];
 	}
-	parts_[0].parent_ = &transform;
+	parts_[Body].parent_ = &transform;
 
-	parts_[1].translation_ = { 0.0f,1.5f,0.0f };
+	parts_[Head].translation_ = { 0.0f,1.5f,0.0f };
 
 	color = 0xffffffff;
 
@@ -45,10 +45,10 @@ void Player::Update()
 void Player::ModelLoad()
 {
 	
-	models_[0]->Texture("Resources/float_Body.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
-	models_[1]->Texture("Resources/float_Head.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
-	models_[2]->Texture("Resources/float_L_arm.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
-	models_[3]->Texture("Resources/float_R_arm.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	models_[Body]->Texture("Resources/float_Body.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	models_[Head]->Texture("Resources/float_Head.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	models_[L_arm]->Texture("Resources/float_L_arm.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	models_[R_arm]->Texture("Resources/float_R_arm.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 
 }
 
@@ -95,13 +95,14 @@ void Player::Move()
 	}
 	else {
 		transform.translation_ += move;
+		oldMove = move;
 	}
-	oldMove = move;
+	
 
 	//	移動制限
 	MoveLimit();
 
-	カメラのパラメーターをプレイヤーで操作してカメラの更新はCamera.Updateにやらせるように変更する
+	//カメラのパラメーターをプレイヤーで操作してカメラの更新はCamera.Updateにやらせるように変更する
 
 }
 
@@ -120,7 +121,7 @@ void Player::MoveLimit()
 {
 	transform.translation_.x = std::clamp(transform.translation_.x, -50.0f, 50.0f);
 	transform.translation_.z = std::clamp(transform.translation_.z, -50.0f, 50.0f);
-	//transform.translation_.y = 0.0f;
+	transform.translation_.y = 0.0f;
 }
 
 void Player::Attack(const Vector3& distance)
@@ -130,5 +131,30 @@ void Player::Attack(const Vector3& distance)
 			bullets_.push_back(std::make_unique<PlayerBullet>());
 			(*bullets_.rbegin())->Initialize(distance, transform);
 		//}
+	}
+}
+
+void Player::CameraMove()
+{
+	if (true)
+	{
+		//エネミーからプレイヤーに伸びるベクトルを求めます。
+		Vector3 pos = transform.translation_ - enemy_->transform.translation_;
+		//カメラの高さは一定にしたいので、y成分を0にします。
+		pos.y = 0.0f;
+		//ベクトルを正規化します。
+		pos = Normalize(pos);
+		//スカラーを掛けます
+		pos *= 40.0f;
+		//カメラがどれだけプレイヤーの座標より高いかを設定します。
+		pos.y = 10.0f;
+		//プレイヤーの座標に求めたベクトルを足して、カメラの座標とします。
+		camera->position = transform.translation_ + pos;
+		//	カメラを回転してあげる 逆ベクトルなので-
+		camera->transform.rotation_.y = atan2f(-camera->position.x, -camera->position.z);
+		//transform.rotation_.x = atan2f(-position.y, -position.z);
+
+		//	座標の反映
+		camera->transform.translation_ = camera->position;
 	}
 }

@@ -16,6 +16,7 @@ void Battle::Initialize(std::shared_ptr<Camera> camera)
 
 	//	playerの角度セット
 	player->SetViewProjection(camera_.get());
+	player->SetEnemy_ptr(enemy.get());
 	camera_->SetTarget(&player->GetWorldTransform());
 	camera_->SetLockon(&enemy->GetWorldTransform());
 }
@@ -33,6 +34,7 @@ void Battle::Update()
 	{
 		/*GameScene::GetInstance()->scene = GameScene::Scene::RESULT;*/
 	}
+	player->CameraMove();
 }
 
 void Battle::Draw(const Matrix4x4& viewProjection)
