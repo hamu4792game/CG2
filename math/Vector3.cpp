@@ -117,5 +117,5 @@ float RadianToAngle(float radian)
 
 Vector3 FindVector(const Vector3& vec1, const Vector3& vec2)
 {
-	return Normalize(vec2 - vec1);
+	return vec2 - vec1;
 }

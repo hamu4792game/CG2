@@ -13,6 +13,7 @@ void Enemy::Initialize()
 
 	parts_.resize(models_.size());
 	parts_[0].parent_ = &transform;
+	parts_[0].translation_.y = -1.0f;
 	ModelLoad();
 }
 

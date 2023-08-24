@@ -33,7 +33,7 @@ void Player::Update()
 {
 	//	弾更新
 	for (auto i = bullets_.begin(); i != bullets_.end(); i++) {
-		(*i)->Update();
+		(*i)->Update(enemy_->transform.translation_);
 	}
 
 	transform.UpdateMatrix();
@@ -126,11 +126,15 @@ void Player::MoveLimit()
 
 void Player::Attack(const Vector3& distance)
 {
+	//	生存フラグが折れたら要素を取り除く
+	std::erase_if(bullets_, [](std::unique_ptr<PlayerBullet>& bullet) {return bullet->isAlive == false; });
+	ImGui::Text("%f", OuterProduct(distance));
 	if (KeyInput::PushKey(DIK_SPACE)) {
-		//if (OuterProduct(distance) >= 10.0f) {
+		if (OuterProduct(distance) >= 15.0f) {
+		//	弾を追加する
 			bullets_.push_back(std::make_unique<PlayerBullet>());
 			(*bullets_.rbegin())->Initialize(distance, transform);
-		//}
+		}
 	}
 }
 

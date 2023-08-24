@@ -12,20 +12,21 @@ public:
 	//	モデルのロード
 	void ModelLoad();
 
-	void Update();
+	void Update(const Vector3& vector);
 
 	void Draw(const Matrix4x4& viewProjection);
+	//	生存フラグ
+	bool isAlive;
 
 private:
 	WorldTransform transform;
 	
 	Vector3 move;
 
-	//	Y軸の角度
-	float degree;
-
 	//	速度
 	Vector3 velocity;
+
+	
 
 	//	モデルデータ配列
 	std::unique_ptr <Model> models_;

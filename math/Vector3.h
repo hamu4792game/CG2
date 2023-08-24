@@ -45,5 +45,5 @@ float RadianToAngle(float radian);
 /// </summary>
 /// <param name="vec1">引くベクトル</param>
 /// <param name="vec2">引かれるベクトル</param>
-/// <returns>正規化されたベクトル</returns>
+/// <returns>正規化されていないベクトル</returns>
 Vector3 FindVector(const Vector3& vec1, const Vector3& vec2);
