@@ -4,7 +4,7 @@ Ground::Ground(const std::string& filePath)
 {
 	transform.translation_ = Vector3(0.0f, 0.0f, 0.0f);
 	transform.rotation_ = Vector3(0.0f, 0.0f, 0.0f);
-	transform.scale_ = Vector3(50.0f, 1.0f, 50.0f);
+	transform.scale_ = Vector3(70.0f, 1.0f, 70.0f);
 	//skydome->Texture(filePath, "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	ground.Texture(filePath, "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 }

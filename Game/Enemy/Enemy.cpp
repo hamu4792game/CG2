@@ -28,7 +28,7 @@ void Enemy::ModelLoad()
 
 void Enemy::Update()
 {
-	transform.translation_.x += 0.01f;
+	//transform.translation_.x += 0.01f;
 
 	transform.UpdateMatrix();
 	for (auto& i : parts_) {

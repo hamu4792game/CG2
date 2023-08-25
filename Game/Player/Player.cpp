@@ -5,12 +5,13 @@
 #include "Engine/Input/KeyInput/KeyInput.h"
 #include <cmath>
 #include <algorithm>
+#include <numbers>
 
 void Player::Initialize()
 {
 	transform.translation_ = Vector3(0.0f, 0.0f, -40.0f);
 
-	for (uint16_t i = 0; i < num; i++)
+	for (uint16_t i = 0; i < PARTS::Num; i++)
 	{
 		models_.push_back(std::make_unique<Model>());
 	}
@@ -21,7 +22,13 @@ void Player::Initialize()
 	}
 	parts_[Body].parent_ = &transform;
 
-	parts_[Head].translation_ = { 0.0f,1.5f,0.0f };
+	parts_[Body].translation_ = { 0.0f,2.0f,0.0f };
+
+	parts_[Head].translation_ = { 0.0f,2.1f,0.0f };
+	parts_[L_arm].translation_ = { 1.3f,1.5f,0.0f };
+	parts_[R_arm].translation_ = { -1.3f,1.5f,0.0f };
+	parts_[L_leg].translation_ = { 0.5f,0.0f,0.0f };
+	parts_[R_leg].translation_ = { -0.5f,0.0f,0.0f };
 
 	color = 0xffffffff;
 	distance = 0.0f;
@@ -36,11 +43,14 @@ void Player::Update()
 	//	
 	distance = OuterProduct(transform.translation_ - enemy_->transform.translation_);
 	ImGui::Text("%f", distance);
+	ImGui::DragFloat3("L", &parts_[L_arm].rotation_.x, 0.1f);
+	ImGui::DragFloat3("R", &parts_[R_arm].rotation_.x, 0.1f);
+	//ImGui::DragFloat3("pas", &parts_[L_arm].rotation_.x, 0.1f);
 
 
 	Move();
 	Attack();
-
+	
 
 	//	弾更新
 	for (auto i = bullets_.begin(); i != bullets_.end(); i++) {
@@ -56,10 +66,13 @@ void Player::Update()
 void Player::ModelLoad()
 {
 	
-	models_[Body]->Texture("Resources/float_Body.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
-	models_[Head]->Texture("Resources/float_Head.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
-	models_[L_arm]->Texture("Resources/float_L_arm.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
-	models_[R_arm]->Texture("Resources/float_R_arm.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	models_[center]->Texture("Resources/sphere.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	models_[Body]->Texture("Resources/player/body.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	models_[Head]->Texture("Resources/player/head.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	models_[L_arm]->Texture("Resources/player/limbs.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	models_[R_arm]->Texture("Resources/player/limbs.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	models_[L_leg]->Texture("Resources/player/limbs.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	models_[R_leg]->Texture("Resources/player/limbs.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 
 }
 
@@ -68,23 +81,42 @@ void Player::Move()
 	ImGui::DragFloat3("PlayerTranslate", &transform.translation_.x, 0.1f);
 	Vector3 move = { 0.0f,0.0f,0.0f };
 	const float speed = 0.2f;
+	bool isMove = false;
 
 	if (KeyInput::GetKey(DIK_W) && distance >= 15.0f)
 	{
 		move.z += speed;
+		isMove = true;
 	}
 	if (KeyInput::GetKey(DIK_S))
 	{
 		move.z -= speed;
+		isMove = true;
 	}
 	if (KeyInput::GetKey(DIK_D))
 	{
 		move.x += speed;
+		isMove = true;
 	}
 	if (KeyInput::GetKey(DIK_A))
 	{
 		move.x -= speed;
+		isMove = true;
 	}
+
+
+	//	仮腕回転アニメーション
+	if (true)
+	{
+		isMove ? easeNum += 0.1f : easeNum -= 0.1f;
+		easeNum = std::clamp(easeNum, 0.0f, 1.0f);
+		float T = 1.0f - cosf((easeNum * std::numbers::pi_v<float>) / 2.0f);
+		parts_[L_arm].rotation_.x = (1.0f - T) * 0.0f + (T * 0.6f);
+		parts_[R_arm].rotation_.x = (1.0f - T) * 0.0f + (T * 0.6f);
+		parts_[L_leg].rotation_.x = (1.0f - T) * 0.0f + (T * 0.6f);
+		parts_[R_leg].rotation_.x = (1.0f - T) * 0.0f + (T * 0.6f);
+	}
+	
 
 	//	移動があれば更新
 	if (move.x != 0.0f || move.y != 0.0f || move.z != 0.0f)
@@ -98,7 +130,7 @@ void Player::Move()
 		transform.rotation_.y = std::atan2f(move.x, move.z);
 
 		//	敵の方向を見続ける
-		//transform.rotation_.y = camera->degree;
+		//transform.rotation_.y = camera->transform.rotation_.y;
 	}
 	//	座標移動（ベクトルの加算）
 	if (fabs(transform.translation_.x + move.x) <= 1.0f && fabs(transform.translation_.z + move.z) <= 1.0f) {
@@ -128,8 +160,8 @@ void Player::Draw(const Matrix4x4& viewProjection)
 
 void Player::MoveLimit()
 {
-	transform.translation_.x = std::clamp(transform.translation_.x, -50.0f, 50.0f);
-	transform.translation_.z = std::clamp(transform.translation_.z, -50.0f, 50.0f);
+	transform.translation_.x = std::clamp(transform.translation_.x, -70.0f, 70.0f);
+	transform.translation_.z = std::clamp(transform.translation_.z, -70.0f, 70.0f);
 	transform.translation_.y = 0.0f;
 }
 

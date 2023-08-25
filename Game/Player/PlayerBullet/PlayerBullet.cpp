@@ -22,7 +22,7 @@ void PlayerBullet::ModelLoad()
 void PlayerBullet::Update(const Vector3& vector)
 {
 	//	対象(enemy)までの距離を取得し、フラグを立てる
-	if (OuterProduct(transform.translation_ - vector) <= 1.0f) {
+	if (OuterProduct(transform.translation_ - vector) <= 10.0f) {
 		isAlive = false;
 	}
 	if (isAlive) {

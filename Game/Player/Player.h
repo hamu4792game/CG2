@@ -22,10 +22,13 @@ public:
 private:
 	enum PARTS
 	{
+		center,
 		Body,
 		Head,
 		L_arm,
 		R_arm,
+		L_leg,
+		R_leg,
 
 		Num
 	};
@@ -55,6 +58,7 @@ private:
 	uint32_t color = 0xffffffff;
 
 	const uint16_t num;
+	float easeNum = 0.0f;
 
 	//	敵からの距離
 	float distance = 0.0f;

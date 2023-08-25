@@ -181,7 +181,7 @@
       <Filter>Game\Ground</Filter>
     </ClCompile>
     <ClCompile Include="math\Vector4.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
