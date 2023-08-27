@@ -29,6 +29,13 @@ void KeyInput::Initialize()
 		DISCL_NONEXCLUSIVE |	/*デバイスをこのアプリだけで専有しない*/
 		DISCL_NOWINKEY);		/*Windowsキーを無効にする*/
 	assert(SUCCEEDED(result));
+
+	//	変数の初期化 指定した分だけ0にするZeroMemory
+	ZeroMemory(&xInputState, sizeof(XINPUT_STATE));
+	//	DWORDは32bitのuint型 XInputと型を合わせている 
+	DWORD dr = XInputGetState(0, &xInputState);
+	//	接続があればのフラグ
+	result == ERROR_SUCCESS ? isConnectPad = true : isConnectPad = false;
 }
 
 void KeyInput::InputInitialize()
@@ -49,7 +56,32 @@ void KeyInput::Update()
 	//	今のキー状態の取得
 	instance->keyboard->GetDeviceState(sizeof(instance->key), instance->key);
 
+	//	キーの再取得 途中で接続された時用
+	DWORD dresult = XInputGetState(0, &instance->xInputState);
+	//	接続状況の確認
+	dresult == ERROR_SUCCESS ? instance->isConnectPad = true : instance->isConnectPad = false;
+	if (instance->isConnectPad) {
+		// デッドzoneの設定
+		if ((instance->xInputState.Gamepad.sThumbLX <  XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE &&
+			instance->xInputState.Gamepad.sThumbLX > -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) &&
+			(instance->xInputState.Gamepad.sThumbLY <  XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE &&
+				instance->xInputState.Gamepad.sThumbLY > -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE))
+		{
+			instance->xInputState.Gamepad.sThumbLX = 0;
+			instance->xInputState.Gamepad.sThumbLY = 0;
+		}
 
+		if ((instance->xInputState.Gamepad.sThumbRX <  XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE &&
+			instance->xInputState.Gamepad.sThumbRX > -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) &&
+			(instance->xInputState.Gamepad.sThumbRY <  XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE &&
+				instance->xInputState.Gamepad.sThumbRY > -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE))
+		{
+			instance->xInputState.Gamepad.sThumbRX = 0;
+			instance->xInputState.Gamepad.sThumbRY = 0;
+		}
+	}
+
+	
 }
 
 bool KeyInput::GetKey(uint8_t keynumber)
@@ -65,4 +97,60 @@ bool KeyInput::PushKey(uint8_t keynumber)
 bool KeyInput::ReleaseKey(uint8_t keynumber)
 {
 	return !KeyInput::GetInstance()->key[keynumber] && KeyInput::GetInstance()->oldKey[keynumber];
+}
+
+bool KeyInput::GetPadConnect()
+{
+	return isConnectPad;
+}
+
+bool KeyInput::GetPadButton(UINT button)
+{
+	return xInputState.Gamepad.wButtons == button;
+}
+
+bool KeyInput::GetPadButtonUp(UINT button)
+{
+	return xInputState.Gamepad.wButtons != button && oldXInputState.Gamepad.wButtons == button;
+}
+
+bool KeyInput::GetPadButtonDown(UINT button)
+{
+	return xInputState.Gamepad.wButtons == button && oldXInputState.Gamepad.wButtons != button;
+}
+
+Vector2 KeyInput::GetPadLStick()
+{
+	SHORT x = xInputState.Gamepad.sThumbLX;
+	SHORT y = xInputState.Gamepad.sThumbLY;
+
+	return Vector2(static_cast<float>(x) / 32767.0f, static_cast<float>(y) / 32767.0f);
+}
+
+Vector2 KeyInput::GetPadRStick()
+{
+	SHORT x = xInputState.Gamepad.sThumbRX;
+	SHORT y = xInputState.Gamepad.sThumbRY;
+
+	return Vector2(static_cast<float>(x) / 32767.0f, static_cast<float>(y) / 32767.0f);
+}
+
+bool KeyInput::GetLTriggerDown()
+{
+	//	デッドラインの設定必須
+	if (oldXInputState.Gamepad.bLeftTrigger < 128 && xInputState.Gamepad.bLeftTrigger >= 128)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool KeyInput::GetRTriggerDown()
+{
+	//	デッドラインの設定必須
+	if (oldXInputState.Gamepad.bRightTrigger < 128 && xInputState.Gamepad.bRightTrigger >= 128)
+	{
+		return true;
+	}
+	return false;
 }

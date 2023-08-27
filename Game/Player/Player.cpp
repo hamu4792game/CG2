@@ -15,6 +15,7 @@ void Player::Initialize()
 	{
 		models_.push_back(std::make_unique<Model>());
 	}
+	bulletModel_ = std::make_unique<Model>();
 
 	parts_.resize(models_.size());
 	for (auto& i : parts_) {
@@ -74,6 +75,8 @@ void Player::ModelLoad()
 	models_[L_leg]->Texture("Resources/player/limbs.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	models_[R_leg]->Texture("Resources/player/limbs.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 
+	bulletModel_->Texture("Resources/bullet/bullet.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+
 }
 
 void Player::Move()
@@ -104,6 +107,19 @@ void Player::Move()
 		isMove = true;
 	}
 
+	//	padが接続されているなら
+	if (KeyInput::GetInstance()->GetPadConnect()) {
+		Vector2 pMove(0.0f, 0.0f);
+		pMove = KeyInput::GetInstance()->GetPadLStick();
+		//	移動があれば代入する
+		if (pMove.x != 0.0f || pMove.y != 0.0f)
+		{
+			move.x = pMove.x;
+			move.z = pMove.y;
+			isMove = true;
+		}
+		
+	}
 
 	//	仮腕回転アニメーション
 	if (true)
@@ -171,7 +187,7 @@ void Player::Attack()
 	if (std::erase_if(bullets_, [](std::unique_ptr<PlayerBullet>& bullet) {return bullet->isAlive == false; })) {
 		enemy_->Damage();
 	}
-	if (KeyInput::PushKey(DIK_SPACE)) {
+	if (KeyInput::GetKey(DIK_SPACE) || KeyInput::GetInstance()->GetPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
 		if (distance >= 15.0f) {
 		//	弾を追加する
 			bullets_.push_back(std::make_unique<PlayerBullet>());

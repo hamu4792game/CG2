@@ -72,6 +72,8 @@ private:
 
 	Enemy* enemy_ = nullptr;
 
+	//	弾のモデル
+	std::shared_ptr<Model> bulletModel_;
 	//	弾のデータ
 	std::vector<std::unique_ptr<PlayerBullet>> bullets_;
 
