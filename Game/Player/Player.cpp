@@ -6,22 +6,26 @@
 #include <cmath>
 #include <algorithm>
 #include <numbers>
+#include "Engine/Easing/Easing.h"
 
 void Player::Initialize()
 {
 	transform.translation_ = Vector3(0.0f, 0.0f, -40.0f);
 
-	for (uint16_t i = 0; i < PARTS::Num; i++)
-	{
+	for (uint16_t i = 0u; i < PARTS::Num; i++) {
 		models_.push_back(std::make_unique<Model>());
 	}
-	bulletModel_ = std::make_unique<Model>();
+	for (uint16_t i = 0u; i < num; i++) {
+		bulletModel_[i] = std::make_unique<Model>();
+		bullets_[i] = std::make_unique<PlayerBullet>();
+	}
 
 	parts_.resize(models_.size());
 	for (auto& i : parts_) {
 		i.parent_ = &parts_[Body];
 	}
 	parts_[Body].parent_ = &transform;
+	parts_[Weapon].parent_ = nullptr;
 
 	parts_[Body].translation_ = { 0.0f,2.0f,0.0f };
 
@@ -30,6 +34,8 @@ void Player::Initialize()
 	parts_[R_arm].translation_ = { -1.3f,1.5f,0.0f };
 	parts_[L_leg].translation_ = { 0.5f,0.0f,0.0f };
 	parts_[R_leg].translation_ = { -0.5f,0.0f,0.0f };
+	parts_[Weapon].translation_ = Vector3(-3.0f, 5.0f, 0.0f);
+	parts_[Weapon].scale_ = { 0.5f,0.5f,0.5f };
 
 	color = 0xffffffff;
 	distance = 0.0f;
@@ -50,7 +56,11 @@ void Player::Update()
 
 
 	Move();
+	//Jamp();
+	//	移動制限
+	MoveLimit();
 	Attack();
+	
 	
 
 	//	弾更新
@@ -74,17 +84,25 @@ void Player::ModelLoad()
 	models_[R_arm]->Texture("Resources/player/limbs.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	models_[L_leg]->Texture("Resources/player/limbs.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	models_[R_leg]->Texture("Resources/player/limbs.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	models_[Weapon]->Texture("Resources/enemy/enemyType1.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 
-	bulletModel_->Texture("Resources/bullet/bullet.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	for (uint16_t i = 0u; i < num; i++) {
+		bulletModel_[i]->Texture("Resources/bullet/bullet.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	}
 
 }
 
 void Player::Move()
 {
-	ImGui::DragFloat3("PlayerTranslate", &transform.translation_.x, 0.1f);
+	ImGui::DragFloat3("PlayerTranslate", &parts_[Weapon].translation_.x, 0.1f);
 	Vector3 move = { 0.0f,0.0f,0.0f };
-	const float speed = 0.2f;
+	float speed = 0.2f;
 	bool isMove = false;
+	//	ダッシュ（はやい）
+	if (KeyInput::GetKey(DIK_LSHIFT))
+	{
+		speed = 0.4f;
+	}
 
 	if (KeyInput::GetKey(DIK_W) && distance >= 15.0f)
 	{
@@ -106,7 +124,6 @@ void Player::Move()
 		move.x -= speed;
 		isMove = true;
 	}
-
 	//	padが接続されているなら
 	if (KeyInput::GetInstance()->GetPadConnect()) {
 		Vector2 pMove(0.0f, 0.0f);
@@ -118,7 +135,13 @@ void Player::Move()
 			move.z = pMove.y;
 			isMove = true;
 		}
-		
+	}
+
+	//	ジャンプの初速
+	if (KeyInput::PushKey(DIK_B) || KeyInput::GetInstance()->GetPadButton(XINPUT_GAMEPAD_A))
+	{
+		velocity = 2.0f;
+		jampflg = true;
 	}
 
 	//	仮腕回転アニメーション
@@ -126,19 +149,19 @@ void Player::Move()
 	{
 		isMove ? easeNum += 0.1f : easeNum -= 0.1f;
 		easeNum = std::clamp(easeNum, 0.0f, 1.0f);
-		float T = 1.0f - cosf((easeNum * std::numbers::pi_v<float>) / 2.0f);
+		float T = Easing::EaseInSine(easeNum);
 		parts_[L_arm].rotation_.x = (1.0f - T) * 0.0f + (T * 0.6f);
 		parts_[R_arm].rotation_.x = (1.0f - T) * 0.0f + (T * 0.6f);
 		parts_[L_leg].rotation_.x = (1.0f - T) * 0.0f + (T * 0.6f);
 		parts_[R_leg].rotation_.x = (1.0f - T) * 0.0f + (T * 0.6f);
 	}
 	
-
 	//	移動があれば更新
 	if (move.x != 0.0f || move.y != 0.0f || move.z != 0.0f)
 	{
 		//	移動量の正規化 * speed
 		move = Normalize(move) * speed;
+
 		//	移動ベクトルをカメラの角度だけ回転させる
 		move = TransformNormal(move, MakeRotateMatrix(camera->transform.rotation_));
 			
@@ -147,6 +170,16 @@ void Player::Move()
 
 		//	敵の方向を見続ける
 		//transform.rotation_.y = camera->transform.rotation_.y;
+
+
+		/*parts_[Weapon].translation_ = oldPos[0];
+		for (uint16_t i = 0u; i < 9; i++) {
+			oldPos[i] = oldPos[i + 1];
+		}
+		oldPos[9] = transform.translation_ + move;*/
+
+		move.y = 0.0f;
+
 	}
 	//	座標移動（ベクトルの加算）
 	if (fabs(transform.translation_.x + move.x) <= 1.0f && fabs(transform.translation_.z + move.z) <= 1.0f) {
@@ -158,8 +191,25 @@ void Player::Move()
 	}
 	
 
-	//	移動制限
-	MoveLimit();
+	Jamp();
+
+	//	みずかみ式魔法の数学　よくわからん
+	//	武器の座標移動、特別枠
+	//	カメラを回転してあげる 逆ベクトルなので-
+	float ro = atan2f(enemy_->transform.translation_.x - transform.translation_.x, enemy_->transform.translation_.z - transform.translation_.z);
+
+	float dis = sqrtf(powf(enemy_->transform.translation_.x - transform.translation_.x, 2.0f) + powf(enemy_->transform.translation_.z - transform.translation_.z, 2.0f));
+	float theta = atanf(3.5f / dis);
+	float a = dis / 40.0f;
+	float b = sqrtf(1612.25f);
+	float c = theta + ro;
+	Vector3 ve = Vector3(0.0f, parts_[Weapon].translation_.y, -b * a);
+	Matrix4x4 mat = MakeRotateYMatrix(c);
+	parts_[Weapon].translation_ = Transform(ve, mat);
+	parts_[Weapon].translation_.y = transform.translation_.y + 5.0f;
+	parts_[Weapon].translation_.x += enemy_->transform.translation_.x;
+	parts_[Weapon].translation_.z += enemy_->transform.translation_.z;
+	parts_[Weapon].rotation_.y = camera->transform.rotation_.y;
 
 }
 
@@ -169,30 +219,51 @@ void Player::Draw(const Matrix4x4& viewProjection)
 	{
 		models_[i]->Draw(parts_[i], viewProjection, color);
 	}
-	for (auto i = bullets_.begin(); i != bullets_.end(); i++) {
-		(*i)->Draw(viewProjection);
+	for (uint16_t i = 0u; i < num; i++) {
+		bullets_[i]->Draw(viewProjection, bulletModel_[i].get());
 	}
 }
 
 void Player::MoveLimit()
 {
 	transform.translation_.x = std::clamp(transform.translation_.x, -70.0f, 70.0f);
+	transform.translation_.y = std::clamp(transform.translation_.y, 0.0f, 50.0f);
 	transform.translation_.z = std::clamp(transform.translation_.z, -70.0f, 70.0f);
-	transform.translation_.y = 0.0f;
 }
 
 void Player::Attack()
 {
-	//	生存フラグが折れたら要素を取り除く
-	if (std::erase_if(bullets_, [](std::unique_ptr<PlayerBullet>& bullet) {return bullet->isAlive == false; })) {
-		enemy_->Damage();
+	//	弾が消えたらダメージ処理を行う
+	for (uint16_t i = 0u; i < num; i++) {
+		if (!bullets_[i]->isAlive && bullets_[i]->oldAlive) {
+			enemy_->Damage();
+			break;
+		}
 	}
-	if (KeyInput::GetKey(DIK_SPACE) || KeyInput::GetInstance()->GetPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+
+	//	生存フラグが折れたら要素を取り除く
+	if (KeyInput::PushKey(DIK_SPACE) || KeyInput::GetInstance()->GetPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
 		if (distance >= 15.0f) {
 		//	弾を追加する
-			bullets_.push_back(std::make_unique<PlayerBullet>());
-			(*bullets_.rbegin())->Initialize(enemy_->transform.translation_, transform);
+			for (uint16_t i = 0u; i < num; i++) {
+				if (bullets_[i]->isAlive == false) {
+					bullets_[i]->Initialize(enemy_->transform.translation_, parts_[Weapon]);
+					break;
+				}
+			}
 		}
+	}
+}
+
+void Player::Jamp()
+{
+	const float gravity = 0.1f;
+	if (jampflg) {
+		velocity -= gravity;
+		transform.translation_.y += velocity;
+	}
+	if (transform.translation_.y <= 0.0f) {
+		jampflg = false;
 	}
 }
 
@@ -214,6 +285,7 @@ void Player::CameraMove()
 		camera->position = transform.translation_ + pos;
 		//	カメラを回転してあげる 逆ベクトルなので-
 		camera->transform.rotation_.y = atan2f(-pos.x, -pos.z);
+		//camera->transform.rotation_.x = atan2f(pos.y, pos.z);
 		//transform.rotation_.x = atan2f(-position.y, -position.z);
 
 		//	座標の反映

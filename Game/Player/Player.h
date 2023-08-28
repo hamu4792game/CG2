@@ -9,7 +9,7 @@
 class Player
 {
 public:
-	Player() : num(4) {};
+	Player() : num(20) {};
 	~Player() = default;
 
 	//	初期化処理
@@ -29,6 +29,7 @@ private:
 		R_arm,
 		L_leg,
 		R_leg,
+		Weapon,
 
 		Num
 	};
@@ -38,12 +39,14 @@ private:
 	//	移動制限
 	void MoveLimit();
 
-public:
 	//	移動処理
 	void Move();
 	//	攻撃処理
 	void Attack();
+	//	ジャンプ処理
+	void Jamp();
 
+public:
 	void CameraMove();
 
 private:
@@ -53,11 +56,10 @@ private:
 	//	前座標の移動分ベクトル
 	Vector3 oldMove;
 	//	前座標
-	Vector3 oldPos;
+	Vector3 oldPos[10] = {};
 
 	uint32_t color = 0xffffffff;
 
-	const uint16_t num;
 	float easeNum = 0.0f;
 
 	//	敵からの距離
@@ -69,13 +71,17 @@ private:
 	std::vector<WorldTransform> parts_;
 
 	Camera* camera = nullptr;
-
 	Enemy* enemy_ = nullptr;
 
+	//	弾の最大数
+	const uint16_t num;
 	//	弾のモデル
-	std::shared_ptr<Model> bulletModel_;
+	std::array <std::unique_ptr<Model>, 20> bulletModel_;
 	//	弾のデータ
-	std::vector<std::unique_ptr<PlayerBullet>> bullets_;
+	std::array<std::unique_ptr<PlayerBullet>, 20> bullets_;
+
+	bool jampflg = false;
+	float velocity = 0.0f;
 
 public:
 	//	カメラのセット

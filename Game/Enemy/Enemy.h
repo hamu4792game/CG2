@@ -33,6 +33,32 @@ public:
 	std::vector<std::unique_ptr < Model>> models_;
 	//	パーツ用データ
 	std::vector<WorldTransform> parts_;
+
+
+	enum STYLE {
+		FIRST,
+		FIRSTChange,
+		SECOND,
+		SECONDChange,
+		LAST
+	};
+	STYLE style = STYLE::FIRST;
+
+private:
+
+	enum PARTS {
+		Egg,
+		Body,
+
+		Num
+	};
+
+	float easeNum = 0.0f;
+	bool isFlag = false;
+
+private:
+	void FirstUpdate();
+
 public:
 
 	/// <summary>

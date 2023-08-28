@@ -128,6 +128,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Base\WinApp.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />
     <ClInclude Include="Engine\Camera\DebugCamera\DebugCamera.h" />
+    <ClInclude Include="Engine\Easing\Easing.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Engine\Input\AudioInput\AudioInput.h" />
     <ClInclude Include="Engine\Input\KeyInput\KeyInput.h" />

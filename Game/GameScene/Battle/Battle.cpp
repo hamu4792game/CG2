@@ -10,15 +10,13 @@ void Battle::Initialize(std::shared_ptr<Camera> camera)
 
 	//	playerのset
 	player = std::make_unique<Player>();
+	player->SetViewProjection(camera_.get());
 	player->Initialize();
 	enemy = std::make_unique<Enemy>();
 	enemy->Initialize();
 
 	//	playerの角度セット
-	player->SetViewProjection(camera_.get());
 	player->SetEnemy_ptr(enemy.get());
-	camera_->SetTarget(&player->GetWorldTransform());
-	camera_->SetLockon(&enemy->GetWorldTransform());
 }
 
 void Battle::Update()

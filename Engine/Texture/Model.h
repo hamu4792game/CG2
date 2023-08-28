@@ -47,8 +47,9 @@ private:
 	};
 	ConstantBuffer<Matrix4x4> cMat;
 	ConstantBuffer<Vector4> cColor;
+public:
 	ConstantBuffer<Mono> cBuffer;
-
+private:
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
 
 public:

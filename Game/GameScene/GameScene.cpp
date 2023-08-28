@@ -15,6 +15,8 @@ void GameScene::Initialize()
 	skydome = std::make_unique<Skydome>("Resources/box.obj");
 	ground = std::make_unique<Ground>("Resources/ground.obj");
 	camera = std::make_shared<Camera>(2000.0f, true);
+	//	カメラ行列の更新
+	viewProjectionMatrix = camera->GetViewProMat();
 
 	battleBGM.SoundLoadWave("./Resources/sound/w006.wav");
 	battleBGM.SoundPlayWave(true);
@@ -30,9 +32,12 @@ void GameScene::Update()
 	ImGui::DragFloat3("CameraTranslate", &camera->transform.translation_.x, 0.1f);
 	ImGui::DragFloat3("CameraRotate", &camera->transform.rotation_.x, 0.01f);
 
+	
+
 	switch (scene)
 	{
 	case GameScene::Scene::TITLE:
+		scene = Scene::BATTLE;
 		break;
 	case GameScene::Scene::BATTLE:
 		battle.Update();

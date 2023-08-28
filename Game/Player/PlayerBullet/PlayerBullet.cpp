@@ -6,12 +6,12 @@ void PlayerBullet::Initialize(const Vector3& vector, const WorldTransform& playe
 	//transform.parent_ = &player;
 	transform.translation_ = player.translation_;
 	transform.translation_.y += 0.0f;
-	models_ = std::make_unique<Model>();
+	//models_ = std::make_unique<Model>();
 
 	//	移動量の正規化 * speed
 	velocity = Normalize(FindVector(player.translation_, vector)) * 0.5f;
 	isAlive = true;
-	ModelLoad();
+	//ModelLoad();
 }
 
 void PlayerBullet::ModelLoad()
@@ -21,6 +21,8 @@ void PlayerBullet::ModelLoad()
 
 void PlayerBullet::Update(const Vector3& vector)
 {
+	oldAlive = isAlive;
+
 	//	対象(enemy)までの距離を取得し、フラグを立てる
 	if (OuterProduct(transform.translation_ - vector) <= 10.0f) {
 		isAlive = false;
@@ -36,9 +38,9 @@ void PlayerBullet::Update(const Vector3& vector)
 	transform.UpdateMatrix();
 }
 
-void PlayerBullet::Draw(const Matrix4x4& viewProjection)
+void PlayerBullet::Draw(const Matrix4x4& viewProjection, Model* model)
 {
 	if (isAlive) {
-		models_->Draw(transform, viewProjection, 0xffffffff);
+		model->Draw(transform, viewProjection, 0xffffffff);
 	}
 }

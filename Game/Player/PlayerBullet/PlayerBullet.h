@@ -19,9 +19,10 @@ public:
 
 	void Update(const Vector3& vector);
 
-	void Draw(const Matrix4x4& viewProjection);
+	void Draw(const Matrix4x4& viewProjection, Model* model);
 	//	生存フラグ
-	bool isAlive = 0.0f;
+	bool isAlive = false;
+	bool oldAlive = false;
 
 private:
 	WorldTransform transform;
@@ -30,8 +31,6 @@ private:
 
 	//	速度
 	Vector3 velocity;
-
-	
 
 	//	モデルデータ配列
 	std::unique_ptr <Model> models_;

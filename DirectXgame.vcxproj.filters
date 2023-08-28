@@ -88,6 +88,9 @@
     <Filter Include="Game\Player\PlayerBullet">
       <UniqueIdentifier>{9f61e05a-cd91-4265-aada-ba71058d3e3a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Easing">
+      <UniqueIdentifier>{1a0536d9-3ea4-428c-92ae-a29524e55145}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -286,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="Game\Ground\Ground.h">
       <Filter>Game\Ground</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Easing\Easing.h">
+      <Filter>Engine\Easing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

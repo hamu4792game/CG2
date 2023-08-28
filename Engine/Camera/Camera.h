@@ -24,10 +24,6 @@ private:
 	Matrix4x4 projectionMatrix{};
 	Matrix4x4 viewProjectionMatrix{};
 
-	void Update();
-
-	//	追従対象からカメラまでの初期位置
-	Vector3 camerapos = { 0.0f,5.0f,-70.0f };
 
 public:
 	WorldTransform transform;
@@ -38,18 +34,6 @@ public:
 	Vector3 target;		//カメラの注視点
 	Vector3 playerPosition;	//playerの座標
 	Vector3 enemyPosition;	//enemyの座標
-
-private:
-	//	追従対象 (player)
-	const WorldTransform* target_ = nullptr;
-	//	注視点 (enemy)
-	const WorldTransform* lockon_ = nullptr;
-	
-public:
-	//	追従対象の設定
-	void SetTarget(const WorldTransform* target) { target_ = target; };
-	//	注視点設定
-	void SetLockon(const WorldTransform* lockon) { lockon_ = lockon; };
 
 };
 
