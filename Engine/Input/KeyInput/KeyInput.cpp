@@ -56,11 +56,13 @@ void KeyInput::Update()
 	//	今のキー状態の取得
 	instance->keyboard->GetDeviceState(sizeof(instance->key), instance->key);
 
-	//	キーの再取得 途中で接続された時用
+	//	キーの再取得
+	instance->oldXInputState = instance->xInputState;
 	DWORD dresult = XInputGetState(0, &instance->xInputState);
 	//	接続状況の確認
 	dresult == ERROR_SUCCESS ? instance->isConnectPad = true : instance->isConnectPad = false;
 	if (instance->isConnectPad) {
+		
 		// デッドzoneの設定
 		if ((instance->xInputState.Gamepad.sThumbLX <  XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE &&
 			instance->xInputState.Gamepad.sThumbLX > -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) &&

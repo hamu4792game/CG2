@@ -11,14 +11,16 @@ Camera::Camera(float farClip_, bool proType) {
 	}
 	else {
 		projectionMatrix = MakeOrthographicMatrix(-float(Engine::GetInstance()->WindowWidth / 2), float(Engine::GetInstance()->WindowHeight / 2),
-			float(Engine::GetInstance()->WindowWidth / 2), -float(Engine::GetInstance()->WindowHeight / 2), 0.1f, farZ);
+			float(Engine::GetInstance()->WindowWidth / 2), -float(Engine::GetInstance()->WindowHeight / 2), 0.01f, farZ);
 	}
-	transform.translation_ = { 0.0f,0.0f,-5.0f };
-	transform.rotation_ = { 0.09f,0.0f,0.0f };
-	transform.scale_ = { 1.0f,1.0f,1.0f };
+	
 
 	if (false)
 	{
+		transform.translation_ = { 0.0f,0.0f,-5.0f };
+		transform.rotation_ = { 0.0f,0.0f,0.0f };
+		transform.scale_ = { 1.0f,1.0f,1.0f };
+
 		transform.translation_.x = 0.0f;
 		transform.translation_.y = 250.0f;
 		transform.translation_.z = 0.0f;

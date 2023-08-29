@@ -8,10 +8,8 @@
 #include <numbers>
 #include "Engine/Easing/Easing.h"
 
-void Player::Initialize()
+Player::Player() : num(20)
 {
-	transform.translation_ = Vector3(0.0f, 0.0f, -40.0f);
-
 	for (uint16_t i = 0u; i < PARTS::Num; i++) {
 		models_.push_back(std::make_unique<Model>());
 	}
@@ -19,13 +17,19 @@ void Player::Initialize()
 		bulletModel_[i] = std::make_unique<Model>();
 		bullets_[i] = std::make_unique<PlayerBullet>();
 	}
+}
+
+void Player::Initialize()
+{
+	transform.translation_ = Vector3(0.0f, 0.0f, -40.0f);
 
 	parts_.resize(models_.size());
 	for (auto& i : parts_) {
 		i.parent_ = &parts_[Body];
 	}
+	parts_[center].parent_ = &transform;
 	parts_[Body].parent_ = &transform;
-	parts_[Weapon].parent_ = nullptr;
+	parts_[Weapon].parent_ = &transform;
 
 	parts_[Body].translation_ = { 0.0f,2.0f,0.0f };
 
@@ -40,9 +44,16 @@ void Player::Initialize()
 	color = 0xffffffff;
 	distance = 0.0f;
 
+	easeNum = 0.0f;
+	jampflg = false;
+	velocity = 0.0f;
 
-	ModelLoad();
+	for (uint16_t i = 0u; i < num; i++) {
+		bullets_[i]->isAlive = false;
+	}
 
+	//	カメラの初期角度の設定
+	camera->transform.rotation_.x = 0.08f;
 }
 
 void Player::Update()
@@ -56,7 +67,7 @@ void Player::Update()
 
 
 	Move();
-	//Jamp();
+	Jamp();
 	//	移動制限
 	MoveLimit();
 	Attack();
@@ -138,7 +149,7 @@ void Player::Move()
 	}
 
 	//	ジャンプの初速
-	if (KeyInput::PushKey(DIK_B) || KeyInput::GetInstance()->GetPadButton(XINPUT_GAMEPAD_A))
+	if ((KeyInput::PushKey(DIK_B) || KeyInput::GetInstance()->GetPadButtonDown(XINPUT_GAMEPAD_A)) && !jampflg)
 	{
 		velocity = 2.0f;
 		jampflg = true;
@@ -166,7 +177,10 @@ void Player::Move()
 		move = TransformNormal(move, MakeRotateMatrix(camera->transform.rotation_));
 			
 		//	移動方向に見た目を合わせる
-		transform.rotation_.y = std::atan2f(move.x, move.z);
+		//transform.rotation_.y = std::atan2f(move.x, move.z);
+		parts_[Body].rotation_.y = std::atan2f(move.x, move.z);
+		//	カメラの回転分を引くことで合わせる
+		parts_[Body].rotation_.y -= camera->transform.rotation_.y;
 
 		//	敵の方向を見続ける
 		//transform.rotation_.y = camera->transform.rotation_.y;
@@ -189,14 +203,16 @@ void Player::Move()
 		transform.translation_ += move;
 		oldMove = move;
 	}
-	
 
-	Jamp();
+	//	回転を合わせる
+	parts_[Weapon].rotation_.y = camera->transform.rotation_.y;
+	transform.rotation_.y = camera->transform.rotation_.y;
+	
 
 	//	みずかみ式魔法の数学　よくわからん
 	//	武器の座標移動、特別枠
 	//	カメラを回転してあげる 逆ベクトルなので-
-	float ro = atan2f(enemy_->transform.translation_.x - transform.translation_.x, enemy_->transform.translation_.z - transform.translation_.z);
+	/*float ro = atan2f(enemy_->transform.translation_.x - transform.translation_.x, enemy_->transform.translation_.z - transform.translation_.z);
 
 	float dis = sqrtf(powf(enemy_->transform.translation_.x - transform.translation_.x, 2.0f) + powf(enemy_->transform.translation_.z - transform.translation_.z, 2.0f));
 	float theta = atanf(3.5f / dis);
@@ -208,8 +224,8 @@ void Player::Move()
 	parts_[Weapon].translation_ = Transform(ve, mat);
 	parts_[Weapon].translation_.y = transform.translation_.y + 5.0f;
 	parts_[Weapon].translation_.x += enemy_->transform.translation_.x;
-	parts_[Weapon].translation_.z += enemy_->transform.translation_.z;
-	parts_[Weapon].rotation_.y = camera->transform.rotation_.y;
+	parts_[Weapon].translation_.z += enemy_->transform.translation_.z;*/
+
 
 }
 
@@ -235,14 +251,14 @@ void Player::Attack()
 {
 	//	弾が消えたらダメージ処理を行う
 	for (uint16_t i = 0u; i < num; i++) {
-		if (!bullets_[i]->isAlive && bullets_[i]->oldAlive) {
+		if (bullets_[i]->isHit == true) {
 			enemy_->Damage();
 			break;
 		}
 	}
 
 	//	生存フラグが折れたら要素を取り除く
-	if (KeyInput::PushKey(DIK_SPACE) || KeyInput::GetInstance()->GetPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+	if (KeyInput::PushKey(DIK_SPACE) || KeyInput::GetInstance()->GetPadButtonDown(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
 		if (distance >= 15.0f) {
 		//	弾を追加する
 			for (uint16_t i = 0u; i < num; i++) {
@@ -285,7 +301,7 @@ void Player::CameraMove()
 		camera->position = transform.translation_ + pos;
 		//	カメラを回転してあげる 逆ベクトルなので-
 		camera->transform.rotation_.y = atan2f(-pos.x, -pos.z);
-		//camera->transform.rotation_.x = atan2f(pos.y, pos.z);
+		
 		//transform.rotation_.x = atan2f(-position.y, -position.z);
 
 		//	座標の反映

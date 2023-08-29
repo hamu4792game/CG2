@@ -7,7 +7,7 @@
 class Enemy
 {
 public:
-	Enemy() : num(1) {};
+	Enemy();
 	~Enemy() = default;
 
 	//	初期化

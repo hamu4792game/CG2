@@ -5,8 +5,10 @@
 class Skydome
 {
 public:
-	Skydome(const std::string& filePath);
+	Skydome();
 	~Skydome() = default;
+
+	void ModelLoad();
 
 private:
 	Model skydome;

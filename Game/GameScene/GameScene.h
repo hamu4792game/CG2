@@ -7,6 +7,7 @@
 #include "Engine/Texture/Model.h"
 #include "Engine/Camera/Camera.h"
 #include "Engine/Input/AudioInput/AudioInput.h"
+#include "Engine/Texture/Texture2D.h"
 
 class GameScene
 {
@@ -32,13 +33,16 @@ private:
 	std::unique_ptr<Ground> ground;
 	//	カメラの生成
 	std::shared_ptr<Camera> camera;
+	std::unique_ptr<Camera> camera2d;
 	//	カメラ行列の生成
 	Matrix4x4 viewProjectionMatrix{};
+	Matrix4x4 viewProjectionMatrix2d{};
 
 	//	シーン用インスタンス
-	Battle battle;
+	std::unique_ptr<Battle> battle;
 
 	AudioInput battleBGM;
+
 
 public:
 

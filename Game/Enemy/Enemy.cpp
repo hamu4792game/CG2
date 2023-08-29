@@ -3,16 +3,21 @@
 #include "Engine/Easing/Easing.h"
 #include "externals/imgui/imgui.h"
 
-void Enemy::Initialize()
+Enemy::Enemy() : num(1)
 {
-	transform.translation_ = Vector3(0.0f, 0.0f, 0.0f);
-	transform.rotation_ = Vector3(0.0f, 0.0f, 0.0f);
-	transform.scale_ = Vector3(8.0f, 8.0f, 8.0f);
-
 	for (uint16_t i = 0; i < PARTS::Num; i++)
 	{
 		models_.push_back(std::make_unique<Model>());
 	}
+}
+
+void Enemy::Initialize()
+{
+	style = STYLE::FIRST;
+
+	transform.translation_ = Vector3(0.0f, 0.0f, 0.0f);
+	transform.rotation_ = Vector3(0.0f, 0.0f, 0.0f);
+	transform.scale_ = Vector3(8.0f, 8.0f, 8.0f);
 
 	parts_.resize(models_.size());
 	parts_[PARTS::Egg].parent_ = &transform;
@@ -20,9 +25,11 @@ void Enemy::Initialize()
 	parts_[PARTS::Egg].translation_.y = 0.0f;
 	parts_[PARTS::Body].translation_.y = -1.0f;
 
+	easeNum = 0.0f;
+	isFlag = false;
+
 	color = Vector4(255.0f, 255.0f, 255.0f, 255.0f);
 
-	ModelLoad();
 }
 
 void Enemy::ModelLoad()

@@ -12,18 +12,23 @@ GameScene* GameScene::GetInstance()
 void GameScene::Initialize()
 {
 	//	モデルの読み込みと生成
-	skydome = std::make_unique<Skydome>("Resources/box.obj");
-	ground = std::make_unique<Ground>("Resources/ground.obj");
+	skydome = std::make_unique<Skydome>();
+	skydome->ModelLoad();
+	ground = std::make_unique<Ground>("Resources/ground/ground.obj");
 	camera = std::make_shared<Camera>(2000.0f, true);
+	camera2d = std::make_unique<Camera>();
 	//	カメラ行列の更新
 	viewProjectionMatrix = camera->GetViewProMat();
+	viewProjectionMatrix2d = camera2d->GetViewProMat();
 
 	battleBGM.SoundLoadWave("./Resources/sound/w006.wav");
 	battleBGM.SoundPlayWave(true);
-	battleBGM.SetVolume(0.5f);
+	battleBGM.SetVolume(0.3f);
 
 	//	初期化
-	battle.Initialize(camera);
+	battle = std::make_unique<Battle>(camera);
+	battle->Initialize();
+	battle->ModelLoad();
 }
 
 void GameScene::Update()
@@ -40,7 +45,7 @@ void GameScene::Update()
 		scene = Scene::BATTLE;
 		break;
 	case GameScene::Scene::BATTLE:
-		battle.Update();
+		battle->Update();
 		
 		break;
 	case GameScene::Scene::RESULT:
@@ -49,6 +54,7 @@ void GameScene::Update()
 
 	//	カメラ行列の更新
 	viewProjectionMatrix = camera->GetViewProMat();
+	viewProjectionMatrix2d = camera2d->GetViewProMat();
 }
 
 void GameScene::Draw()
@@ -61,7 +67,8 @@ void GameScene::Draw()
 	case GameScene::Scene::TITLE:
 		break;
 	case GameScene::Scene::BATTLE:
-		battle.Draw(viewProjectionMatrix);
+		battle->Draw(viewProjectionMatrix);
+		battle->Draw2d(viewProjectionMatrix2d);
 		break;
 	case GameScene::Scene::RESULT:
 		break;

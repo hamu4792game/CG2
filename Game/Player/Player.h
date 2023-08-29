@@ -9,11 +9,13 @@
 class Player
 {
 public:
-	Player() : num(20) {};
+	Player();
 	~Player() = default;
 
 	//	初期化処理
 	void Initialize();
+	//	モデルのロード
+	void ModelLoad();
 	//	更新処理
 	void Update();
 	//	描画処理
@@ -34,8 +36,6 @@ private:
 		Num
 	};
 
-	//	モデルのロード
-	void ModelLoad();
 	//	移動制限
 	void MoveLimit();
 

@@ -91,6 +91,9 @@
     <Filter Include="Engine\Easing">
       <UniqueIdentifier>{1a0536d9-3ea4-428c-92ae-a29524e55145}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Hud">
+      <UniqueIdentifier>{4d8eb996-f584-4d36-ab30-4e3d753fb1f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -184,6 +187,12 @@
       <Filter>Game\Ground</Filter>
     </ClCompile>
     <ClCompile Include="math\Vector4.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Hud\Hud.cpp">
+      <Filter>Game\Hud</Filter>
+    </ClCompile>
+    <ClCompile Include="math\Vector2.cpp">
       <Filter>math</Filter>
     </ClCompile>
   </ItemGroup>
@@ -292,6 +301,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Easing\Easing.h">
       <Filter>Engine\Easing</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Hud\Hud.h">
+      <Filter>Game\Hud</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
