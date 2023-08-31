@@ -19,7 +19,10 @@ private:
 
 	Texture2D playerHp;
 	Texture2D enemyHp;
+	Texture2D controller;
 
+	Vector2 po;
+	float sc;
 	Vector2 pos;
 	Vector2 playerscale;
 	Vector2 enemypos;
