@@ -21,10 +21,13 @@ public:
 	//	描画処理
 	void Draw(const Matrix4x4& viewProjection);
 
+	int hp = 0;
+	int maxHp = 0;
+
 private:
 	enum PARTS
 	{
-		center,
+		//center,
 		Body,
 		Head,
 		L_arm,
@@ -45,6 +48,8 @@ private:
 	void Attack();
 	//	ジャンプ処理
 	void Jamp();
+
+	void Collision();
 
 public:
 	void CameraMove();
@@ -82,6 +87,10 @@ private:
 
 	bool jampflg = false;
 	float velocity = 0.0f;
+
+	bool hit = false;
+	uint16_t hitframe = 0u;
+	Vector3 knockBack;
 
 public:
 	//	カメラのセット

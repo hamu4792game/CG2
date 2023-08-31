@@ -94,6 +94,12 @@
     <Filter Include="Game\Hud">
       <UniqueIdentifier>{4d8eb996-f584-4d36-ab30-4e3d753fb1f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameScene\Title">
+      <UniqueIdentifier>{f936715a-7ea4-488d-880d-20de79cea067}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene\Result">
+      <UniqueIdentifier>{45f07746-b1dd-47a8-b783-39d60dab93a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -194,6 +200,12 @@
     </ClCompile>
     <ClCompile Include="math\Vector2.cpp">
       <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameScene\Title\Title.cpp">
+      <Filter>Game\GameScene\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameScene\Result\Result.cpp">
+      <Filter>Game\GameScene\Result</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -304,6 +316,12 @@
     </ClInclude>
     <ClInclude Include="Game\Hud\Hud.h">
       <Filter>Game\Hud</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameScene\Title\Title.h">
+      <Filter>Game\GameScene\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameScene\Result\Result.h">
+      <Filter>Game\GameScene\Result</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

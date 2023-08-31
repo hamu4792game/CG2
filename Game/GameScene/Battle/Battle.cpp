@@ -24,9 +24,11 @@ void Battle::Initialize()
 
 	//	playerの角度セット
 	player->SetEnemy_ptr(enemy.get());
+	enemy->SetPlayer_ptr(player.get());
 
-	
 	hud->Initialize();
+	hud->SetPlayer_ptr(player.get());
+	hud->SetEnemy_ptr(enemy.get());
 
 }
 
@@ -41,11 +43,10 @@ void Battle::Update()
 {
 	enemy->Update();
 	player->Update();
+	hud->Update();
 	player->CameraMove();
-	if (KeyInput::PushKey(DIK_L))
-	{
-		/*GameScene::GetInstance()->scene = GameScene::Scene::RESULT;*/
-		Initialize();
+	if (enemy->clearFlag) {
+		GameScene::GetInstance()->sceneChangeFlag = true;
 	}
 }
 

@@ -1,5 +1,4 @@
 #include "Player.h"
-#include "externals/imgui/imgui.h"
 #include "math/Vector3.h"
 #include "math/Matrix4x4.h"
 #include "Engine/Input/KeyInput/KeyInput.h"
@@ -7,6 +6,7 @@
 #include <algorithm>
 #include <numbers>
 #include "Engine/Easing/Easing.h"
+#include "Game/GameScene/GameScene.h"
 
 Player::Player() : num(20)
 {
@@ -27,7 +27,7 @@ void Player::Initialize()
 	for (auto& i : parts_) {
 		i.parent_ = &parts_[Body];
 	}
-	parts_[center].parent_ = &transform;
+	//parts_[center].parent_ = &transform;
 	parts_[Body].parent_ = &transform;
 	parts_[Weapon].parent_ = &transform;
 
@@ -47,6 +47,8 @@ void Player::Initialize()
 	easeNum = 0.0f;
 	jampflg = false;
 	velocity = 0.0f;
+	hp = 100;
+	maxHp = 100;
 
 	for (uint16_t i = 0u; i < num; i++) {
 		bullets_[i]->isAlive = false;
@@ -60,18 +62,18 @@ void Player::Update()
 {
 	//	
 	distance = OuterProduct(transform.translation_ - enemy_->transform.translation_);
-	ImGui::Text("%f", distance);
-	ImGui::DragFloat3("L", &parts_[L_arm].rotation_.x, 0.1f);
-	ImGui::DragFloat3("R", &parts_[R_arm].rotation_.x, 0.1f);
-	//ImGui::DragFloat3("pas", &parts_[L_arm].rotation_.x, 0.1f);
-
 
 	Move();
 	Jamp();
+	Collision();
+
 	//	移動制限
 	MoveLimit();
 	Attack();
-	
+
+	if (hp <= 0) {
+		GameScene::GetInstance()->scene = GameScene::Scene::GAMEOVER;
+	}
 	
 
 	//	弾更新
@@ -88,7 +90,7 @@ void Player::Update()
 void Player::ModelLoad()
 {
 	
-	models_[center]->Texture("Resources/sphere.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
+	//models_[center]->Texture("Resources/sphere.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	models_[Body]->Texture("Resources/player/body.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	models_[Head]->Texture("Resources/player/head.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	models_[L_arm]->Texture("Resources/player/limbs.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
@@ -105,7 +107,6 @@ void Player::ModelLoad()
 
 void Player::Move()
 {
-	ImGui::DragFloat3("PlayerTranslate", &parts_[Weapon].translation_.x, 0.1f);
 	Vector3 move = { 0.0f,0.0f,0.0f };
 	float speed = 0.2f;
 	bool isMove = false;
@@ -115,7 +116,7 @@ void Player::Move()
 		speed = 0.4f;
 	}
 
-	if (KeyInput::GetKey(DIK_W) && distance >= 15.0f)
+	if (KeyInput::GetKey(DIK_W) /*&& distance >= 15.0f*/)
 	{
 		move.z += speed;
 		isMove = true;
@@ -181,6 +182,7 @@ void Player::Move()
 		parts_[Body].rotation_.y = std::atan2f(move.x, move.z);
 		//	カメラの回転分を引くことで合わせる
 		parts_[Body].rotation_.y -= camera->transform.rotation_.y;
+		parts_[Weapon].rotation_.y -= camera->transform.rotation_.y;
 
 		//	敵の方向を見続ける
 		//transform.rotation_.y = camera->transform.rotation_.y;
@@ -243,6 +245,9 @@ void Player::Draw(const Matrix4x4& viewProjection)
 void Player::MoveLimit()
 {
 	transform.translation_.x = std::clamp(transform.translation_.x, -70.0f, 70.0f);
+	if (!jampflg && !hit) {
+		transform.translation_.y = 0.0f;
+	}
 	transform.translation_.y = std::clamp(transform.translation_.y, 0.0f, 50.0f);
 	transform.translation_.z = std::clamp(transform.translation_.z, -70.0f, 70.0f);
 }
@@ -280,6 +285,27 @@ void Player::Jamp()
 	}
 	if (transform.translation_.y <= 0.0f) {
 		jampflg = false;
+	}
+}
+
+void Player::Collision()
+{
+	if (distance <= 10.0f && !hit) {
+		hp -= enemy_->power;
+		hitframe = 0;
+		hit = true;
+		knockBack = FindVector(enemy_->transform.translation_, transform.translation_);
+		knockBack = Normalize(knockBack) * 10.0f;
+		knockBack.y = 0.2f;
+	}
+	else if (hit) {
+		hitframe++;
+		if (hitframe % 5 == 0) {
+			transform.translation_ += knockBack;
+		}
+		if (hitframe > 25) {
+			hit = false;
+		}
 	}
 }
 

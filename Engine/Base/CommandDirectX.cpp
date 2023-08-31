@@ -48,8 +48,8 @@ void CommandDirectX::PreDraw()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	//	ゲームの処理
-	ImGui::ShowDemoWindow();
+	//	ImGuiデモの表示
+	//ImGui::ShowDemoWindow();
 
 	//	Input初期の更新
 	KeyInput::Update();

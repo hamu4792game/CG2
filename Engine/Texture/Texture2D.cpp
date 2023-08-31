@@ -347,18 +347,6 @@ void Texture2D::Draw(Vector2 pos, Vector2 scale, float rotate, Matrix4x4 viewPro
 	Engine::GetList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
-Vector4 Texture2D::ChangeColor(uint32_t color)
-{
-	static const float nNum = 1.0f / 255.0f;
-
-	float red = static_cast<float>((color & 0xff000000) >> 24)* nNum;
-	float blue = static_cast<float>((color & 0x00ff0000) >> 16) * nNum;
-	float green = static_cast<float>((color & 0x0000ff00) >> 8) * nNum;
-	float alpha = static_cast<float>((color & 0x000000ff)) * nNum;
-	
-	return Vector4(red, blue, green, alpha);
-}
-
 void Texture2D::SetBlend(BlendMode blend_)
 {
 	blend = blend_;

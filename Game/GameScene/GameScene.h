@@ -1,6 +1,8 @@
 #pragma once
 #include "Engine/Engine.h"
+#include "Game/GameScene/Title/Title.h"
 #include "Game/GameScene/Battle/Battle.h"
+#include "Game/GameScene/Result/Result.h"
 #include "Game/Skydome/Skydome.h"
 #include "Game/Ground/Ground.h"
 #include "Game/Player/Player.h"
@@ -18,9 +20,13 @@ public:
 	enum class Scene {
 		TITLE,
 		BATTLE,
-		RESULT
+		GAMEOVER,
+		GAMECLEAR
 	};
-	Scene scene = Scene::BATTLE;
+	Scene scene = Scene::TITLE;
+	Scene oldscene = Scene::TITLE;
+
+	bool sceneChangeFlag;
 
 	//	シングルトンインスタンス
 	static GameScene* GetInstance();
@@ -39,7 +45,9 @@ private:
 	Matrix4x4 viewProjectionMatrix2d{};
 
 	//	シーン用インスタンス
+	std::unique_ptr<Title> title;
 	std::unique_ptr<Battle> battle;
+	std::unique_ptr<Result> result;
 
 	AudioInput battleBGM;
 
@@ -51,5 +59,13 @@ public:
 	void Update();
 	
 	void Draw();
+
+private:
+	Texture2D box;
+	float boxScale = 0.0f;
+	float boxRotate = 0.0f;
+	float easeNum;
+	bool flag;
+	void SceneChange();
 
 };

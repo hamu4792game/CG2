@@ -4,6 +4,8 @@
 #include "Engine/WorldTransform/WorldTransform.h"
 #include "Engine/Camera/Camera.h"
 
+class Player;
+
 class Enemy
 {
 public:
@@ -44,6 +46,11 @@ public:
 	};
 	STYLE style = STYLE::FIRST;
 
+	int hp = 0;
+	int maxHp = 0;
+	int power = 0;
+	bool clearFlag = false;
+
 private:
 
 	enum PARTS {
@@ -53,11 +60,28 @@ private:
 		Num
 	};
 
+	enum PATTERN {
+		Normal,
+		Charge,
+	};
+	PATTERN pattern = PATTERN::Normal;
+
 	float easeNum = 0.0f;
 	bool isFlag = false;
+	Vector3 easeStartPos;
+	Vector3 easeEndPos;
+
+	Player* player_ = nullptr;
+
+	//	ベクトルのしゅとく
+	Vector3 vec;
+
+	void Change();
 
 private:
 	void FirstUpdate();
+
+	void SecondUpdate();
 
 public:
 
@@ -67,5 +91,6 @@ public:
 	/// <returns>ワールド変換データ</returns>
 	const WorldTransform& GetWorldTransform() { return transform; };
 
+	void SetPlayer_ptr(Player* player);
 
 };

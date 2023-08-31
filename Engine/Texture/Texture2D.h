@@ -76,8 +76,6 @@ public:
 	//void Draw(Matrix4x4 worldMat, Matrix4x4 viewProjectionMat, uint32_t color);
 	void Draw(Vector2 pos, Vector2 scale, float rotate, Matrix4x4 viewProjectionMat, uint32_t color);
 
-	Vector4 ChangeColor(uint32_t color);
-
 	BlendMode blend = BlendMode::Normal;
 	void SetBlend(BlendMode blend_);
 	

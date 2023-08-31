@@ -1,7 +1,7 @@
 #include <Windows.h>
 #include "Engine/Engine.h"
 #include "Engine/Texture/Texture2D.h"
-#include "externals/imgui/imgui.h"
+//#include "externals/imgui/imgui.h"
 #include "math/Matrix4x4.h"
 #include "Engine/Camera/Camera.h"
 
@@ -18,7 +18,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	D3DResourceLeakChecker leak;
 	//OutputDebugStringA("Hello,DirectX!\n");
 	int32_t windowWidth = 1280; int32_t windowHeight = 720;
-	Engine::Initialize("Engine", windowWidth, windowHeight);
+	Engine::Initialize("taimenn", windowWidth, windowHeight);
 	
 	GameScene::GetInstance()->Initialize();
 
@@ -28,9 +28,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 		Engine::BeginFrame();
 
 		// ImGui のフレームに一つ目の ImGui のウィンドウを描く
-		ImGui::Begin("Control panel");
-		ImGui::Text("Frame rate: %6.2f fps", ImGui::GetIO().Framerate);
-		ImGui::End();
+		//ImGui::Begin("Control panel");
+		//ImGui::Text("Frame rate: %6.2f fps", ImGui::GetIO().Framerate);
+		//ImGui::End();
 
 
 		GameScene::GetInstance()->Update();
