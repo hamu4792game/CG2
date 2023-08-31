@@ -33,6 +33,7 @@ void Enemy::Initialize()
 	hp = maxHp;
 	power = 10;
 	clearFlag = false;
+	pattern = PATTERN::Normal;
 
 	color = Vector4(255.0f, 255.0f, 255.0f, 255.0f);
 
