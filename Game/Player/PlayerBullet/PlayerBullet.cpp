@@ -27,7 +27,7 @@ void PlayerBullet::Update(const Vector3& vector)
 		time++;
 
 		//	対象(enemy)までの距離を取得し、フラグを立てる || 4秒以上で自動的に消える
-		if (OuterProduct(transform.translation_ - vector) <= 10.0f) {
+		if (OuterProduct(transform.translation_ - vector) <= 5.0f) {
 			time = 0;
 			isAlive = false;
 			isHit = true;

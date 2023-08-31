@@ -156,3 +156,20 @@ bool KeyInput::GetRTriggerDown()
 	}
 	return false;
 }
+bool KeyInput::GetLTrigger()
+{
+	//	デッドラインの設定必須
+	if (xInputState.Gamepad.bLeftTrigger >= 128) {
+		return true;
+	}
+	return false;
+}
+
+bool KeyInput::GetRTrigger()
+{
+	//	デッドラインの設定必須
+	if (xInputState.Gamepad.bRightTrigger >= 128) {
+		return true;
+	}
+	return false;
+}

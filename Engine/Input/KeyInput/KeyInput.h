@@ -86,5 +86,11 @@ public: // コントローラー
 	//右トリガーを押し込んだ瞬間か
 	bool GetRTriggerDown();
 
+	//左トリガーが押されているか
+	bool GetLTrigger();
+
+	//右トリガーが押されているか
+	bool GetRTrigger();
+
 
 };

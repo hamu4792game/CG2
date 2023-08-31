@@ -25,7 +25,7 @@ void GameScene::Initialize()
 	battleBGM.SoundPlayWave(true);
 	battleBGM.SetVolume(0.3f);
 
-	scene = Scene::BATTLE;
+	scene = Scene::TITLE;
 	oldscene = Scene::GAMEOVER;
 
 	//	初期化

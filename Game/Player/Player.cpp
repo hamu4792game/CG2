@@ -89,7 +89,6 @@ void Player::Update()
 
 void Player::ModelLoad()
 {
-	
 	//models_[center]->Texture("Resources/sphere.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	models_[Body]->Texture("Resources/player/body.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	models_[Head]->Texture("Resources/player/head.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
@@ -102,7 +101,6 @@ void Player::ModelLoad()
 	for (uint16_t i = 0u; i < num; i++) {
 		bulletModel_[i]->Texture("Resources/bullet/bullet.obj", "./Shader/Texture2D.VS.hlsl", "./Shader/Texture2D.PS.hlsl");
 	}
-
 }
 
 void Player::Move()
@@ -111,7 +109,9 @@ void Player::Move()
 	float speed = 0.2f;
 	bool isMove = false;
 	//	ダッシュ（はやい）
-	if (KeyInput::GetKey(DIK_LSHIFT))
+	if (KeyInput::GetKey(DIK_LSHIFT)
+		|| KeyInput::GetInstance()->GetPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER)
+		|| KeyInput::GetInstance()->GetLTrigger())
 	{
 		speed = 0.4f;
 	}
@@ -263,8 +263,9 @@ void Player::Attack()
 	}
 
 	//	生存フラグが折れたら要素を取り除く
-	if (KeyInput::PushKey(DIK_SPACE) || KeyInput::GetInstance()->GetPadButtonDown(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
-		if (distance >= 15.0f) {
+	if (KeyInput::PushKey(DIK_SPACE) || KeyInput::GetInstance()->GetPadButtonDown(XINPUT_GAMEPAD_RIGHT_SHOULDER) 
+		|| KeyInput::GetInstance()->GetRTriggerDown()) {
+		if (distance >= 3.0f) {
 		//	弾を追加する
 			for (uint16_t i = 0u; i < num; i++) {
 				if (bullets_[i]->isAlive == false) {
