@@ -64,41 +64,14 @@
     <Filter Include="Game">
       <UniqueIdentifier>{cdd141cf-38aa-4813-bf04-abd7e48557f7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Skydome">
-      <UniqueIdentifier>{95e7ceb0-8156-4dc4-beab-4b5a40c27ea5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\GameScene">
       <UniqueIdentifier>{67c1c47e-678c-40ad-a36b-4686e0de776d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\GameScene\Battle">
-      <UniqueIdentifier>{b6913ebe-10d6-4ee8-a3b0-8a4ea23ba7f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Player">
-      <UniqueIdentifier>{03694e7a-93a7-4f6c-8b06-7fda6275147d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\WorldTransform">
       <UniqueIdentifier>{9f38a513-c383-4a49-a14f-c8ca4dd71001}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Ground">
-      <UniqueIdentifier>{2132c422-f6dc-4d43-8d61-f07fd7d9a788}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Enemy">
-      <UniqueIdentifier>{07575ff1-38ea-4518-9f0e-adea8693764a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Player\PlayerBullet">
-      <UniqueIdentifier>{9f61e05a-cd91-4265-aada-ba71058d3e3a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Easing">
       <UniqueIdentifier>{1a0536d9-3ea4-428c-92ae-a29524e55145}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Hud">
-      <UniqueIdentifier>{4d8eb996-f584-4d36-ab30-4e3d753fb1f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\GameScene\Title">
-      <UniqueIdentifier>{f936715a-7ea4-488d-880d-20de79cea067}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\GameScene\Result">
-      <UniqueIdentifier>{45f07746-b1dd-47a8-b783-39d60dab93a9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -165,17 +138,8 @@
     <ClCompile Include="Engine\Manager\AudioManager\AudioManager.cpp">
       <Filter>Engine\Manager\AudioManager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Skydome\Skydome.cpp">
-      <Filter>Game\Skydome</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameScene\GameScene.cpp">
       <Filter>Game\GameScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameScene\Battle\Battle.cpp">
-      <Filter>Game\GameScene\Battle</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Player\Player.cpp">
-      <Filter>Game\Player</Filter>
     </ClCompile>
     <ClCompile Include="Engine\WorldTransform\WorldTransform.cpp">
       <Filter>Engine\WorldTransform</Filter>
@@ -183,29 +147,11 @@
     <ClCompile Include="math\Vector3.cpp">
       <Filter>math</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Enemy\Enemy.cpp">
-      <Filter>Game\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp">
-      <Filter>Game\Player\PlayerBullet</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Ground\Ground.cpp">
-      <Filter>Game\Ground</Filter>
-    </ClCompile>
     <ClCompile Include="math\Vector4.cpp">
       <Filter>math</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Hud\Hud.cpp">
-      <Filter>Game\Hud</Filter>
-    </ClCompile>
     <ClCompile Include="math\Vector2.cpp">
       <Filter>math</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameScene\Title\Title.cpp">
-      <Filter>Game\GameScene\Title</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameScene\Result\Result.cpp">
-      <Filter>Game\GameScene\Result</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -287,41 +233,14 @@
     <ClInclude Include="Engine\Base\ConstantBuffer.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Skydome\Skydome.h">
-      <Filter>Game\Skydome</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameScene\GameScene.h">
       <Filter>Game\GameScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameScene\Battle\Battle.h">
-      <Filter>Game\GameScene\Battle</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Player\Player.h">
-      <Filter>Game\Player</Filter>
     </ClInclude>
     <ClInclude Include="Engine\WorldTransform\WorldTransform.h">
       <Filter>Engine\WorldTransform</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Enemy\Enemy.h">
-      <Filter>Game\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h">
-      <Filter>Game\Player\PlayerBullet</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Ground\Ground.h">
-      <Filter>Game\Ground</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Easing\Easing.h">
       <Filter>Engine\Easing</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Hud\Hud.h">
-      <Filter>Game\Hud</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameScene\Title\Title.h">
-      <Filter>Game\GameScene\Title</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameScene\Result\Result.h">
-      <Filter>Game\GameScene\Result</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

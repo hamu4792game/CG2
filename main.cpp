@@ -1,7 +1,7 @@
 #include <Windows.h>
 #include "Engine/Engine.h"
 #include "Engine/Texture/Texture2D.h"
-//#include "externals/imgui/imgui.h"
+#include "externals/imgui/imgui.h"
 #include "math/Matrix4x4.h"
 #include "Engine/Camera/Camera.h"
 
@@ -27,10 +27,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 		//	フレームの開始
 		Engine::BeginFrame();
 
-		// ImGui のフレームに一つ目の ImGui のウィンドウを描く
-		//ImGui::Begin("Control panel");
-		//ImGui::Text("Frame rate: %6.2f fps", ImGui::GetIO().Framerate);
-		//ImGui::End();
+		//	ImGui のフレームに一つ目の ImGui のウィンドウを描く
+		ImGui::Begin("Control panel");
+		ImGui::Text("Frame rate: %6.2f fps", ImGui::GetIO().Framerate);
+		ImGui::End();
 
 
 		GameScene::GetInstance()->Update();

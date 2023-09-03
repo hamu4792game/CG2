@@ -33,7 +33,6 @@ Camera::Camera(float farClip_, bool proType) {
 }
 
 Matrix4x4 Camera::GetViewProMat() {
-	//Update();
 	//	行列の計算
 	cameraMatrix = MakeAffineMatrix(transform.scale_, transform.rotation_, transform.translation_);
 	viewMatrix = Inverse(cameraMatrix);
