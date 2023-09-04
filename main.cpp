@@ -9,13 +9,11 @@
 #include "Engine/Input/KeyInput/KeyInput.h"
 #include "Engine/Input/AudioInput/AudioInput.h"
 
-#include "Game/Skydome/Skydome.h"
-
 #include "Game/GameScene/GameScene.h"
 
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
-	D3DResourceLeakChecker leak;
+	static D3DResourceLeakChecker leak;
 	//OutputDebugStringA("Hello,DirectX!\n");
 	int32_t windowWidth = 1280; int32_t windowHeight = 720;
 	Engine::Initialize("taimenn", windowWidth, windowHeight);
